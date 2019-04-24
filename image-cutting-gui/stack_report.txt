@@ -1,0 +1,1305 @@
+
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 215 in adjust_escale>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 137 in set_max>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 130 in reset_current_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 39 in <lambda>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 81 in rotate_on_axis>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 40 in <lambda>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 81 in rotate_on_axis>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 41 in <lambda>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 81 in rotate_on_axis>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 137 in set_max>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 130 in reset_current_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 142 in set_sum>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 130 in reset_current_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 215 in adjust_escale>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 215 in adjust_escale>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 84 in next_page>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 137 in set_max>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 130 in reset_current_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 142 in set_sum>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 130 in reset_current_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 215 in adjust_escale>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 92 in back>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 84 in next_page>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 105 in undo_click>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 92 in back>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_rotator.py, line 84 in next_page>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 45 in <lambda>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 100 in remove_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backends/_backend_tk.py, line 342 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/backend_bases.py, line 1928 in button_press_event>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 387 in process>
+<FrameSummary file /usr/local/lib/python3.7/site-packages/matplotlib/cbook/__init__.py, line 227 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 259 in onClick>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageCutter
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 96 in add_cut>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 89 in reset>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_cutter.py, line 113 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 100 in back>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 100 in back>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 100 in back>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: HeaderUI
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 92 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ConfirmSave
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/header_ui.py, line 89 in next>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/confirm_save.py, line 126 in save>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/confirm_save.py, line 144 in start_over>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageSelector
+
+<FrameSummary file main.py, line 8 in <module>>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 77 in __init__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
+
+
+
+##################################################
+Showing frame: ImageRotator
+
+<FrameSummary file main.py, line 10 in <module>>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1283 in mainloop>
+<FrameSummary file /usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/tkinter/__init__.py, line 1705 in __call__>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_selector.py, line 74 in browse_file>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 183 in start_img>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/image_gui.py, line 120 in show_frame>
+<FrameSummary file /Users/ehsan/Box Sync/C2IR2_Project_KooreshShoghi/Image Cutting Program/Source Code/src/appclasses/dependencies.py, line 28 in stack_report>
