@@ -70,13 +70,13 @@ class HeaderUI(tk.Frame):
 
         self.controller.show_cut(figure=self.figure,ix=self.controller.cutix)
 
-        self.canvas.show()
+        self.canvas.draw()
         self.canvas_widget = self.canvas.get_tk_widget()
         
         self.canvas_widget.pack(side="top",fill='both',expand=True) 
 
         tbframe = tk.Frame(self.figframe)
-        toolbar = NavigationToolbar2TkAgg(self.canvas, tbframe)
+        toolbar = NavigationToolbar2Tk(self.canvas, tbframe)
         toolbar.update()
         self.canvas._tkcanvas.pack()  
         tbframe.pack(side="top",expand=False)

@@ -75,7 +75,7 @@ class ImageCutter(tk.Frame):
         self.controller.static_cutter(figure=self.figure)
 
         self.controller.static_cutter_controls(canvas=self.canvas)
-        self.canvas.show()
+        self.canvas.draw()
         self.canvas_widget = self.canvas.get_tk_widget()
         
         self.canvas_widget.pack(side="top",fill='both',expand=True) 

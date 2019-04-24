@@ -21,3 +21,5 @@ Test Images/Original/mpet3721a_ct1_v1.ct.img
 Test Images/Original/mpet3721a_ct1_v1.ct.img.hdr
 Test Images/Original/mpet3721a_em1_v1.pet.img
 Test Images/Original/mpet3721a_em1_v1.pet.img.hdr
+*.pyc
+stack_report.txt

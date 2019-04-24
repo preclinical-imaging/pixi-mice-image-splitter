@@ -58,13 +58,13 @@ class ImageRotator(tk.Frame):
 
         self.controller.view_each_axis(figure=self.figure)
 
-        self.canvas.show()
+        self.canvas.draw()
         self.canvas_widget = self.canvas.get_tk_widget()
         
         self.canvas_widget.pack(side="top",fill='both',expand=True) 
 
         tbframe = tk.Frame(self.figframe)
-        toolbar = NavigationToolbar2TkAgg(self.canvas, tbframe)
+        toolbar = NavigationToolbar2Tk(self.canvas, tbframe)
         toolbar.update()
         self.canvas._tkcanvas.pack()  
         tbframe.pack(side="top",expand=False)
