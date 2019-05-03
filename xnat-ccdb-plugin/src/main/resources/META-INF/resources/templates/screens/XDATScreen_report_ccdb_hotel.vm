@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+$page.setTitle("hotel Details")
+$page.setLinkColor($ui.alink)
+$page.setVlinkColor($ui.vlink)/*
+ ##---------------------------------------- 
+ ## DO NOT MODIFY THIS FILE HERE
+ ##
+ ## TO MODIFY, COPY THIS FILE to src/main/resources/templates/screens/ and modify it there 
+ ##----------------------------------------
+#if ($turbineUtils.GetPassedParameter("popup", $data))
+	#set ($popup = $turbineUtils.GetPassedParameter("popup", data) )
+	#set ($popup = "false")
+#end
+<TABLE width="100%">
+	<TR>
+		<TD>
+			<table width="100%">
+				<TR>
+					<TD align="left" valign="middle">
+						<font face="$ui.sansSerifFonts" size="3"><b>hotel Details</b></font>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<TABLE width="100%">
+				<TR>
+					<TD valign="top">
+						<TABLE>
+							<TR><TD>imageSession_ID</TD><TD>$!item.getStringProperty("ccdb:hotel/imageSession_ID")</TD></TR>
+							<TR><TD>date</TD><TD>$!item.getProperty("ccdb:hotel/date")</TD></TR>
+							<TR><TD>time</TD><TD>$!item.getProperty("ccdb:hotel/time")</TD></TR>
+							<TR><TD>duration</TD><TD>$!item.getProperty("ccdb:hotel/duration")</TD></TR>
+							<TR><TD>delay</TD><TD>$!item.getIntegerProperty("ccdb:hotel/delay")</TD></TR>
+							<TR><TD>delay/ref_expt_id</TD><TD>$!item.getStringProperty("ccdb:hotel/delay/ref_expt_id")</TD></TR>
+							<TR><TD>note</TD><TD>$!item.getStringProperty("ccdb:hotel/note")</TD></TR>
+							<TR><TD>acquisition_site</TD><TD>$!item.getStringProperty("ccdb:hotel/acquisition_site")</TD></TR>
+							<TR><TD>ID</TD><TD>$!item.getStringProperty("ccdb:hotel/ID")</TD></TR>
+							<TR><TD>project</TD><TD>$!item.getStringProperty("ccdb:hotel/project")</TD></TR>
+							<TR><TD>visit_id</TD><TD>$!item.getStringProperty("ccdb:hotel/visit_id")</TD></TR>
+							<TR><TD>visit</TD><TD>$!item.getStringProperty("ccdb:hotel/visit")</TD></TR>
+							<TR><TD>version</TD><TD>$!item.getIntegerProperty("ccdb:hotel/version")</TD></TR>
+							<TR><TD>original</TD><TD>$!item.getStringProperty("ccdb:hotel/original")</TD></TR>
+							<TR><TD>protocol</TD><TD>$!item.getStringProperty("ccdb:hotel/protocol")</TD></TR>
+							<TR><TD>label</TD><TD>$!item.getStringProperty("ccdb:hotel/label")</TD></TR>
+							<TR><TD>hotel_id</TD><TD>$!item.getStringProperty("ccdb:hotel/hotel_id")</TD></TR>
+							<TR><TD>scan_name</TD><TD>$!item.getStringProperty("ccdb:hotel/scan_name")</TD></TR>
+							<TR><TD>time_points</TD><TD>$!item.getStringProperty("ccdb:hotel/time_points")</TD></TR>
+							<TR><TD>subject_identifiers</TD><TD>$!item.getStringProperty("ccdb:hotel/subject_identifiers")</TD></TR>
+							<TR><TD>weight</TD><TD>$!item.getStringProperty("ccdb:hotel/weight")</TD></TR>
+							<TR><TD>activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/activity_mCl")</TD></TR>
+							<TR><TD>scan_time</TD><TD>$!item.getProperty("ccdb:hotel/scan_time")</TD></TR>
+							<TR><TD>injection_time</TD><TD>$!item.getProperty("ccdb:hotel/injection_time")</TD></TR>
+						</TABLE>
+					</TD>
+					<TD valign="top" align="right">
+						#parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+<!-- BEGIN ccdb:hotel -->
+			<TABLE>
+				<TR><TH align="left"><font face="$ui.sansSerifFonts" size="2">Related Items</font></TH></TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE>
+						</TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_abstractResource_1_NUM_ROWS=$item.getChildItems("ccdb:hotel/in/file").size() - 1)
+							#if($xnat_abstractResource_1_NUM_ROWS>=0)
+								#foreach($xnat_abstractResource_1_COUNTER in [0..$xnat_abstractResource_1_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>note</TD><TD>$!item.getStringProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/note")</TD></TR>
+													<TR><TD>label</TD><TD>$!item.getStringProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/label")</TD></TR>
+													<TR><TD>file_count</TD><TD>$!item.getIntegerProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/file_count")</TD></TR>
+													<TR><TD>file_size</TD><TD>$!item.getProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/file_size")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE><TR><TD>
+													#set($xnat_abstractResource_tag_2_NUM_ROWS=$item.getChildItems("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag").size() - 1)
+													#if($xnat_abstractResource_tag_2_NUM_ROWS>=0)
+														#foreach($xnat_abstractResource_tag_2_COUNTER in [0..$xnat_abstractResource_tag_2_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag[$xnat_abstractResource_tag_2_COUNTER] -->
+															<TABLE>
+																<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag[$xnat_abstractResource_tag_2_COUNTER]</font></TH></TR>
+																<TR>
+																	<TD align="left" valign="top">
+																		<TABLE>
+																			<TR><TD>tag</TD><TD>$!item.getStringProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag[$xnat_abstractResource_tag_2_COUNTER]/tag")</TD></TR>
+																			<TR><TD>name</TD><TD>$!item.getStringProperty("ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag[$xnat_abstractResource_tag_2_COUNTER]/name")</TD></TR>
+																		</TABLE>
+																	</TD>
+																</TR>
+															</TABLE>
+<!-- END ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER]/tags/tag[$xnat_abstractResource_tag_2_COUNTER] -->
+														#end
+													#end
+												</TD></TR></TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/in/file[$xnat_abstractResource_1_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_abstractResource_3_NUM_ROWS=$item.getChildItems("ccdb:hotel/out/file").size() - 1)
+							#if($xnat_abstractResource_3_NUM_ROWS>=0)
+								#foreach($xnat_abstractResource_3_COUNTER in [0..$xnat_abstractResource_3_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>note</TD><TD>$!item.getStringProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/note")</TD></TR>
+													<TR><TD>label</TD><TD>$!item.getStringProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/label")</TD></TR>
+													<TR><TD>file_count</TD><TD>$!item.getIntegerProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/file_count")</TD></TR>
+													<TR><TD>file_size</TD><TD>$!item.getProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/file_size")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE><TR><TD>
+													#set($xnat_abstractResource_tag_4_NUM_ROWS=$item.getChildItems("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag").size() - 1)
+													#if($xnat_abstractResource_tag_4_NUM_ROWS>=0)
+														#foreach($xnat_abstractResource_tag_4_COUNTER in [0..$xnat_abstractResource_tag_4_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag[$xnat_abstractResource_tag_4_COUNTER] -->
+															<TABLE>
+																<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag[$xnat_abstractResource_tag_4_COUNTER]</font></TH></TR>
+																<TR>
+																	<TD align="left" valign="top">
+																		<TABLE>
+																			<TR><TD>tag</TD><TD>$!item.getStringProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag[$xnat_abstractResource_tag_4_COUNTER]/tag")</TD></TR>
+																			<TR><TD>name</TD><TD>$!item.getStringProperty("ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag[$xnat_abstractResource_tag_4_COUNTER]/name")</TD></TR>
+																		</TABLE>
+																	</TD>
+																</TR>
+															</TABLE>
+<!-- END ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER]/tags/tag[$xnat_abstractResource_tag_4_COUNTER] -->
+														#end
+													#end
+												</TD></TR></TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/out/file[$xnat_abstractResource_3_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_addField_5_NUM_ROWS=$item.getChildItems("ccdb:hotel/parameters/addParam").size() - 1)
+							#if($xnat_addField_5_NUM_ROWS>=0)
+								#foreach($xnat_addField_5_COUNTER in [0..$xnat_addField_5_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/parameters/addParam[$xnat_addField_5_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/parameters/addParam[$xnat_addField_5_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>addField</TD><TD>$!item.getProperty("ccdb:hotel/parameters/addParam[$xnat_addField_5_COUNTER]/addField")</TD></TR>
+													<TR><TD>name</TD><TD>$!item.getStringProperty("ccdb:hotel/parameters/addParam[$xnat_addField_5_COUNTER]/name")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/parameters/addParam[$xnat_addField_5_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+<!-- BEGIN ccdb:hotel/provenance -->
+						<TABLE>
+							<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/provenance</font></TH></TR>
+							<TR>
+								<TD align="left" valign="top">
+									<TABLE>
+									</TABLE>
+								</TD>
+							</TR>
+							<TR>
+								<TD align="left" valign="top">
+									<TABLE><TR><TD>
+										#set($prov_processStep_7_NUM_ROWS=$item.getChildItems("ccdb:hotel/provenance/processStep").size() - 1)
+										#if($prov_processStep_7_NUM_ROWS>=0)
+											#foreach($prov_processStep_7_COUNTER in [0..$prov_processStep_7_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER] -->
+												<TABLE>
+													<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]</font></TH></TR>
+													<TR>
+														<TD align="left" valign="top">
+															<TABLE>
+																<TR><TD>program</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/program")</TD></TR>
+																<TR><TD>program/version</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/program/version")</TD></TR>
+																<TR><TD>program/arguments</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/program/arguments")</TD></TR>
+																<TR><TD>timestamp</TD><TD>$!item.getProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/timestamp")</TD></TR>
+																<TR><TD>cvs</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/cvs")</TD></TR>
+																<TR><TD>user</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/user")</TD></TR>
+																<TR><TD>machine</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/machine")</TD></TR>
+																<TR><TD>platform</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/platform")</TD></TR>
+																<TR><TD>platform/version</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/platform/version")</TD></TR>
+																<TR><TD>compiler</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/compiler")</TD></TR>
+																<TR><TD>compiler/version</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/compiler/version")</TD></TR>
+															</TABLE>
+														</TD>
+													</TR>
+													<TR>
+														<TD align="left" valign="top">
+															<TABLE><TR><TD>
+																#set($prov_processStep_library_8_NUM_ROWS=$item.getChildItems("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library").size() - 1)
+																#if($prov_processStep_library_8_NUM_ROWS>=0)
+																	#foreach($prov_processStep_library_8_COUNTER in [0..$prov_processStep_library_8_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library[$prov_processStep_library_8_COUNTER] -->
+																		<TABLE>
+																			<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library[$prov_processStep_library_8_COUNTER]</font></TH></TR>
+																			<TR>
+																				<TD align="left" valign="top">
+																					<TABLE>
+																						<TR><TD>library</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library[$prov_processStep_library_8_COUNTER]/library")</TD></TR>
+																						<TR><TD>version</TD><TD>$!item.getStringProperty("ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library[$prov_processStep_library_8_COUNTER]/version")</TD></TR>
+																					</TABLE>
+																				</TD>
+																			</TR>
+																		</TABLE>
+<!-- END ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER]/library[$prov_processStep_library_8_COUNTER] -->
+																	#end
+																#end
+															</TD></TR></TABLE>
+														</TD>
+													</TR>
+												</TABLE>
+<!-- END ccdb:hotel/provenance/processStep[$prov_processStep_7_COUNTER] -->
+											#end
+										#end
+									</TD></TR></TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+<!-- END ccdb:hotel/provenance -->
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_experimentData_share_9_NUM_ROWS=$item.getChildItems("ccdb:hotel/sharing/share").size() - 1)
+							#if($xnat_experimentData_share_9_NUM_ROWS>=0)
+								#foreach($xnat_experimentData_share_9_COUNTER in [0..$xnat_experimentData_share_9_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>share</TD><TD>$!item.getStringProperty("ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]/share")</TD></TR>
+													<TR><TD>label</TD><TD>$!item.getStringProperty("ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]/label")</TD></TR>
+													<TR><TD>project</TD><TD>$!item.getStringProperty("ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]/project")</TD></TR>
+													<TR><TD>visit</TD><TD>$!item.getStringProperty("ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]/visit")</TD></TR>
+													<TR><TD>protocol</TD><TD>$!item.getStringProperty("ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER]/protocol")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/sharing/share[$xnat_experimentData_share_9_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+<!-- BEGIN ccdb:hotel/investigator -->
+						<TABLE>
+							<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/investigator</font></TH></TR>
+							<TR>
+								<TD align="left" valign="top">
+									<TABLE>
+										<TR><TD>title</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/title")</TD></TR>
+										<TR><TD>firstname</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/firstname")</TD></TR>
+										<TR><TD>lastname</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/lastname")</TD></TR>
+										<TR><TD>institution</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/institution")</TD></TR>
+										<TR><TD>department</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/department")</TD></TR>
+										<TR><TD>email</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/email")</TD></TR>
+										<TR><TD>phone</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/phone")</TD></TR>
+										<TR><TD>ID</TD><TD>$!item.getStringProperty("ccdb:hotel/investigator/ID")</TD></TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+<!-- END ccdb:hotel/investigator -->
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+<!-- BEGIN ccdb:hotel/validation -->
+						<TABLE>
+							<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/validation</font></TH></TR>
+							<TR>
+								<TD align="left" valign="top">
+									<TABLE>
+										<TR><TD>method</TD><TD>$!item.getStringProperty("ccdb:hotel/validation/method")</TD></TR>
+										<TR><TD>date</TD><TD>$!item.getProperty("ccdb:hotel/validation/date")</TD></TR>
+										<TR><TD>notes</TD><TD>$!item.getStringProperty("ccdb:hotel/validation/notes")</TD></TR>
+										<TR><TD>validated_by</TD><TD>$!item.getStringProperty("ccdb:hotel/validation/validated_by")</TD></TR>
+										<TR><TD>status</TD><TD>$!item.getStringProperty("ccdb:hotel/validation/status")</TD></TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+<!-- END ccdb:hotel/validation -->
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_abstractResource_12_NUM_ROWS=$item.getChildItems("ccdb:hotel/resources/resource").size() - 1)
+							#if($xnat_abstractResource_12_NUM_ROWS>=0)
+								#foreach($xnat_abstractResource_12_COUNTER in [0..$xnat_abstractResource_12_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>note</TD><TD>$!item.getStringProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/note")</TD></TR>
+													<TR><TD>label</TD><TD>$!item.getStringProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/label")</TD></TR>
+													<TR><TD>file_count</TD><TD>$!item.getIntegerProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/file_count")</TD></TR>
+													<TR><TD>file_size</TD><TD>$!item.getProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/file_size")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE><TR><TD>
+													#set($xnat_abstractResource_tag_13_NUM_ROWS=$item.getChildItems("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag").size() - 1)
+													#if($xnat_abstractResource_tag_13_NUM_ROWS>=0)
+														#foreach($xnat_abstractResource_tag_13_COUNTER in [0..$xnat_abstractResource_tag_13_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag[$xnat_abstractResource_tag_13_COUNTER] -->
+															<TABLE>
+																<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag[$xnat_abstractResource_tag_13_COUNTER]</font></TH></TR>
+																<TR>
+																	<TD align="left" valign="top">
+																		<TABLE>
+																			<TR><TD>tag</TD><TD>$!item.getStringProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag[$xnat_abstractResource_tag_13_COUNTER]/tag")</TD></TR>
+																			<TR><TD>name</TD><TD>$!item.getStringProperty("ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag[$xnat_abstractResource_tag_13_COUNTER]/name")</TD></TR>
+																		</TABLE>
+																	</TD>
+																</TR>
+															</TABLE>
+<!-- END ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER]/tags/tag[$xnat_abstractResource_tag_13_COUNTER] -->
+														#end
+													#end
+												</TD></TR></TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/resources/resource[$xnat_abstractResource_12_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD align="left" valign="top">
+						<TABLE><TR><TD>
+							#set($xnat_experimentData_field_14_NUM_ROWS=$item.getChildItems("ccdb:hotel/fields/field").size() - 1)
+							#if($xnat_experimentData_field_14_NUM_ROWS>=0)
+								#foreach($xnat_experimentData_field_14_COUNTER in [0..$xnat_experimentData_field_14_NUM_ROWS])
+<!-- BEGIN ccdb:hotel/fields/field[$xnat_experimentData_field_14_COUNTER] -->
+									<TABLE>
+										<TR><TH align="left"><BR><font face="$ui.sansSerifFonts" size="2">ccdb:hotel/fields/field[$xnat_experimentData_field_14_COUNTER]</font></TH></TR>
+										<TR>
+											<TD align="left" valign="top">
+												<TABLE>
+													<TR><TD>field</TD><TD>$!item.getStringProperty("ccdb:hotel/fields/field[$xnat_experimentData_field_14_COUNTER]/field")</TD></TR>
+													<TR><TD>name</TD><TD>$!item.getStringProperty("ccdb:hotel/fields/field[$xnat_experimentData_field_14_COUNTER]/name")</TD></TR>
+												</TABLE>
+											</TD>
+										</TR>
+									</TABLE>
+<!-- END ccdb:hotel/fields/field[$xnat_experimentData_field_14_COUNTER] -->
+								#end
+							#end
+						</TD></TR></TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+<!-- END ccdb:hotel -->
+		</TD>
+	</TR>
+</TABLE>

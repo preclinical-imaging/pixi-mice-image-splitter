@@ -23,3 +23,5 @@ Test Images/Original/mpet3721a_em1_v1.pet.img
 Test Images/Original/mpet3721a_em1_v1.pet.img.hdr
 *.pyc
 stack_report.txt
+xnat-ccdb-plugin/.gradle
+xnat-ccdb-plugin/build

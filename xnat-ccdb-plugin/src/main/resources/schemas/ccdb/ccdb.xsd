@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ xnat-ccdb: xnat-ccdb-plugin/src/main/resources/schemas/ccdb/ccdb.xsd
+  ~ XNAT http://www.xnat.org
+  ~ Copyright (c) 2017, Washington University School of Medicine
+  ~ All Rights Reserved
+  ~
+  ~ Released under the Simplified BSD.
+  -->
+
+<!--
+	TODO: You can use this as the basis for an XNAT data-type definition or simply delete it. Note that there are other
+	files related to the data type defined here:
+
+	 - src/main/java/org/apache/turbine/app/xnat/modules/screens/XDATScreen_edit_ccdb_hotel.java
+	 - src/main/java/org/apache/turbine/app/xnat/modules/screens/XDATScreen_report_ccdb_hotel.java
+	 - src/main/resources/META-INF/resources/templates/screens/XDATScreen_edit_ccdb_hotel.vm
+	 - src/main/resources/META-INF/resources/templates/screens/XDATScreen_report_ccdb_hotel.vm
+	 - src/main/resources/META-INF/resources/templates/screens/xnat_subjectData/actionsBox/hotel.vm
+-->
+<xs:schema targetNamespace="http://nrg.wustl.edu/ccdb" xmlns:ccdb="http://nrg.wustl.edu/ccdb" xmlns:xnat="http://nrg.wustl.edu/xnat"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://nrg.wustl.edu/xnat" schemaLocation="../xnat/xnat.xsd"/>
+    <xs:element name="hotel" type="ccdb:hotel"/>
+
+    <xs:complexType name="hotel">
+        <xs:annotation>
+            <xs:documentation>A very simple hotel data type.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xnat:imageAssessorData">
+                <xs:sequence>
+                    <xs:element name="hotel_id">
+                        <xs:annotation>
+                            <xs:documentation>Unique ID of a Hotel Arrangement</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="scan_name">
+                        <xs:annotation>
+                            <xs:documentation>Unique name indicating an image session (PET/CT/etc) of a Hotel Arrangement</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="time_points">
+                        <xs:annotation>
+                            <xs:documentation></xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="subject_identifiers">
+                        <xs:annotation>
+                            <xs:documentation>List of subject/animal ID represented in image session</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="weight">
+                        <xs:annotation>
+                            <xs:documentation>Subject/animal weight</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="activity_mCl">
+                        <xs:annotation>
+                            <xs:documentation></xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="scan_time">
+                        <xs:annotation>
+                            <xs:documentation>Time of scan</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:time"/>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="injection_time">
+                        <xs:annotation>
+                            <xs:documentation>Time of injection</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:time"/>
+                        </xs:simpleType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

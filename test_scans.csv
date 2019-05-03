@@ -1,0 +1,14 @@
+﻿ID,scanner,modality,hotel_id,scan_name,time_points,animal_number,animal_weight,activity_mCi,scan_time,injection_time,hotel_position,notes
+,Inveon,PET,mpet3762a,mpet3762a_em1,0-60min dynamic,2R,21.2,0.202,10:54:44,10:54:51,2,
+,Inveon,PET,mpet3762a,mpet3762a_em1,0-60min dynamic,10L,18.2,0.192,10:54:44,10:54:51,1,
+,Inveon,CT,mpet3762a,mpet3762a_ct1,,2R. 10L,,,10:38:21,,,
+,Inveon,PET,mpet3762b,mpet3762b_em1,0-60min dynamic,14R,20.0,0.196,12:10:06,12:10:12,2,"M #14 breathing extremely shallow, so IOS had to be turned down to 1.5."
+,Inveon,PET,mpet3762b,mpet3762b_em1,0-60min dynamic,15L,21.3,0.205,12:10:06,12:10:12,1,"Mouse #15 woke up @ 12:30, had to stop scan.  "
+,Inveon,CT,mpet3762b,mpet3762b_ct2,,,,,12:43:00,,,
+,Inveon,PET,mpet3762b,mpet3762b_em2,10min static 1 hour post inj,14R 15L,,,12:53:27,,,
+,Inveon,PET,mpet3762c,mpet3762c_em1,0-60min dynamic,17R,20.0,0.199,13:19:35,13:19:41,2,
+,Inveon,PET,mpet3762c,mpet3762c_em1,0-60min dynamic,19L,17.7,0.196,13:19:35,13:19:41,1,
+,Inveon,CT,mpet3762c,mpet3762c_ct1,,17R 19L,,,13:06:56,,,
+,Inveon,PET,mpet3762d,mpet3762d_em1,0-60min dynamic,21R,14.9,0.191,14:38:59,14:39:05,2,
+,Inveon,PET,mpet3762d,mpet3762d_em1,0-60min dynamic,22L,16.4,0.203,14:38:59,14:39:05,1,
+,Inveon,CT,mpet3762d,mpet3762d_ct1,,21R 22L,,,14:28:23,,,

@@ -1,0 +1,55 @@
+
+<div class="advanced-search-fields autogen"><div class="search-group by-criteria"><h3><label>Search by Criteria <input type="checkbox" class="search-method by-criteria" value="by-criteria"></label></h3>
+<div class="search-item">
+<h5>ID:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("EXPT_ID"))
+</div>
+<div class="search-item">
+<h5>Date:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("DATE"))
+</div>
+<div class="search-item">
+<h5>Project:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("PROJECT"))
+</div>
+<div class="search-item">
+<h5>Inserted:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("INSERT_DATE"))
+</div>
+<div class="search-item">
+<h5>Creator:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("INSERT_USER"))
+</div>
+<div class="search-item">
+<h5>hotel_id:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("HOTEL_ID"))
+</div>
+<div class="search-item">
+<h5>scan_name:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_NAME"))
+</div>
+<div class="search-item">
+<h5>time_points:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("TIME_POINTS"))
+</div>
+<div class="search-item">
+<h5>subject_identifiers:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SUBJECT_IDENTIFIERS"))
+</div>
+<div class="search-item">
+<h5>weight:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("WEIGHT"))
+</div>
+<div class="search-item">
+<h5>activity_mCl:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("ACTIVITY_MCL"))
+</div>
+<div class="search-item">
+<h5>scan_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_TIME"))
+</div>
+<div class="search-item">
+<h5>injection_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("INJECTION_TIME"))
+</div>
+<div class="clear"></div></div></div>
