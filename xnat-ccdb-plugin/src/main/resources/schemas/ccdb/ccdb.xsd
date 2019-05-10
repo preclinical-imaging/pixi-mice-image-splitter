@@ -25,10 +25,10 @@
 
     <xs:complexType name="hotel">
         <xs:annotation>
-            <xs:documentation>A very simple hotel data type.</xs:documentation>
+            <xs:documentation>A hotel image session data type.</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="xnat:imageAssessorData">
+            <xs:extension base="xnat:imageSessionData">
                 <xs:sequence>
                     <xs:element name="hotel_id">
                         <xs:annotation>
@@ -38,62 +38,16 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="scan_name">
+
+                    <xs:element name="subject_sequence">
                         <xs:annotation>
-                            <xs:documentation>Unique name indicating an image session (PET/CT/etc) of a Hotel Arrangement</xs:documentation>
+                            <xs:documentation>Ordered list of subject IDs captured in hotel session.</xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="time_points">
-                        <xs:annotation>
-                            <xs:documentation></xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="subject_identifiers">
-                        <xs:annotation>
-                            <xs:documentation>List of subject/animal ID represented in image session</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="weight">
-                        <xs:annotation>
-                            <xs:documentation>Subject/animal weight</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="activity_mCl">
-                        <xs:annotation>
-                            <xs:documentation></xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="scan_time">
-                        <xs:annotation>
-                            <xs:documentation>Time of scan</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:time"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="injection_time">
-                        <xs:annotation>
-                            <xs:documentation>Time of injection</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:time"/>
-                        </xs:simpleType>
-                    </xs:element>
+
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
