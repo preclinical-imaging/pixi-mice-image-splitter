@@ -1,0 +1,2 @@
+ID,hotel_id,subject_sequence,scan_name_pet,pos1_time_points,pos1_weight,pos1_activity_mCl,pos1_scan_time_pet,pos1_injection_time,pos2_time_points,pos2_weight,pos2_activity_mCl,pos2_scan_time_pet,pos2_injection_time,pos3_time_points,pos3_weight,pos3_activity_mCl,pos3_scan_time_pet,pos3_injection_time,pos4_time_points,pos4_weight,pos4_activity_mCl,pos4_scan_time_pet,pos4_injection_time,scan_name_ct,scan_time_ct
+mpet3762a,mpet3762a,"2,10",mpet3762a_em1,,,,,,,,,,,,,,,,,,,,,,
