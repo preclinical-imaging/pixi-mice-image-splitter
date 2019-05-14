@@ -36,4 +36,96 @@
 <h5>subject_sequence:</h5>
 #xdatSearchField($schemaElement $schemaElement.getDisplayField("SUBJECT_SEQUENCE"))
 </div>
+<div class="search-item">
+<h5>scan_name_pet:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_NAME_PET"))
+</div>
+<div class="search-item">
+<h5>pos1_time_points:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_TIME_POINTS"))
+</div>
+<div class="search-item">
+<h5>pos1_weight:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_WEIGHT"))
+</div>
+<div class="search-item">
+<h5>pos1_activity_mCl:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_ACTIVITY_MCL"))
+</div>
+<div class="search-item">
+<h5>pos1_scan_time_pet:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_SCAN_TIME_PET"))
+</div>
+<div class="search-item">
+<h5>pos1_injection_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_INJECTION_TIME"))
+</div>
+<div class="search-item">
+<h5>pos2_time_points:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS2_TIME_POINTS"))
+</div>
+<div class="search-item">
+<h5>pos2_weight:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS2_WEIGHT"))
+</div>
+<div class="search-item">
+<h5>pos2_activity_mCl:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS2_ACTIVITY_MCL"))
+</div>
+<div class="search-item">
+<h5>pos2_scan_time_pet:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS2_SCAN_TIME_PET"))
+</div>
+<div class="search-item">
+<h5>pos2_injection_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS2_INJECTION_TIME"))
+</div>
+<div class="search-item">
+<h5>pos3_time_points:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS3_TIME_POINTS"))
+</div>
+<div class="search-item">
+<h5>pos3_weight:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS3_WEIGHT"))
+</div>
+<div class="search-item">
+<h5>pos3_activity_mCl:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS3_ACTIVITY_MCL"))
+</div>
+<div class="search-item">
+<h5>pos3_scan_time_pet:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS3_SCAN_TIME_PET"))
+</div>
+<div class="search-item">
+<h5>pos3_injection_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS3_INJECTION_TIME"))
+</div>
+<div class="search-item">
+<h5>pos4_time_points:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS4_TIME_POINTS"))
+</div>
+<div class="search-item">
+<h5>pos4_weight:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS4_WEIGHT"))
+</div>
+<div class="search-item">
+<h5>pos4_activity_mCl:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS4_ACTIVITY_MCL"))
+</div>
+<div class="search-item">
+<h5>pos4_scan_time_pet:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS4_SCAN_TIME_PET"))
+</div>
+<div class="search-item">
+<h5>pos4_injection_time:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("POS4_INJECTION_TIME"))
+</div>
+<div class="search-item">
+<h5>scan_name_ct:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_NAME_CT"))
+</div>
+<div class="search-item">
+<h5>scan_time_ct:</h5>
+#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_TIME_CT"))
+</div>
 <div class="clear"></div></div></div>
