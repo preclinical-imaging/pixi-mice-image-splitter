@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 $page.setTitle("hotel Details")
 $page.setLinkColor($ui.alink)
-$page.setVlinkColor($ui.vlink)/*
+$page.setVlinkColor($ui.vlink)
  ##---------------------------------------- 
  ## DO NOT MODIFY THIS FILE HERE
  ##
@@ -29,13 +29,13 @@ $page.setVlinkColor($ui.vlink)/*
 				<TR>
 					<TD valign="top">
 						<TABLE>
-							<TR><TD>hotel_id</TD><TD>$!item.getStringProperty("ccdb:hotel/hotel_id")</TD></TR>
-							<TR><TD>subject_sequence</TD><TD>$!item.getStringProperty("ccdb:hotel/subject_sequence")</TD></TR>
+							<TR><TD>Hotel ID</TD><TD>$!item.getStringProperty("ccdb:hotel/hotel_id")</TD></TR>
+							<TR><TD>Subject ID Sequence</TD><TD>$!item.getStringProperty("ccdb:hotel/subject_sequence")</TD></TR>
 
 							<TR><TD><TABLE>
 								<TH align="left">CT Scan</TH>
-								<TR><TD>scan_name_ct</TD><TD>$!item.getStringProperty("ccdb:hotel/scan_name_ct")</TD></TR>
-								<TR><TD>scan_time_ct</TD><TD>$!item.getStringProperty("ccdb:hotel/scan_time_ct")</TD></TR>
+								<TR><TD>CT Scan Name</TD><TD>$!item.getStringProperty("ccdb:hotel/scan_name_ct")</TD></TR>
+								<TR><TD>CT Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotel/scan_time_ct")</TD></TR>
 							</TABLE></TD></TR>
 
 							<TR><TD><TABLE>
@@ -44,42 +44,42 @@ $page.setVlinkColor($ui.vlink)/*
 								<TR><TD>
 									<TABLE>
 										<TH>Position 1</TH>
-										<TR><TD>pos1_time_points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_time_points")</TD></TR>
-										<TR><TD>pos1_weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_weight")</TD></TR>
-										<TR><TD>pos1_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_activity_mCl")</TD></TR>
-										<TR><TD>pos1_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_scan_time_pet")</TD></TR>
-										<TR><TD>pos1_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_injection_time")</TD></TR>
+										<TR><TD>Time Points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_time_points")</TD></TR>
+										<TR><TD>Weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_weight")</TD></TR>
+										<TR><TD>Activity mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_activity_mCl")</TD></TR>
+										<TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_scan_time_pet")</TD></TR>
+										<TR><TD>PET Injection Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos1_injection_time")</TD></TR>
 									</TABLE>
 								</TD>
 									<TD>
 										<TABLE>
 											<TH>Position 2</TH>
-											<TR><TD>pos2_time_points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_time_points")</TD></TR>
-											<TR><TD>pos2_weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_weight")</TD></TR>
-											<TR><TD>pos2_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_activity_mCl")</TD></TR>
-											<TR><TD>pos2_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_scan_time_pet")</TD></TR>
-											<TR><TD>pos2_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_injection_time")</TD></TR>
+											<TR><TD>Time Points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_time_points")</TD></TR>
+											<TR><TD>Weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_weight")</TD></TR>
+											<TR><TD>activity mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_activity_mCl")</TD></TR>
+											<TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_scan_time_pet")</TD></TR>
+											<TR><TD>PET Injection Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos2_injection_time")</TD></TR>
 										</TABLE>
 									</TD>
 								</TR>
 								<TR><TD>
 									<TABLE>
 										<TH>Position 3</TH>
-										<TR><TD>pos3_time_points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_time_points")</TD></TR>
-										<TR><TD>pos3_weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_weight")</TD></TR>
-										<TR><TD>pos3_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_activity_mCl")</TD></TR>
-										<TR><TD>pos3_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_scan_time_pet")</TD></TR>
-										<TR><TD>pos3_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_injection_time")</TD></TR>
+										<TR><TD>Time Points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_time_points")</TD></TR>
+										<TR><TD>Weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_weight")</TD></TR>
+										<TR><TD>Activity mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_activity_mCl")</TD></TR>
+										<TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_scan_time_pet")</TD></TR>
+										<TR><TD>PET Injection Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos3_injection_time")</TD></TR>
 									</TABLE>
 								</TD>
 									<TD>
 										<TABLE>
 											<TH>Position 4</TH>
-											<TR><TD>pos4_time_points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_time_points")</TD></TR>
-											<TR><TD>pos4_weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_weight")</TD></TR>
-											<TR><TD>pos4_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_activity_mCl")</TD></TR>
-											<TR><TD>pos4_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_scan_time_pet")</TD></TR>
-											<TR><TD>pos4_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_injection_time")</TD></TR>
+											<TR><TD>Time Points</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_time_points")</TD></TR>
+											<TR><TD>Weight</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_weight")</TD></TR>
+											<TR><TD>activity mCl</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_activity_mCl")</TD></TR>
+											<TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_scan_time_pet")</TD></TR>
+											<TR><TD>PET Injection Time</TD><TD>$!item.getStringProperty("ccdb:hotel/pos4_injection_time")</TD></TR>
 										</TABLE>
 									</TD>
 								</TR>

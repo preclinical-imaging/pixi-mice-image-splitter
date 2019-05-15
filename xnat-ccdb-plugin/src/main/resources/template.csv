@@ -1,2 +1,5 @@
 ID,hotel_id,subject_sequence,scan_name_pet,pos1_time_points,pos1_weight,pos1_activity_mCl,pos1_scan_time_pet,pos1_injection_time,pos2_time_points,pos2_weight,pos2_activity_mCl,pos2_scan_time_pet,pos2_injection_time,pos3_time_points,pos3_weight,pos3_activity_mCl,pos3_scan_time_pet,pos3_injection_time,pos4_time_points,pos4_weight,pos4_activity_mCl,pos4_scan_time_pet,pos4_injection_time,scan_name_ct,scan_time_ct
-mpet3762a,mpet3762a,"2,10",mpet3762a_em1,,,,,,,,,,,,,,,,,,,,,,
+mpet3762a,mpet3762a,"10,2",mpet3762a_em1,0-60min dynamic,18.2,0.192,10:54:44,10:54:51,0-60min dynamic,21.2,0.202,10:54:44,10:54:51,,,,,,,,,,,mpet3762a_ct1,10:38:21
+mpet3762b,mpet3762b,"15,14",mpet3762b_em1,0-60min dynamic,21.3,0.205,12:10:06,12:10:12,0-60min dynamic,20.0,0.196,12:10:06,12:10:12,,,,,,,,,,,mpet3762b_ct2,12:43:00
+mpet3762c,mpet3762c,"19,17",mpet3762c_em1,0-60min dynamic,17.7,0.196,13:19:35,13:19:41,0-60min dynamic,20.0,0.199,13:19:35,13:19:41,,,,,,,,,,,mpet3762c_ct1,13:06:56
+mpet3762d,mpet3762d,"22,21",mpet3762d_em1,0-60min dynamic,16.4,0.203,14:38:59,14:39:05,0-60min dynamic,14.9,0.191,14:38:59,14:39:05,,,,,,,,,,,mpet3762d_ct1,14:28:23
