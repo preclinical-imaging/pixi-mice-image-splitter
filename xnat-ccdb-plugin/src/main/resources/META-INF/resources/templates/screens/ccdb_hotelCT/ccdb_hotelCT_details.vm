@@ -1,0 +1,5 @@
+<!-- BEGIN templates/screens/ccdb_hotel/ccdb_hotelCT_details.vm -->
+#parse($turbineUtils.getTemplateName("_details","xnat:imageSessionData",$project))
+
+
+<!-- END templates/screens/ccdb_hotel/ccdb_hotelCT_details.vm -->

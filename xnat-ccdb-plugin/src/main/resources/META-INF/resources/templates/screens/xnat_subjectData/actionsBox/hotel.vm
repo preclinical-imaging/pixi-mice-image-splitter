@@ -1,7 +1,0 @@
-#* @vtlvariable name="link" type="org.apache.turbine.services.pull.tools.TemplateLink" *#
-#* @vtlvariable name="project" type="java.lang.String" *#
-#* @vtlvariable name="om" type="org.nrg.xdat.om.XnatSubjectdata" *#
-<!-- Sequence: 6 -->
-<li class="yuimenuitem">
-    <A href="$link.setPage("XDATScreen_edit_ccdb_hotel.vm").addQueryData("part_id", $!om.getId()).addQueryData("project", $project)"><div class="ic">&nbsp;</div><div class="ic_spacer">&nbsp;</div>Add Hotel Session</A>
-</li>

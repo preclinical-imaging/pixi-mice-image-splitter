@@ -21,45 +21,17 @@
 <xs:schema targetNamespace="http://nrg.wustl.edu/ccdb" xmlns:ccdb="http://nrg.wustl.edu/ccdb" xmlns:xnat="http://nrg.wustl.edu/xnat"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="http://nrg.wustl.edu/xnat" schemaLocation="../xnat/xnat.xsd"/>
-    <xs:element name="hotel" type="ccdb:hotel"/>
+    <xs:element name="hotelPET" type="ccdb:hotelPET"/>
 
-    <xs:complexType name="hotel">
+    <xs:complexType name="hotelPET">
         <xs:annotation>
             <xs:documentation>A hotel image session data type.</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="xnat:imageSessionData">
                 <xs:sequence>
-                    <xs:element name="hotel_id">
-                        <xs:annotation>
-                            <xs:documentation>Unique ID of a Hotel Arrangement</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-
-                    <xs:element name="subject_sequence">
-                        <xs:annotation>
-                            <xs:documentation>Ordered list of subject IDs captured in hotel session.</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-
-                    <!-- PET -->
-                    <xs:element name="scan_name_pet">
-                        <xs:annotation>
-                            <xs:documentation>Unique name indicating an image session (PET/CT/etc) of a Hotel Arrangement</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-
                     <!-- Position 1 -->
-                    <xs:element name="pos1_time_points">
+                    <xs:element name="pos1_time_points" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation></xs:documentation>
                         </xs:annotation>
@@ -67,7 +39,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos1_weight">
+                    <xs:element name="pos1_weight" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Subject/animal weight</xs:documentation>
                         </xs:annotation>
@@ -75,7 +47,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos1_activity_mCl">
+                    <xs:element name="pos1_activity_mCl" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Activity mCl</xs:documentation>
                         </xs:annotation>
@@ -83,7 +55,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos1_scan_time_pet">
+                    <xs:element name="pos1_scan_time_pet" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of scan</xs:documentation>
                         </xs:annotation>
@@ -91,7 +63,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos1_injection_time">
+                    <xs:element name="pos1_injection_time" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of injection</xs:documentation>
                         </xs:annotation>
@@ -101,7 +73,7 @@
                     </xs:element>
 
                     <!-- Position 2 -->
-                    <xs:element name="pos2_time_points">
+                    <xs:element name="pos2_time_points" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation></xs:documentation>
                         </xs:annotation>
@@ -109,7 +81,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos2_weight">
+                    <xs:element name="pos2_weight" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Subject/animal weight</xs:documentation>
                         </xs:annotation>
@@ -117,7 +89,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos2_activity_mCl">
+                    <xs:element name="pos2_activity_mCl" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Activity mCl</xs:documentation>
                         </xs:annotation>
@@ -125,7 +97,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos2_scan_time_pet">
+                    <xs:element name="pos2_scan_time_pet" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of scan</xs:documentation>
                         </xs:annotation>
@@ -133,7 +105,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos2_injection_time">
+                    <xs:element name="pos2_injection_time" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of injection</xs:documentation>
                         </xs:annotation>
@@ -143,7 +115,7 @@
                     </xs:element>
 
                     <!-- Position 3 -->
-                    <xs:element name="pos3_time_points">
+                    <xs:element name="pos3_time_points" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation></xs:documentation>
                         </xs:annotation>
@@ -151,7 +123,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos3_weight">
+                    <xs:element name="pos3_weight" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Subject/animal weight</xs:documentation>
                         </xs:annotation>
@@ -159,7 +131,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos3_activity_mCl">
+                    <xs:element name="pos3_activity_mCl" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Activity mCl</xs:documentation>
                         </xs:annotation>
@@ -167,7 +139,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos3_scan_time_pet">
+                    <xs:element name="pos3_scan_time_pet" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of scan</xs:documentation>
                         </xs:annotation>
@@ -175,7 +147,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos3_injection_time">
+                    <xs:element name="pos3_injection_time" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of injection</xs:documentation>
                         </xs:annotation>
@@ -185,7 +157,7 @@
                     </xs:element>
 
                     <!-- Position 4 -->
-                    <xs:element name="pos4_time_points">
+                    <xs:element name="pos4_time_points" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation></xs:documentation>
                         </xs:annotation>
@@ -193,7 +165,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos4_weight">
+                    <xs:element name="pos4_weight" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Subject/animal weight</xs:documentation>
                         </xs:annotation>
@@ -201,7 +173,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos4_activity_mCl">
+                    <xs:element name="pos4_activity_mCl" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Activity mCl</xs:documentation>
                         </xs:annotation>
@@ -209,7 +181,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos4_scan_time_pet">
+                    <xs:element name="pos4_scan_time_pet" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of scan</xs:documentation>
                         </xs:annotation>
@@ -217,7 +189,7 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="pos4_injection_time">
+                    <xs:element name="pos4_injection_time" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Time of injection</xs:documentation>
                         </xs:annotation>
@@ -225,26 +197,6 @@
                             <xs:restriction base="xs:string"/>
                         </xs:simpleType>
                     </xs:element>
-
-                    <!-- CT -->
-                    <xs:element name="scan_name_ct">
-                        <xs:annotation>
-                            <xs:documentation>Unique name indicating an image session (PET/CT/etc) of a Hotel Arrangement</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-                    <xs:element name="scan_time_ct">
-                        <xs:annotation>
-                            <xs:documentation>Time of scan</xs:documentation>
-                        </xs:annotation>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string"/>
-                        </xs:simpleType>
-                    </xs:element>
-
-
 
                 </xs:sequence>
             </xs:extension>

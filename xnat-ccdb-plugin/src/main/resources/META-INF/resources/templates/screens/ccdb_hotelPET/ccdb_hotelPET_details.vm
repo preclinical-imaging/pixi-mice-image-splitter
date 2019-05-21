@@ -1,0 +1,26 @@
+<!-- BEGIN templates/screens/ccdb_hotel/ccdb_hotelPET_details.vm -->
+#parse($turbineUtils.getTemplateName("_details","xnat:imageSessionData",$project))
+<!-- END templates/screens/ccdb_hotel/ccdb_hotelPET_details.vm -->
+
+<TABLE width="100%">
+    <TR><TD>pos1_time_points</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos1_time_points")</TD></TR>
+    <TR><TD>pos1_weight</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos1_weight")</TD></TR>
+    <TR><TD>pos1_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos1_activity_mCl")</TD></TR>
+    <TR><TD>pos1_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos1_scan_time_pet")</TD></TR>
+    <TR><TD>pos1_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos1_injection_time")</TD></TR>
+    <TR><TD>pos2_time_points</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos2_time_points")</TD></TR>
+    <TR><TD>pos2_weight</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos2_weight")</TD></TR>
+    <TR><TD>pos2_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos2_activity_mCl")</TD></TR>
+    <TR><TD>pos2_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos2_scan_time_pet")</TD></TR>
+    <TR><TD>pos2_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos2_injection_time")</TD></TR>
+    <TR><TD>pos3_time_points</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos3_time_points")</TD></TR>
+    <TR><TD>pos3_weight</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos3_weight")</TD></TR>
+    <TR><TD>pos3_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos3_activity_mCl")</TD></TR>
+    <TR><TD>pos3_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos3_scan_time_pet")</TD></TR>
+    <TR><TD>pos3_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos3_injection_time")</TD></TR>
+    <TR><TD>pos4_time_points</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_time_points")</TD></TR>
+    <TR><TD>pos4_weight</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_weight")</TD></TR>
+    <TR><TD>pos4_activity_mCl</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_activity_mCl")</TD></TR>
+    <TR><TD>pos4_scan_time_pet</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_scan_time_pet")</TD></TR>
+    <TR><TD>pos4_injection_time</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_injection_time")</TD></TR>
+</TABLE>
