@@ -29,18 +29,6 @@
 #xdatSearchField($schemaElement $schemaElement.getDisplayField("INSERT_USER"))
 </div>
 <div class="search-item">
-<h5>hotel_id:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("HOTEL_ID"))
-</div>
-<div class="search-item">
-<h5>subject_sequence:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("SUBJECT_SEQUENCE"))
-</div>
-<div class="search-item">
-<h5>scan_name_pet:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_NAME_PET"))
-</div>
-<div class="search-item">
 <h5>pos1_time_points:</h5>
 #xdatSearchField($schemaElement $schemaElement.getDisplayField("POS1_TIME_POINTS"))
 </div>

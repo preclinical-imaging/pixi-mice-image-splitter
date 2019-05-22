@@ -28,20 +28,4 @@
 <h5>Creator:</h5>
 #xdatSearchField($schemaElement $schemaElement.getDisplayField("INSERT_USER"))
 </div>
-<div class="search-item">
-<h5>hotel_id:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("HOTEL_ID"))
-</div>
-<div class="search-item">
-<h5>subject_sequence:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("SUBJECT_SEQUENCE"))
-</div>
-<div class="search-item">
-<h5>scan_name_ct:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_NAME_CT"))
-</div>
-<div class="search-item">
-<h5>scan_time_ct:</h5>
-#xdatSearchField($schemaElement $schemaElement.getDisplayField("SCAN_TIME_CT"))
-</div>
 <div class="clear"></div></div></div>
