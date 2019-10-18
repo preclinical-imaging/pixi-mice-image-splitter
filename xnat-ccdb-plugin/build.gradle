@@ -79,11 +79,28 @@ repositories {
 }
 
 // TODO: As of the 1.7.x release, XNAT is built as a Java 7-compatible (i.e. JDK 1.7) application. All plugins must be 1.7 compatible as well.
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencyManagement.imports {
     mavenBom "org.nrg:parent:${vXnat}"
+}
+
+configurations {
+    compile.extendsFrom(compileAndInclude)
+}
+
+task fatJar(type: Jar) {
+    zip64 true
+    classifier = "fat"
+    from {
+        configurations.compileAndInclude.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
 }
 
 dependencies {
@@ -108,6 +125,7 @@ dependencies {
     implementation("stratum:stratum") {
         transitive = false
     }
+    compileAndInclude 'com.opencsv:opencsv:4.6'
 
     implementation "log4j:log4j"
     implementation "io.springfox:springfox-swagger2"

@@ -4,17 +4,18 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.TestCase.fail;
 
-class HotelCSVFileTest {
+public class HotelScanTest {
 
     @Test
-    void parse() {
+    public void opencsv() {
         File file = new File( getClass().getClassLoader().getResource("CCDB_scans_updated_07June2019-jg.csv").getFile());
         try {
-            HotelCSVFile hotelCSVFile = new HotelCSVFile(Arrays.asList( file));
+            List<HotelScan> hotelSessions = HotelScan.readCSV( file);
+            System.out.println("done");
         } catch (IOException e) {
             fail("Unexpected exception: " + e);
         }
