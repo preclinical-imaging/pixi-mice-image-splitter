@@ -111,6 +111,10 @@ dependencies {
 
     implementation "log4j:log4j"
     implementation "io.springfox:springfox-swagger2"
+
+    testCompile "org.nrg:test"
+    testCompile "junit:junit"
+    testCompile "org.springframework:spring-test"
 }
 
 // TODO: If the compiler is Java 8 or later, this checks for a Java 7 version of the primary Java run-time library. Building with post-Java 7 libraries can result in occasional compatibility issues.

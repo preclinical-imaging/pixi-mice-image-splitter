@@ -1,15 +1,15 @@
 package org.nrg.xnat.plugins.template.rest;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class HotelCSVFile {
     private List<String> _labels;
-    private List<String[]> _entries;
+    private List<List<String>> _entries;
+
     /**
      * create the HotelCSVFile from the list of files.
      *
@@ -40,38 +40,24 @@ public class HotelCSVFile {
     protected void parse( File csvFile) throws IOException {
         String line;
         String cvsSplitBy = ",";
+        CSVParser csvParser = new CSVParser();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            _labels = parseLabels( br);
-            _entries = parseEntries( br);
-        }
-    }
-
-    private List<String[]> parseEntries(BufferedReader br) throws IOException {
-        List<String[]> entries = new ArrayList<>();
-        String line;
-        while( (line = br.readLine()) != null) {
-            if( ! line.isEmpty()) {
-                String[] tokens = line.split( ",");
-                entries.add( tokens);
-            }
-        }
-        return entries;
-    }
-
-    protected List<String> parseLabels( BufferedReader br) throws IOException {
-        List<String> labels = new ArrayList<>();
-        String line;
-        while( (line = br.readLine()) != null) {
-            if( ! line.isEmpty()) {
-                String[] tokens = line.split( ",");
-                for( String token: tokens) {
-                    labels.add( token);
+        try( Scanner scanner = new Scanner( csvFile)) {
+            // read column labels in first non-empty line.
+            while( (line = scanner.nextLine()) != null) {
+                if( ! line.isEmpty()) {
+                    _labels = csvParser.parseLine( line);
+                    break;
                 }
-                return labels;
+            }
+
+            // read entries in remaining non-empty lines.
+            while( (line = scanner.nextLine()) != null) {
+                if( ! line.isEmpty()) {
+                    _entries.add( csvParser.parseLine( line));
+                }
             }
         }
-        return labels;
     }
 
 //    public String getHotelSubject() {

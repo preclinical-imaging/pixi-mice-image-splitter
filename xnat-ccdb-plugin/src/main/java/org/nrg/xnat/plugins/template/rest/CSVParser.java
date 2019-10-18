@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Parse CSV Files.
+ *
+ * Handle double-quoted values with commas when commas are used as the value separator.
+ *
+ */
 public class CSVParser {
     private static final char DEFAULT_SEPARATOR = ',';
     private static final char DEFAULT_QUOTE = '"';
@@ -19,7 +25,6 @@ public class CSVParser {
 //            System.out.println("Country [id= " + line.get(0) + ", code= " + line.get(1) + " , name=" + line.get(2) + "]");
         }
         scanner.close();
-
     }
 
     public List<String> parseLine(String cvsLine) {
