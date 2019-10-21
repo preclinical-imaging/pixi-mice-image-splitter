@@ -96,6 +96,16 @@ public class HotelScan {
                 .withType(HotelScan.class).build().parse();
     }
 
+    /**
+     * Construct the list of HotelScans from the list of specified files.
+     *
+     * It is assumed the list of files contains one csv file with scan meta-data and a corresponding image '.hdr'
+     * and '.img' file for each scan entry.
+     *
+     * @param files List of files composing the HotelScans.
+     * @return list of HotelScans.
+     * @throws FileNotFoundException
+     */
     static List<HotelScan> createScans( List<File> files) throws FileNotFoundException {
         List<HotelScan> scans = new ArrayList<>();
         for( File f: files) {

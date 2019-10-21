@@ -64,7 +64,11 @@ public class CCDBApi extends AbstractXapiRestController {
                     return new ResponseEntity<String>("Failed to find hotel-scan csv.", HttpStatus.BAD_REQUEST);
                 }
                 UserI user = getSessionUser();
-                XnatSubjectdata subjectdata = XnatSubjectdata.GetSubjectByProjectIdentifier( "nifti2dcm", "Name_Patient", user, false);
+
+                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences);
+
+                sessionHandler.handleSessions( "CCDB-1", hotelSessions, user);
+
                 return new ResponseEntity<String>(HttpStatus.OK);
             }
             else {

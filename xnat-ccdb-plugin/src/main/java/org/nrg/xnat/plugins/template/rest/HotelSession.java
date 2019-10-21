@@ -37,4 +37,8 @@ public class HotelSession {
         }
         return sessionMap.values();
     }
+
+    public String getSubjectLabel() {
+        return _subjectLabel;
+    }
 }
