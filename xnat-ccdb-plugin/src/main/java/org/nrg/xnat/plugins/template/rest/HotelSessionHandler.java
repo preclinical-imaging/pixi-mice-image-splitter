@@ -1,8 +1,6 @@
 package org.nrg.xnat.plugins.template.rest;
 
-import org.nrg.xdat.om.XnatExperimentdata;
-import org.nrg.xdat.om.XnatProjectdata;
-import org.nrg.xdat.om.XnatSubjectdata;
+import org.nrg.xdat.om.*;
 import org.nrg.xdat.om.base.BaseXnatSubjectdata;
 import org.nrg.xdat.preferences.SiteConfigPreferences;
 import org.nrg.xft.XFTItem;
@@ -43,19 +41,6 @@ public class HotelSessionHandler  {
 
         XnatSubjectdata subjectdata = getOrCreateSubject( projectdata, session.getSubjectLabel(), user);
 
-        for( HotelScan scan: session.getScans()) {
-            switch (scan.getScanType()) {
-                case "CT":
-                    break;
-                case "PT":
-                case "PET":
-                    break;
-                default:
-                    // unknown scan type
-                    break;
-            }
-        }
-
     }
 
     protected XnatSubjectdata getOrCreateSubject( XnatProjectdata projectdata, String subjectLabel, UserI user) {
@@ -75,15 +60,80 @@ public class HotelSessionHandler  {
             } catch (Exception e) {
                 // throw internal server error
             }
-
+            CcdbHotelct ct;
         }
         return subjectdata;
     }
 
-//    protected XnatExperimentdata getOrCreateSession(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) {
-//        List<XnatExperimentdata> experiments = subjectdata.getExperiments_experiment( XnatExperimentdata.)
-//        XnatExperimentdata experimentdata = XnatExperimentdata.G( projectdata.getProject(), subjectLabel, user, false);
-//        return experimentdata;
-//    }
+    protected XnatExperimentdata getOrCreateSession(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) {
+        XnatExperimentdata experiment = null;
+
+        List<? extends XnatExperimentdata> expts = subjectdata.getExperiments_experiment();
+        for( XnatExperimentdata expt: expts) {
+            if( expt.getLabel().matches( hotelScan.getScanName())) {
+                experiment = expt;
+                break;
+            }
+        }
+
+        if( experiment == null) {
+        }
+        return experiment;
+    }
+
+    public XnatExperimentdata createSession( HotelScan scan) throws Exception {
+        XnatExperimentdata expt = null;
+        switch (scan.getScanType()) {
+            case "CT":
+                CcdbHotelct ctSession = new CcdbHotelct();
+                ctSession.setId( XnatExperimentdata.CreateNewID());
+                ctSession.setLabel( scan.getScanName());
+                break;
+            case "PT":
+            case "PET":
+                CcdbHotelpet petSesion = new CcdbHotelpet();
+                petSesion.setId( XnatExperimentdata.CreateNewID());
+                petSesion.setLabel( scan.getScanName());
+                petSesion.setScanner( scan.getScanner());
+                switch( scan.getHotelPosition()) {
+                    case "1":
+                        petSesion.setPos1TimePoints(    scan.getTimePoints());
+                        petSesion.setPos1ActivityMcl(   scan.getActivity());
+                        petSesion.setPos1InjectionTime( scan.getInjectionTime());
+                        petSesion.setPos1ScanTimePet(   scan.getScanTime());
+                        petSesion.setPos1Weight(        scan.getAnimalWeight());
+                        break;
+                    case "2":
+                        petSesion.setPos2TimePoints(    scan.getTimePoints());
+                        petSesion.setPos2ActivityMcl(   scan.getActivity());
+                        petSesion.setPos2InjectionTime( scan.getInjectionTime());
+                        petSesion.setPos2ScanTimePet(   scan.getScanTime());
+                        petSesion.setPos2Weight(        scan.getAnimalWeight());
+                        break;
+                    case "3":
+                        petSesion.setPos3TimePoints(    scan.getTimePoints());
+                        petSesion.setPos3ActivityMcl(   scan.getActivity());
+                        petSesion.setPos3InjectionTime( scan.getInjectionTime());
+                        petSesion.setPos3ScanTimePet(   scan.getScanTime());
+                        petSesion.setPos3Weight(        scan.getAnimalWeight());
+                        break;
+                    case "4":
+                        petSesion.setPos4TimePoints(    scan.getTimePoints());
+                        petSesion.setPos4ActivityMcl(   scan.getActivity());
+                        petSesion.setPos4InjectionTime( scan.getInjectionTime());
+                        petSesion.setPos4ScanTimePet(   scan.getScanTime());
+                        petSesion.setPos4Weight(        scan.getAnimalWeight());
+                        break;
+                    default:
+                        break;
+                        // unknown hotel position.
+                }
+                break;
+            default:
+                // unknown scan type
+                break;
+        }
+        return expt;
+    }
 
 }
