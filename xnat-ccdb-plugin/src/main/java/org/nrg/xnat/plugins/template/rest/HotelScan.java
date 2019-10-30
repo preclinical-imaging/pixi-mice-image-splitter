@@ -127,6 +127,10 @@ public class HotelScan {
                 .collect(Collectors.toList());
     }
 
+    public List<File> getImages() {
+        return _imageFiles;
+    }
+
     public static boolean isHotelScanCSV( File f) {
         return f.getName().endsWith(".csv");
     }

@@ -16,6 +16,7 @@ import org.nrg.xdat.preferences.SiteConfigPreferences;
 import org.nrg.xdat.security.services.RoleHolder;
 import org.nrg.xdat.security.services.UserManagementServiceI;
 import org.nrg.xft.security.UserI;
+import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,19 @@ import static org.nrg.xdat.security.helpers.AccessLevel.Authorizer;
 @RequestMapping(value = "/ccdb")
 public class CCDBApi extends AbstractXapiRestController {
 
+    private final CatalogService _catalogService;
     private final SiteConfigPreferences _preferences;
     private static final Logger _log = LoggerFactory.getLogger( CCDBApi.class);
     private final Zipper _zipper;
 
     @Autowired
-    public CCDBApi(final UserManagementServiceI userManagementServiceI, final RoleHolder roleHolder, final SiteConfigPreferences preferences) {
+    public CCDBApi(final UserManagementServiceI userManagementServiceI,
+                   final RoleHolder roleHolder,
+                   final SiteConfigPreferences preferences,
+                   final CatalogService catalogService) {
         super( userManagementServiceI, roleHolder);
         _preferences = preferences;
+        _catalogService = catalogService;
         _zipper = new MyZipper();
     }
 
@@ -65,7 +71,7 @@ public class CCDBApi extends AbstractXapiRestController {
                 }
                 UserI user = getSessionUser();
 
-                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences);
+                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService);
 
                 sessionHandler.handleSessions( "CCDB-1", hotelSessions, user);
 
