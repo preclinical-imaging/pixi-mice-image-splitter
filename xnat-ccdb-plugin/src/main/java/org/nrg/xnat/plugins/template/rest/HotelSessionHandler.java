@@ -12,9 +12,9 @@ import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -31,16 +31,17 @@ public class HotelSessionHandler  {
         _catalogService = catalogService;
     }
 
-    public void handleSessions(String project, Collection<HotelSession> sessions, UserI user) throws Exception {
+    public void handleSessions(String project, Collection<HotelSession> sessions, UserI user) throws HandlerException {
         for( HotelSession session: sessions) {
             handleSession( project, session, user);
         }
     }
 
-    public void handleSession( String project, HotelSession session, UserI user) throws Exception {
+    public void handleSession( String project, HotelSession session, UserI user) throws HandlerException {
         XnatProjectdata projectdata = XnatProjectdata.getProjectByIDorAlias( project, user, false);
         if( projectdata == null) {
-            // bad request.  no such project.
+            String msg = "Project not found: " + project;
+            throw new HandlerException(msg, HttpStatus.BAD_REQUEST);
         }
 
         XnatSubjectdata subjectdata = getOrCreateSubject( projectdata, session.getSubjectLabel(), user);
@@ -49,14 +50,20 @@ public class HotelSessionHandler  {
             XnatSubjectassessordata assessor = getAssessor(subjectdata, scan, user);
             if( assessor == null) {
                 assessor = createAssessor(subjectdata, scan, user);
-                subjectdata.addExperiments_experiment(assessor);
+                try {
+                    subjectdata.addExperiments_experiment(assessor);
+                }
+                catch( Exception e) {
+                    String msg = "Error adding assessor to hotel subject: " + subjectdata.getLabel();
+                    throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
             addScan( assessor, scan, user);
             addImages( assessor, scan.getImages(), user);
         }
     }
 
-    protected XnatSubjectdata getOrCreateSubject( XnatProjectdata projectdata, String subjectLabel, UserI user) {
+    protected XnatSubjectdata getOrCreateSubject( XnatProjectdata projectdata, String subjectLabel, UserI user) throws HandlerException {
         XnatSubjectdata subjectdata = XnatSubjectdata.GetSubjectByProjectIdentifier( projectdata.getProject(), subjectLabel, user, false);
         if( subjectdata == null) {
             try {
@@ -68,15 +75,15 @@ public class HotelSessionHandler  {
                 subjectdata.setLabel( subjectLabel);
                 EventMetaI eventMeta = EventUtils.DEFAULT_EVENT( user, "create subject");
                 subjectdata.save( user, false, false, eventMeta);
-
             } catch (Exception e) {
-                // throw internal server error
+                String msg = "Error creating hotel subject: " + subjectLabel;
+                throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         return subjectdata;
     }
 
-    protected XnatSubjectassessordata getAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) throws Exception {
+    protected XnatSubjectassessordata getAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) {
         XnatSubjectassessordata assessor = null;
 
         List<? extends XnatExperimentdata> expts = subjectdata.getExperiments_experiment();
@@ -89,45 +96,56 @@ public class HotelSessionHandler  {
         return assessor;
     }
 
-    protected XnatSubjectassessordata createAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) throws Exception {
+    protected XnatSubjectassessordata createAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) throws HandlerException {
         XnatSubjectassessordata assessor = null;
-        assessor = createHotelAssessor( hotelScan);
-        assessor.setProject( subjectdata.getProject());
-        assessor.setSubjectId( subjectdata.getId());
-        assessor.setDate( new Date());
+        assessor = createHotelAssessor(hotelScan);
+        assessor.setProject(subjectdata.getProject());
+        assessor.setSubjectId(subjectdata.getId());
+        assessor.setDate(new Date());
 
-        EventMetaI eventMeta = EventUtils.DEFAULT_EVENT( user, "update hotel-subject assessor.");
-        SaveItemHelper.authorizedSave( assessor.getItem(), user,false, false, false, false, eventMeta);
-
-        return assessor;
-    }
-
-    public XnatSubjectassessordata createHotelAssessor( HotelScan scan) throws Exception {
-        XnatSubjectassessordata assessor = null;
-        switch (scan.getScanType()) {
-            case "CT":
-                CcdbHotelct ctSession = new CcdbHotelct();
-                ctSession.setId( XnatExperimentdata.CreateNewID());
-                ctSession.setLabel( scan.getScanName());
-                assessor = ctSession;
-                break;
-            case "PT":
-            case "PET":
-                CcdbHotelpet petSesion = new CcdbHotelpet();
-                petSesion.setId( XnatExperimentdata.CreateNewID());
-                petSesion.setLabel( scan.getScanName());
-                petSesion.setScanner( scan.getScanner());
-                assessor = petSesion;
-                break;
-            default:
-                // unknown scan type
-                assessor = null;
-                break;
+        try {
+            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "update hotel-subject assessor.");
+            SaveItemHelper.authorizedSave(assessor.getItem(), user, false, false, false, false, eventMeta);
+        }
+        catch( Exception e) {
+            String msg = "Error saving assessor for hotel subject: " + subjectdata.getLabel();
+            throw new HandlerException(msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return assessor;
     }
 
-    public void addImages( XnatSubjectassessordata assessor, List<File> files, UserI user) throws Exception {
+    public XnatSubjectassessordata createHotelAssessor( HotelScan scan) throws HandlerException {
+        try {
+            XnatSubjectassessordata assessor = null;
+            switch (scan.getScanType()) {
+                case "CT":
+                    CcdbHotelct ctSession = new CcdbHotelct();
+                    ctSession.setId( XnatExperimentdata.CreateNewID());
+                    ctSession.setLabel(scan.getScanName());
+                    assessor = ctSession;
+                    break;
+                case "PT":
+                case "PET":
+                    CcdbHotelpet petSesion = new CcdbHotelpet();
+                    petSesion.setId( XnatExperimentdata.CreateNewID());
+                    petSesion.setLabel(scan.getScanName());
+                    petSesion.setScanner(scan.getScanner());
+                    assessor = petSesion;
+                    break;
+                default:
+                    // unknown scan type
+                    assessor = null;
+                    break;
+            }
+            return assessor;
+        }
+        catch( Exception e) {
+            String msg = "Error creating hotel subject assessor. type: " + scan.getScanType();
+            throw new HandlerException(msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void addImages( XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
         if( ! assessorHasFiles( assessor, files, user)) {
             addResources( assessor, files, user);
         }
@@ -147,53 +165,65 @@ public class HotelSessionHandler  {
         return rf.getF().getName().equals( f.getName());
     }
 
-    public void addResources(XnatSubjectassessordata assessor, List<File> files, UserI user) throws Exception {
-        String parentUri = UriParserUtils.getArchiveUri(assessor);
-        String label = "imageData";
-        String format = "weird binary";
-        final XnatResourcecatalog resourcecatalog = _catalogService.insertResources(user, parentUri, files, true, label, null, format, null);
-        String createdUri = UriParserUtils.getArchiveUri(resourcecatalog);
+    public void addResources(XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
+        try {
+            String parentUri = UriParserUtils.getArchiveUri(assessor);
+            String label = "imageData";
+            String format = "weird binary";
+            final XnatResourcecatalog resourcecatalog = _catalogService.insertResources(user, parentUri, files, true, label, null, format, null);
+            String createdUri = UriParserUtils.getArchiveUri(resourcecatalog);
 //        _catalogService.refreshResourceCatalog( user, createdUri );
+        }
+        catch( Exception e) {
+            String msg = "Error attaching resources to assessor: " + assessor.getId();
+            throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public void addScan( XnatSubjectassessordata assessor, HotelScan scan, UserI user) throws Exception {
-        if( assessor instanceof CcdbHotelpet) {
-            CcdbHotelpet petHotel = (CcdbHotelpet) assessor;
-            switch( scan.getHotelPosition()) {
-                case "1":
-                    petHotel.setPos1TimePoints(    scan.getTimePoints());
-                    petHotel.setPos1ActivityMcl(   scan.getActivity());
-                    petHotel.setPos1InjectionTime( scan.getInjectionTime());
-                    petHotel.setPos1ScanTimePet(   scan.getScanTime());
-                    petHotel.setPos1Weight(        scan.getAnimalWeight());
-                    break;
-                case "2":
-                    petHotel.setPos2TimePoints(    scan.getTimePoints());
-                    petHotel.setPos2ActivityMcl(   scan.getActivity());
-                    petHotel.setPos2InjectionTime( scan.getInjectionTime());
-                    petHotel.setPos2ScanTimePet(   scan.getScanTime());
-                    petHotel.setPos2Weight(        scan.getAnimalWeight());
-                    break;
-                case "3":
-                    petHotel.setPos3TimePoints(    scan.getTimePoints());
-                    petHotel.setPos3ActivityMcl(   scan.getActivity());
-                    petHotel.setPos3InjectionTime( scan.getInjectionTime());
-                    petHotel.setPos3ScanTimePet(   scan.getScanTime());
-                    petHotel.setPos3Weight(        scan.getAnimalWeight());
-                    break;
-                case "4":
-                    petHotel.setPos4TimePoints(    scan.getTimePoints());
-                    petHotel.setPos4ActivityMcl(   scan.getActivity());
-                    petHotel.setPos4InjectionTime( scan.getInjectionTime());
-                    petHotel.setPos4ScanTimePet(   scan.getScanTime());
-                    petHotel.setPos4Weight(        scan.getAnimalWeight());
-                    break;
-                default:
-                    break;
-                // unknown hotel position.
+    public void addScan( XnatSubjectassessordata assessor, HotelScan scan, UserI user) throws HandlerException {
+        try {
+            if (assessor instanceof CcdbHotelpet) {
+                CcdbHotelpet petHotel = (CcdbHotelpet) assessor;
+                switch (scan.getHotelPosition()) {
+                    case "1":
+                        petHotel.setPos1TimePoints(scan.getTimePoints());
+                        petHotel.setPos1ActivityMcl(scan.getActivity());
+                        petHotel.setPos1InjectionTime(scan.getInjectionTime());
+                        petHotel.setPos1ScanTimePet(scan.getScanTime());
+                        petHotel.setPos1Weight(scan.getAnimalWeight());
+                        break;
+                    case "2":
+                        petHotel.setPos2TimePoints(scan.getTimePoints());
+                        petHotel.setPos2ActivityMcl(scan.getActivity());
+                        petHotel.setPos2InjectionTime(scan.getInjectionTime());
+                        petHotel.setPos2ScanTimePet(scan.getScanTime());
+                        petHotel.setPos2Weight(scan.getAnimalWeight());
+                        break;
+                    case "3":
+                        petHotel.setPos3TimePoints(scan.getTimePoints());
+                        petHotel.setPos3ActivityMcl(scan.getActivity());
+                        petHotel.setPos3InjectionTime(scan.getInjectionTime());
+                        petHotel.setPos3ScanTimePet(scan.getScanTime());
+                        petHotel.setPos3Weight(scan.getAnimalWeight());
+                        break;
+                    case "4":
+                        petHotel.setPos4TimePoints(scan.getTimePoints());
+                        petHotel.setPos4ActivityMcl(scan.getActivity());
+                        petHotel.setPos4InjectionTime(scan.getInjectionTime());
+                        petHotel.setPos4ScanTimePet(scan.getScanTime());
+                        petHotel.setPos4Weight(scan.getAnimalWeight());
+                        break;
+                    default:
+                        break;
+                    // unknown hotel position.
+                }
+                EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "update hotel-subject assessor with scan.");
+                SaveItemHelper.authorizedSave(assessor.getItem(), user, false, false, false, false, eventMeta);
             }
-            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT( user, "update hotel-subject assessor with scan.");
-            SaveItemHelper.authorizedSave( assessor.getItem(), user,false, false, false, false, eventMeta);
+        }
+        catch( Exception e) {
+            String msg = "Error updating PT Hotel-Subject assessor.";
+            throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
