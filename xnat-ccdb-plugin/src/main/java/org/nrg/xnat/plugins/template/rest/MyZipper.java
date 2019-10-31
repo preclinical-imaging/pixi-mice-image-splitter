@@ -31,7 +31,7 @@ public class MyZipper implements Zipper {
      *
      * @param is InputStream to zipped data.
      * @return List of File contained in zip.
-     * @throws IOException if input stream is not to zip or IO error occurs.
+     * @throws IOException if input stream IO error occurs.
      */
     @Override
     public List<File> unzip(InputStream is) throws IOException {
