@@ -7,7 +7,7 @@
  * Released under the Simplified BSD.
  */
 
-package org.nrg.xnat.plugins.ccdb.plugin;
+package org.nrg.xnat.plugins.ccdb;
 
 import org.nrg.framework.annotations.XnatDataModel;
 import org.nrg.framework.annotations.XnatPlugin;
@@ -30,10 +30,7 @@ import org.springframework.context.annotation.Configuration;
                         singular = "CT Hotel Session",
                         plural = "CT Hotel Sessions",
                         code = "CT_HTL")})
-@ComponentScan({"org.nrg.xnat.plugins.template.preferences",
-        "org.nrg.xnat.plugins.template.repositories",
-        "org.nrg.xnat.plugins.template.rest",
-        "org.nrg.xnat.plugins.template.services.impl"})
+@ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest"})
 public class XnatCCDBPlugin {
     public XnatCCDBPlugin() {
         _log.info("Creating the XnatCCDBPlugin configuration class");

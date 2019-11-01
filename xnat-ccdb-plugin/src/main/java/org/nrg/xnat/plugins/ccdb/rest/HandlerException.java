@@ -1,7 +1,12 @@
-package org.nrg.xnat.plugins.template.rest;
+package org.nrg.xnat.plugins.ccdb.rest;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Extends Exception so handler can return Http status as part of error.
+ * Particularly to distinguish between an internal error and an error from bad request info.
+ *
+ */
 public class HandlerException extends Exception {
     final private HttpStatus _httpStatus;
 

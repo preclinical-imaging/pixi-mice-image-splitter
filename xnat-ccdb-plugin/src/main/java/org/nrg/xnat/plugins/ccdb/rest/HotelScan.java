@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.template.rest;
+package org.nrg.xnat.plugins.ccdb.rest;
 
 import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Models entries in the Hotel-Scan CSV.
+ * Models the HotelScan.
+ *
+ * Multiple hotelScans map into a single subject assessor (Hotel Session).
+ * Each row in a CSV file maps to a unique hotelScan.
  *
  */
 public class HotelScan {
@@ -120,6 +123,11 @@ public class HotelScan {
         return scans;
     }
 
+    /**
+     * Filter the list of files for the ones appropriate to this scan and add them to this scan.
+     * Here, appropriate means files whose name begins with the scan name.
+     * @param files
+     */
     public void addImages( List<File> files) {
         String prefix = getScanName();
         _imageFiles = files.stream()

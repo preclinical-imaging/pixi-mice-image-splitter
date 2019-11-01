@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.template.rest;
+package org.nrg.xnat.plugins.ccdb.rest;
 
 import org.nrg.xdat.om.*;
 import org.nrg.xdat.preferences.SiteConfigPreferences;
@@ -19,6 +19,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Handle the loading of a collection of Hotel Sessions.
+ *
+ */
 //@Component
 public class HotelSessionHandler  {
 
@@ -31,12 +35,36 @@ public class HotelSessionHandler  {
         _catalogService = catalogService;
     }
 
+    /**
+     * Ingest the collection of Hotel Sessions.
+     *
+     * @param project The project label of the project to receive the hotel sessions.
+     * @param sessions The collection of hotel sessions to be processed.
+     * @param user The user doing the processing.
+     * @throws HandlerException
+     */
     public void handleSessions(String project, Collection<HotelSession> sessions, UserI user) throws HandlerException {
         for( HotelSession session: sessions) {
             handleSession( project, session, user);
         }
     }
 
+    /**
+     * Ingest a single Hotel Session.
+     *
+     * The central method that defines the processing flow.
+     * The basic flow is:
+     * 1. Find or create the subject
+     * 2. for each scan in the session...
+     *  a. Find or create the hotel scan (subject assessor).
+     *  b. Add scan data to the assessor.
+     *  c. Add image data as resource on the subject assessor.
+     *
+     * @param project The project label of the project to receive the hotel sessions.
+     * @param session The collection of hotel sessions to be processed.
+     * @param user The user doing the processing.
+     * @throws HandlerException
+     */
     public void handleSession( String project, HotelSession session, UserI user) throws HandlerException {
         XnatProjectdata projectdata = XnatProjectdata.getProjectByIDorAlias( project, user, false);
         if( projectdata == null) {
@@ -63,6 +91,15 @@ public class HotelSessionHandler  {
         }
     }
 
+    /**
+     * Get existing subject or create a new one.
+     *
+     * @param projectdata The project data for the subject
+     * @param subjectLabel The subject's label.
+     * @param user The user performing this action.
+     * @return The subject data for the specified subject.
+     * @throws HandlerException
+     */
     protected XnatSubjectdata getOrCreateSubject( XnatProjectdata projectdata, String subjectLabel, UserI user) throws HandlerException {
         XnatSubjectdata subjectdata = XnatSubjectdata.GetSubjectByProjectIdentifier( projectdata.getProject(), subjectLabel, user, false);
         if( subjectdata == null) {
@@ -83,6 +120,14 @@ public class HotelSessionHandler  {
         return subjectdata;
     }
 
+    /**
+     * Get an existing subject assessor (Hotel Session).
+     *
+     * @param subjectdata The subject
+     * @param hotelScan A hotel scan that is contained by the session.
+     * @param user The user.
+     * @return The subject assessor (hotel session) for this scan or null if none exists.
+     */
     protected XnatSubjectassessordata getAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) {
         XnatSubjectassessordata assessor = null;
 
@@ -96,6 +141,14 @@ public class HotelSessionHandler  {
         return assessor;
     }
 
+    /**
+     * Create a subject assessor (Hotel Session).
+     *
+     * @param subjectdata The subject
+     * @param hotelScan A hotel scan that is contained by the session.
+     * @param user The user.
+     * @return The subject assessor (hotel session) for this scan.
+     */
     protected XnatSubjectassessordata createAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) throws HandlerException {
         XnatSubjectassessordata assessor = null;
         assessor = createHotelAssessor(hotelScan);
@@ -114,6 +167,13 @@ public class HotelSessionHandler  {
         return assessor;
     }
 
+    /**
+     * Create the particular class of subject assessor (Hotel Session) based on the type of scan.
+     *
+     * @param scan The hotel scan.
+     * @return The appropriate subclass of assessor: CccdbHotelct or CccdbHotelpt.
+     * @throws HandlerException
+     */
     public XnatSubjectassessordata createHotelAssessor( HotelScan scan) throws HandlerException {
         try {
             XnatSubjectassessordata assessor = null;
@@ -145,12 +205,27 @@ public class HotelSessionHandler  {
         }
     }
 
+    /**
+     * Add the list of files as resource on the assessor if the images are not present.
+     * @param assessor The assessor
+     * @param files The list of files
+     * @param user The user
+     * @throws HandlerException
+     */
     public void addImages( XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
         if( ! assessorHasFiles( assessor, files, user)) {
             addResources( assessor, files, user);
         }
     }
 
+    /**
+     * Test if list of files are all present as resources on assessor.
+     * The resource name is currently hard coded as "imageData".
+     * @param assessor The assessor.
+     * @param files The list of files.
+     * @param user The user.
+     * @return true if all are present, false otherwise.
+     */
     public boolean assessorHasFiles(XnatSubjectassessordata assessor, List<File> files, UserI user) {
         List<ResourceFile> resourceFiles = assessor.getFileResources("imageData");
         for( ResourceFile resourceFile: resourceFiles) {
@@ -161,10 +236,24 @@ public class HotelSessionHandler  {
         return false;
     }
 
+    /**
+     * Test that defines criteria for and existing resource file to match a proposed file.
+     * @param rf  Existing resource file.
+     * @param f Proposed file to add.
+     * @return true if they are the same, false otherwise.
+     */
     public boolean resourceMatches( ResourceFile rf, File f) {
         return rf.getF().getName().equals( f.getName());
     }
 
+    /**
+     * Add the list of files as resources to the assessor.
+     * This currently hard codes the resource label as "imageData" and the resource format as "weird binary".
+     * @param assessor The assessor.
+     * @param files The list of files.
+     * @param user The user.
+     * @throws HandlerException
+     */
     public void addResources(XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
         try {
             String parentUri = UriParserUtils.getArchiveUri(assessor);
@@ -180,6 +269,14 @@ public class HotelSessionHandler  {
         }
     }
 
+    /**
+     * Fill in details from the scan into the assessor.
+     * hotel scans referring to PET sessions add details to the subject assessor (Hotel Session).
+     * @param assessor The assessor.
+     * @param scan The scan.
+     * @param user The user.
+     * @throws HandlerException
+     */
     public void addScan( XnatSubjectassessordata assessor, HotelScan scan, UserI user) throws HandlerException {
         try {
             if (assessor instanceof CcdbHotelpet) {

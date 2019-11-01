@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.template.rest;
+package org.nrg.xnat.plugins.ccdb.rest;
 
 import java.io.Closeable;
 import java.io.File;
