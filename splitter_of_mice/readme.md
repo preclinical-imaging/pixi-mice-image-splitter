@@ -32,4 +32,4 @@ optional arguments:<br>
   -m <int>    maximum margin on axial slice in pixels [20]<br>
   -p <int>    minimum number of pixels in detectable region [200]<br>
   
-NOTE specify the number of animals for additional verification of detected regions. 
+NOTE specify the number of animals (-n option) for additional verification of detected regions. 
