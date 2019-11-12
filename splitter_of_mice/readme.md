@@ -29,6 +29,7 @@ optional arguments:<br>
   -n \<int\>    expected number of animals [auto-detect]<br>
   -t \<float\>  separation threshold between 0..1 [0.9]<br>
   -a          save a copy in Analyze 7.5 format to output directory<br>
+  -q		save a quality control PNG snapshot to output directory<br>
   -m \<int\>    maximum margin on axial slice in pixels [20]<br>
   -p \<int\>    minimum number of pixels in detectable region [200]<br>
   
