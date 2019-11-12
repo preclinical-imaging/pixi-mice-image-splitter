@@ -1,4 +1,4 @@
-LICENSE
+LICENSE<br>
 Program: splitter_of_mice.py
 Authors: Mikhail Milchenko (animal detection), Jack Muskopf (microPET image i/o)
 Description: split microPET mice images into individual animal images
@@ -8,17 +8,17 @@ Washington University, Mallinckrodt Insitute of Radiology. All rights reserved.
 This software may not be reproduced, copied, or distributed without written permission of Washington University. 
 For more information contact Mikhail Milchenko, PhD
 
-ENVIRONMENT REQUREMENTS
+ENVIRONMENT REQUREMENTS<br>
 Python 3.6.5 with ipywidgets, numpy, pillow, nibabel, and skimage packages
 
-DESCRIPTION
+DESCRIPTION<br>
 Mouse image splitting technique. Implemented in Python, reusing the ‘ccdb’ code to read/write images. 
 The algorithm only requires microPET image (img/img.hdr pair) as input. The output is the same format. It detects the number of mice and outputs split images with suffix appended to the original filename according to the following conventions:
 1 mouse: _ctr: single image 
 2 mice: _l, _r: left and right mice.
 3-4 mice: _lt, _lb, _rt, _rb: left top, left bottom, right top, right bottom mouse, as they are seen in the GUI viewer.
 
-USAGE
+USAGE<br>
 splitter_of_mice.py [options] file_path out_dir
 
 positional arguments:
