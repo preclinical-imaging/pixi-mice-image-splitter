@@ -885,14 +885,15 @@ class SoM:
         return pi
             
     @staticmethod
-    def a2im(a,r):
-        if not SoM.ipw_on: return None
+    def a2im(a,r,return_array=False):
+        if not SoM.ipw_on and not return_array: return None
         f=BytesIO()
         b=0.3
         im0=(a/(np.max(a)*b))
         im0[im0>1]=1
-
-        img=Image.fromarray(np.uint8(im0*255))
+        arr=np.uint8(im0*255)               
+        if not SoM.ipw_on: return arr
+        img=Image.fromarray(arr)
         img.save(f,'png')
         layout={'width':str(r*a.shape[1])+'px','height':str(r*a.shape[0])+'px'}
         return ipw.Image(value=f.getvalue(),layout=layout)
@@ -915,7 +916,28 @@ class SoM:
         #plt.imshow(blobs_labels, cmap=plt.cm.gray)
         return im,blobs_labels,num            
     
-    def split_mice(self,outdir,save_analyze=False,num_anim=None,sep_thresh=None,margin=None,minpix=None):
+    @staticmethod
+    def merge_im_arrays(im0,im1,orientation='horizontal',bg=255):
+        a=im0; ash=np.array(a.shape)
+        b=im1; bsh=np.array(b.shape)
+        msh=np.maximum(np.array(a.shape),np.array(b.shape))
+        da=msh-a.shape; db=msh-b.shape
+        if orientation=='horizontal':
+            ap=np.pad(a,[(0,da[0]),(0,0)],constant_values=bg)
+            bp=np.pad(b,[(0,db[0]),(0,0)],constant_values=bg)
+            #print(ap.shape,bp.shape)
+            #print(a.dtype,b.dtype)
+            im=np.concatenate((ap,bp),1)
+        else:
+            ap=np.pad(a,[(0,da[1]),(0,0)],constant_values=bg)
+            bp=np.pad(b,[(0,db[1]),(0,0)],constant_values=bg)
+            #print(ap.shape,bp.shape)
+            im=np.concatenate((ap,bp),0)
+        return im
+                     
+                     
+    def split_mice(self,outdir,save_analyze=False,num_anim=None,
+                   sep_thresh=None,margin=None,minpix=None,output_qc=False):
         print ('Splitting '+self.pi.filename)
         SoM.num_anim=num_anim
         SoM.sep_thresh=0.9 if sep_thresh is None else sep_thresh
@@ -952,11 +974,18 @@ class SoM:
             b=ipw.HBox([SoM.a2im(imz,2),SoM.a2im(blobs_labels,2)])
             print('right: original image; left: detected regions')
             display(b)
+        if output_qc:
+            im1,im2=SoM.a2im(imz,2,True),SoM.a2im(blobs_labels,2,True)  
+            qcf=outdir+'/'+pi.filename[:-4]+'_qc.png'
+            print('saving '+qcf)
+            Image.fromarray(SoM.merge_im_arrays(im1,im2)).save(qcf,'png')
         
         cuts=SoM.split_coords(imz,rects)
         save_analyze_dir=outdir if save_analyze else None
         SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
-        pi.save_cut(0,outdir+'/')
+        
+        for ind in range(len(pi.cuts)):
+            pi.save_cut(ind,outdir+'/')
         pi.clean_cuts(); pi.unload_image()
         return 0
         
@@ -1047,11 +1076,12 @@ if __name__=="__main__":
     p.add_argument('-n',metavar='<int>', type=int,help='expected number of animals [auto-detect]')
     p.add_argument('-t',metavar='<float>', type=float,help='separation threshold between 0..1 [0.9]')
     p.add_argument('-a',action='store_true',help='save a copy in Analyze 7.5 format to output directory')
+    p.add_argument('-q',action='store_true',help='output a QC .png image')
     p.add_argument('-m',metavar='<int>', type=int, help='maximum margin on axial slice in pixels [20]')
     p.add_argument('-p',metavar='<int>', type=int, help='minimum number of pixels in detectable region [200]')
     a=p.parse_args()
     print ('split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={})'.
            format(a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p))
-    sys.exit(SoM(a.file_path).\
-        split_mice(a.out_dir,save_analyze=a.a,num_anim=a.n,sep_thresh=a.t,margin=a.m,minpix=a.p))
+    sys.exit(SoM(a.file_path).split_mice(a.out_dir,save_analyze=a.a,
+                   num_anim=a.n,sep_thresh=a.t,margin=a.m,minpix=a.p,output_qc=a.q))
     
