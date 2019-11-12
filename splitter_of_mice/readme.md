@@ -26,7 +26,6 @@ positional arguments:<br>
   out_dir     output directory<br>
 
 optional arguments:<br>
-  -h, --help  show this help message and exit<br>
   -n <int>    expected number of animals [auto-detect]<br>
   -t <float>  separation threshold between 0..1 [0.9]<br>
   -a          save a copy in Analyze 7.5 format to output directory<br>
