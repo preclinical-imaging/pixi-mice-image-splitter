@@ -7,10 +7,7 @@ import copy
 import ntpath
 import shutil
 import tempfile
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import warnings
-from pprint import pprint
 import inspect
 
 class Params:
