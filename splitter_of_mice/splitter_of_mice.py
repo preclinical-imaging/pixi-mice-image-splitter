@@ -26,6 +26,7 @@ from PIL import Image
 from io import BytesIO
 import inspect
 import nibabel
+import skimage
 from skimage import measure, filters
 import argparse
 
@@ -958,7 +959,7 @@ class SoM:
                     print('compensation failed')
                     pi.clean_cuts(); pi.unload_image(); return 1
             rects=measure.regionprops(blobs_labels)
-            if num>num_anim:                
+            if num>num_anim:
                 rects.sort(key=lambda p: p.area, reverse=True)
                 rects=rects[:num_anim]
         else:
@@ -975,10 +976,14 @@ class SoM:
             print('right: original image; left: detected regions')
             display(b)
         if output_qc:
-            im1,im2=SoM.a2im(imz,2,True),SoM.a2im(blobs_labels,2,True)  
+            im1,im2=SoM.a2im(imz,4,True),SoM.a2im(blobs_labels,4,True)  
             qcf=outdir+'/'+pi.filename[:-4]+'_qc.png'
             print('saving '+qcf)
-            Image.fromarray(SoM.merge_im_arrays(im1,im2)).save(qcf,'png')
+            print(blobs_labels.shape,imz.shape)
+            label=np.uint8(255*skimage.color.label2rgb(blobs_labels,image=im1,bg_label=0,alpha=0.2))
+            print(label.shape,label.dtype,np.max(label))
+            Image.fromarray(label).save(qcf,'png')
+            #Image.fromarray(SoM.merge_im_arrays(im1,im2)).save(qcf,'png')
         
         cuts=SoM.split_coords(imz,rects)
         save_analyze_dir=outdir if save_analyze else None
@@ -1003,7 +1008,7 @@ class SoM:
         props=measure.regionprops(label)
         areas=[p.area for p in props]
         print('areas'+str(areas))
-        valid_reg=[ p for p in props if p.area >= min_pts  ]
+        valid_reg=[ p for p in props if p.area >= min_pts  ]        
         print('valid regions detected: '+str(len(valid_reg)))
         return valid_reg
     
