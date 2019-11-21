@@ -1,7 +1,7 @@
 '''
-Program: splitter_of_mice.py
+Notebook: splitter_of_mice.py
 Authors: Mikhail Milchenko (animal detection), Jack Muskopf (microPET image i/o)
-Description: split microPET mice images into individual animal images
+Description: split microPET mice images into individual animal images (separate algorithms for PET and CT)
 
 Copyright 2017-2019
 Washington University, Mallinckrodt Insitute of Radiology. All rights reserved. 
@@ -22,12 +22,13 @@ import shutil
 
 #comment out the next line if running outside of Jupyter notebooks.
 import ipywidgets as ipw
-from PIL import Image
+
+from PIL import Image, ImageDraw
 from io import BytesIO
 import inspect
 import nibabel
 import skimage
-from skimage import measure, filters
+from skimage import measure, filters, morphology
 import argparse
 
 class Params:
@@ -423,8 +424,6 @@ class BaseImage:
             dfile.write(struct.pack(npixels*sf, *chunk))
             return
 
-
-
         print('Saving files...')
         if not self.cuts:
             raise ValueError('Image has not been cut in BaseImage.save_cuts()')
@@ -725,6 +724,10 @@ def try_rmfile(path):
         print(e)
         print('Failed to remove file: {}'.format(os.path.split(path)[1]))
 
+'''
+Splitter of mice algorithms
+'''
+
 """
 Rectangle manipulation
 """        
@@ -761,10 +764,20 @@ class Rect:
         #print ('adjust_to_size: {}'.format(sz))
         #print(self)
         sz0,x0,x1=np.array(sz),np.array([self.xlt,self.ylt]),np.array([self.xrb,self.yrb])        
-        d=(sz0-(x1-x0))*.5;x0n=x0-d; x1n=x1+d
+        d=(sz0-(x1-x0))*.5;x0n=(x0-d).astype(int); x1n=x0n+sz0
         self.xlt,self.ylt,self.xrb,self.yrb=x0n[0],x0n[1],x1n[0],x1n[1]
         #print ('adjusted:')
         #print(self)
+        
+    def adjust_to_center(self,cx,cy):
+        print ('adjust to center: ',str(cx),str(cy))
+        print(str(self))
+        c,x0,x1=np.array([cx,cy]),np.array([self.xlt,self.ylt]),np.array([self.xrb,self.yrb])
+        c0=np.array(self.ctr())
+        d=(c-c0).astype(int)
+        x0+=d; x1+=d;
+        self.xlt,self.ylt,self.xrb,self.yrb=x0[0],x0[1],x1[0],x1[1]
+        print('adusted,',str(self))
         
     def __str__(self):
         return "Rectangle, wid={}, ht={}, ctr=({},{}), l,t,r,b=({},{},{},{})".format(
@@ -826,14 +839,16 @@ class Rect:
 class SoM:
     ipw_on=False
     
-    def __init__(self,file):
+    def __init__(self,file,modality=None):
         self.filename=file
-        self.pi=SoM.load_image(file)            
+        self.pi,self.modality=SoM.load_image(file,modality)
     
     @staticmethod
     def add_cuts_to_image(im,boxes, save_analyze_dir=None):
         
         ims=[]
+        
+        mag=2 if isinstance(im,PETImage) else 0.5        
         for b in boxes:
             r,desc=b['rect'],b['desc']
             ix=len(im.cuts)+1
@@ -846,10 +861,10 @@ class SoM:
             
             
             if data.shape[3]==1:
-                ims+=[SoM.a2im(np.squeeze(data[:,:,int(round(w*.5)),0]),2)]
+                ims+=[SoM.a2im(im,np.squeeze(data[:,:,int(round(w*.5)),0]),mag,False)]
             else:
                 t2=int(data.shape[3]/2)
-                ims+=[SoM.a2im(np.squeeze(data[:,:,int(round(w*.5)),t2]),2)]
+                ims+=[SoM.a2im(im,np.squeeze(data[:,:,int(round(w*.5)),t2]),mag,False)]
 
             #_,data=im.submemmap(ix=ix,data=im.img_data[:,ymin:ymax,xmin:xmax,:])
             #print(data.shape)
@@ -860,11 +875,12 @@ class SoM:
             #print('saving '+fname)
             if save_analyze_dir is not None:
                 SoM.write_analyze(new_img,save_analyze_dir+'/'+fname+'_analyze.img')
-            im.cuts.append(new_img)        
+            im.cuts.append(new_img)
         if SoM.ipw_on:
             print('split images(midsagittal slice)')
             box=ipw.HBox(ims)
             display(box)
+        return ims
     
     @staticmethod
     def write_analyze(im,filepath):
@@ -877,48 +893,27 @@ class SoM:
         analyze_img=nibabel.AnalyzeImage(id1,None,hdr)
         print('writing Analyze 7.5 image: '+filepath)
         analyze_img.to_filename(filepath)
+     
+    @staticmethod
+    def a2im(pi,a,r,return_array=False):
+        if isinstance(pi,PETImage): return SoM.a2im_pet(a,r,return_array)
+        elif isinstance(pi,CTImage): return SoM.a2im_ct(a,r,return_array)
+        else: return None
+        
     
     @staticmethod
-    def load_image(file):
-        pi=PETImage(file)
-        pi.load_header()
-        pi.load_image()
-        return pi
-            
-    @staticmethod
-    def a2im(a,r,return_array=False):
-        if not SoM.ipw_on and not return_array: return None
-        f=BytesIO()
-        b=0.3
-        im0=(a/(np.max(a)*b))
-        im0[im0>1]=1
-        arr=np.uint8(im0*255)               
-        if not SoM.ipw_on: return arr
-        img=Image.fromarray(arr)
-        img.save(f,'png')
-        layout={'width':str(r*a.shape[1])+'px','height':str(r*a.shape[0])+'px'}
-        return ipw.Image(value=f.getvalue(),layout=layout)
-    
-    @staticmethod
-    def z_compress(pi): 
+    def z_compress_pet(pi):
         n=12
         img=pi.img_data
-
         if len(img.shape)==3:
             imgz=np.squeeze(np.sum(img,axis=0))
         elif len(img.shape)==4:
             imgz=np.squeeze(np.sum(img,axis=(0,3)))
         im=filters.gaussian(imgz, sigma=1/(4.*n))
         return im
-        
-        blobs= im > self.sep_thresh * np.mean(im)
-        #all_labels = measure.label(blobs)
-        (blobs_labels,num) = measure.label(blobs, return_num=True,background=0)
-        #plt.imshow(blobs_labels, cmap=plt.cm.gray)
-        return im,blobs_labels,num            
     
     @staticmethod
-    def merge_im_arrays(im0,im1,orientation='horizontal',bg=255):
+    def merge_im_arrays(im0,im1,orientation='horizontal',bg=0):
         a=im0; ash=np.array(a.shape)
         b=im1; bsh=np.array(b.shape)
         msh=np.maximum(np.array(a.shape),np.array(b.shape))
@@ -935,72 +930,23 @@ class SoM:
             #print(ap.shape,bp.shape)
             im=np.concatenate((ap,bp),0)
         return im
-                     
-                     
+
     def split_mice(self,outdir,save_analyze=False,num_anim=None,
                    sep_thresh=None,margin=None,minpix=None,output_qc=False):
-        print ('Splitting '+self.pi.filename)
-        SoM.num_anim=num_anim
-        SoM.sep_thresh=0.9 if sep_thresh is None else sep_thresh
-        SoM.margin=20 if margin is None else margin
-        SoM.minpix=200 if minpix is None else minpix
-        pi=self.pi        
-        imz=SoM.z_compress(pi)
-        blobs_labels,num=SoM.detect_animals(imz)
-                
-        if num_anim is not None:
-            if num<num_anim:
-                print('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
-                     format(num,num_anim))
-                while num < num_anim and self.sep_thresh<1:
-                    self.sep_thresh += 0.01
-                    blobs_labels,num=SoM.detect_animals(imz)
-                if num<num_anim:
-                    print('compensation failed')
-                    pi.clean_cuts(); pi.unload_image(); return 1
-            rects=measure.regionprops(blobs_labels)
-            if num>num_anim:
-                rects.sort(key=lambda p: p.area, reverse=True)
-                rects=rects[:num_anim]
-        else:
-            rects=SoM.get_valid_regs(blobs_labels)
-            if len(rects)>4:
-                print('detected {}>4 regions, attempting to compensate'.format(len(rects)))
-                inc=self.minpix*0.1
-                while len(rects)>4:
-                    self.minpix+=inc
-                    rects=SoM.get_valid_regs(blobs_labels)
-                    
-        if SoM.ipw_on:
-            b=ipw.HBox([SoM.a2im(imz,2),SoM.a2im(blobs_labels,2)])
-            print('right: original image; left: detected regions')
-            display(b)
-        if output_qc:
-            im1,im2=SoM.a2im(imz,4,True),SoM.a2im(blobs_labels,4,True)  
-            qcf=outdir+'/'+pi.filename[:-4]+'_qc.png'
-            print('saving '+qcf)
-            print(blobs_labels.shape,imz.shape)
-            label=np.uint8(255*skimage.color.label2rgb(blobs_labels,image=im1,bg_label=0,alpha=0.2))
-            print(label.shape,label.dtype,np.max(label))
-            Image.fromarray(label).save(qcf,'png')
-            #Image.fromarray(SoM.merge_im_arrays(im1,im2)).save(qcf,'png')
         
-        cuts=SoM.split_coords(imz,rects)
-        save_analyze_dir=outdir if save_analyze else None
-        SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
-        
-        for ind in range(len(pi.cuts)):
-            pi.save_cut(ind,outdir+'/')
-        pi.clean_cuts(); pi.unload_image()
-        return 0
-        
+        if self.modality=='PET': return self.split_mice_pet(outdir,save_analyze,num_anim,
+                sep_thresh,margin,minpix,output_qc)
+        if self.modality=='CT': return self.split_mice_ct(outdir,save_analyze,num_anim,
+                sep_thresh,margin,minpix,output_qc)
+        else: return -1
+             
     @staticmethod
     def detect_animals(im):
         blobs= im > SoM.sep_thresh * np.mean(im)
         #all_labels = measure.label(blobs)
         (blobs_labels,num) = measure.label(blobs, return_num=True,background=0)
-        return blobs_labels,num                
-    
+        return blobs_labels,num            
+        
     @staticmethod    
     def get_valid_regs(label):
         min_pts=SoM.minpix
@@ -1034,7 +980,7 @@ class SoM:
             for r in rs: r.adjust_to_size(s)
 
     @staticmethod
-    def split_coords(img,valid_reg):
+    def split_coords(img,valid_reg,mag=4):
         ims=[]
         out_boxes=[]
         m=[SoM.margin,SoM.margin]
@@ -1043,8 +989,6 @@ class SoM:
             bb=valid_reg[0].bbox
             r=Rect(bb=bb); r.expand(m); SoM.harmonize_rects({'ctr':r})
             out_boxes+=[{'desc':'ctr','rect':r}]
-            #print subimage        
-            ims=[SoM.a2im(r.subimage(img),4)]
 
         elif len(valid_reg)==2:        
             bb1,bb2=valid_reg[0].bbox,valid_reg[1].bbox
@@ -1054,7 +998,6 @@ class SoM:
             rl.expand(m); rr.expand(m); 
             SoM.harmonize_rects({'l':rl,'r':rr})
             out_boxes+=[{'desc':'l','rect':rl},{'desc':'r','rect':rr}]
-            ims=[SoM.a2im(rl.subimage(img),4),SoM.a2im(rr.subimage(img),4)]
         
         elif len(valid_reg)==3 or len(valid_reg)==4:
             rs=[Rect(bb=valid_reg[i].bbox) for i in range(len(valid_reg))]
@@ -1062,11 +1005,278 @@ class SoM:
             lr=[ {'desc':big_box.quadrant(r.ctr()),'rect':r} for r in rs ]
             SoM.harmonize_rects(lr)
             out_boxes=lr
-            ims=[ SoM.a2im(r.subimage(img),4) for r in rs ]
-        if SoM.ipw_on:
-            box=ipw.HBox(ims)
-            display(box)
         return out_boxes
+    
+    @staticmethod
+    def refine_cuts_ct(cuts,imz):
+        sz=imz.shape
+        for box in cuts:
+            r=box['rect']
+            cx,cy,n=0.,0.,0.            
+            for y in range(max(0,r.ylt),min(r.yrb,sz[0])):
+                for x in range(max(0,r.xlt),min(r.xrb,sz[1])):
+                    if imz[y,x]==0: continue
+                    cx+=x; cy+=y; n+=1
+            r.adjust_to_center(cx/n, cy/n)
+        return cuts
+            
+    
+    @staticmethod
+    #статическій мѣтодъ
+    def z_compress_ct(pi,thresh,binary=True):
+        n=12;  img=pi.img_data; sh=img.shape; nsl=sh[0]
+        sl=np.zeros((sh[1],sh[2])).astype('float32')
+        for z in range(nsl):
+            slm=np.squeeze(img[z,:,:])
+            if binary: slm=np.where(slm>thresh,1,0)
+            sl+=slm
+        
+        sl/=float(nsl)
+        if binary:            
+            return sl/float(nsl),skimage.morphology.binary_opening(sl,skimage.morphology.disk(10))
+        else:
+            return np.squeeze(img[int(nsl/2),:,:]),None
+    
+    def detect_animals_ct(im,thresh):
+        print('mean: ',np.mean(im))
+        blobs= im > thresh
+        (blobs_labels,num) = measure.label(blobs, return_num=True,background=0)
+        return blobs_labels,num
+    
+    @staticmethod
+    def a2im_pet(a,r,return_array=False):
+        if not SoM.ipw_on and not return_array: return None
+        f=BytesIO()
+        b=0.3
+        im0=(a/(np.max(a)*b))
+        im0[im0>1]=1
+        arr=np.uint8(im0*255)
+        if return_array: return arr
+        if not SoM.ipw_on: return None
+        img=Image.fromarray(arr)
+        img.save(f,'png')
+        layout={'width':str(r*a.shape[1])+'px','height':str(r*a.shape[0])+'px'}
+        #print(layout)
+        return ipw.Image(value=f.getvalue(),layout=layout)
+    
+    @staticmethod
+    def a2im_ct(a,r,return_array=False):
+        im0=np.float64(a); im0[im0<0]=0; im0[im0>200.]=200.
+        arr=np.uint8((im0/np.max(im0))*255.)
+        
+        if return_array: return arr
+        if not SoM.ipw_on: return None
+        
+        f=BytesIO();  img=Image.fromarray(arr); img.save(f,'png')
+        layout={'width':str(r*a.shape[1])+'px','height':str(r*a.shape[0])+'px'}
+        return ipw.Image(value=f.getvalue(),layout=layout)
+    
+    @staticmethod
+    def get_sag_image(img_data):
+        #print('get_sag_image shape:',img_data.shape)
+        sh=img_data.shape
+        if len(sh)<4:
+            return np.squeeze(img_data[:,np.int(sh[1]/2),:])        
+        else:
+            return np.squeeze(img_data[:,np.int(sh[1]/2),:,np.int(sh[3]/2)])
+                
+    @staticmethod
+    def combine_images(images,mode='horizontal'):
+        widths, heights = zip(*(i.size for i in images))
+        if mode=='horizontal':
+            total_width,max_height = sum(widths),max(heights)
+            new_im = Image.new('RGB', (total_width, max_height))
+            x_offset = 0
+            for im in images: 
+                new_im.paste(im, (x_offset,0));  x_offset += im.size[0]
+            return new_im
+        else:
+            total_height=sum(heights)
+            max_width=max(widths)
+            new_im=Image.new('RGB', (max_width,total_height))
+            y_offset=0
+            for im in images:
+                new_im.paste(im,(0,y_offset)); y_offset += im.size[1]
+            return new_im
+        
+    @staticmethod
+    def display_pil_image(im):
+        if SoM.ipw_on:
+            f=BytesIO()
+            im.save(f,'png')
+            display(ipw.HBox([ipw.Image(value=f.getvalue())]))
+        
+    @staticmethod
+    def load_image(file,modality=None):                
+        detect_mod=None
+        try:
+            print ('checking if PET modality')
+            pi=PETImage(file); pi.load_header()
+            detect_mod='PET'
+        except Exception as e:
+            print(str(e))
+            pi=None            
+                        
+        if pi==None:
+            try:
+                print ('checking if CT modality')
+                pi=CTImage(file);pi.load_header()
+                detect_mod='CT'
+            except Exception as e:
+                print(str(e))
+                pi=None
+        
+        if pi is None:
+            print('Could not load image as PET or CT modality')
+            return None,None
+        
+        if modality is not None and detect_mod!=modality:
+            print(modality,' modality expected, but ',detect_mod,'detected, exiting')            
+            return None,None
+        print (detect_mod,' modality detected')
+        pi.load_image()
+        return pi,detect_mod        
+
+    def split_mice_ct(self,outdir,save_analyze=False,num_anim=None,
+                   sep_thresh=None,margin=None,minpix=None,output_qc=False):
+        print ('Splitting '+self.pi.filename)      
+        SoM.num_anim=num_anim
+        SoM.sep_thresh=0.99 if sep_thresh is None else sep_thresh
+        SoM.margin=20 if margin is None else margin
+        SoM.minpix=4000 if minpix is None else minpix
+        pi=self.pi        
+        rt=outdir+'/'+pi.filename[:-4]        
+        
+        #imz0: нормальная cумма всѣхъ бинарныхъ сѣченій. imz: открытая область (бинарная)
+        imz0,imz=SoM.z_compress_ct(pi,50)
+        blobs_labels,num=SoM.detect_animals_ct(imz,0.1)
+        rects=SoM.get_valid_regs(blobs_labels)
+        cuts=SoM.split_coords(imz,rects,1)
+        save_analyze_dir=outdir if save_analyze else None
+        #save_analyze_dir=None #debug
+        ims=SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
+        #write the images.
+        for ind in range(len(pi.cuts)):
+            #pass #debug
+            pi.save_cut(ind,outdir+'/')
+        
+        if output_qc:
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
+            SoM.display_pil_image(im)
+        pi.clean_cuts(); pi.unload_image()
+        return 0
+    
+    def split_mice_pet(self,outdir,save_analyze=False,num_anim=None,
+                   sep_thresh=None,margin=None,minpix=None,output_qc=False):
+        print ('Splitting '+self.pi.filename)
+        SoM.num_anim=num_anim
+        SoM.sep_thresh=0.9 if sep_thresh is None else sep_thresh
+        SoM.margin=20 if margin is None else margin
+        SoM.minpix=200 if minpix is None else minpix
+        pi=self.pi        
+        imz=SoM.z_compress_pet(pi)        
+        blobs_labels,num=SoM.detect_animals(imz)
+                
+        if num_anim is not None:
+            if num<num_anim:
+                print('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
+                     format(num,num_anim))
+                while num < num_anim and self.sep_thresh<1:
+                    self.sep_thresh += 0.01
+                    blobs_labels,num=SoM.detect_animals(imz)
+                if num<num_anim:
+                    print('compensation failed')
+                    pi.clean_cuts(); pi.unload_image(); return 1
+            rects=measure.regionprops(blobs_labels)
+            if num>num_anim:
+                rects.sort(key=lambda p: p.area, reverse=True)
+                rects=rects[:num_anim]
+        else:
+            rects=SoM.get_valid_regs(blobs_labels)
+            if len(rects)>4:
+                print('detected {}>4 regions, attempting to compensate'.format(len(rects)))
+                inc=self.minpix*0.1
+                while len(rects)>4:
+                    self.minpix+=inc
+                    rects=SoM.get_valid_regs(blobs_labels)
+        cuts=SoM.split_coords(imz,rects)
+        save_analyze_dir=outdir if save_analyze else None
+        SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
+        
+        if output_qc:
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
+            #debug
+            #SoM.display_pil_image(im) 
+        
+        #write the images.        
+        for ind in range(len(pi.cuts)):
+            pi.save_cut(ind,outdir+'/')
+        pi.clean_cuts(); pi.unload_image()
+        return 0
+    
+    @staticmethod
+    def standardize_range(im, ignore_min=False, pct=5):
+        mx=np.percentile(im,100-pct)
+        mn=0 if ignore_min else np.percentile(im,pct)
+        im1=im; im1[im>mx]=mx; im1[im<mn]=mn; rng=mx-mn        
+        im1=((im1-mn)/rng)*255        
+        return im1
+    
+    @staticmethod
+    def qc_image(pi,labels,rects_dict,outdir):    
+        imz,itype=None,None
+        
+        if isinstance(pi,PETImage):
+            imz=SoM.z_compress_pet(pi); itype='PET'            
+            imz/=np.max(imz); linwid=1; alpha=0.1; pct=5
+            
+        elif isinstance(pi,CTImage):            
+            imz,_=SoM.z_compress_ct(pi,SoM.sep_thresh,binary=False);itype='CT'
+            pct=2
+            imz=SoM.standardize_range(imz,pct=pct)
+            imz/=np.max(imz); linwid=3; alpha=0.3; 
+            #SoM.display_pil_image(Image.fromarray(imz).convert('RGB'))
+            
+        if imz is None: 
+            print('qc_image: unknown image type'); return
+        
+        imz_qc=np.uint8(255*skimage.color.label2rgb(labels,image=imz,bg_label=0,alpha=alpha))
+        #наложить области на изображеніе.                     
+        imz_qc=Image.fromarray(imz_qc).convert('RGB')
+        d=ImageDraw.Draw(imz_qc)
+        colors=['lightblue','red','violet','lightgreen']
+        for i in range(0,len(rects_dict)):
+            rd=rects_dict[i]
+            r=rd['rect']
+            d.rectangle([r.xlt,r.ylt,r.xrb,r.yrb],outline=colors[i],width=linwid)
+                   
+        sag_ims=[ SoM.get_sag_image(pi.cuts[i].img_data) for i in range(len(pi.cuts)) ]        
+        sag_ims_pil=[]
+        for im in sag_ims:                
+            im1=SoM.standardize_range(im,pct=pct); imp=Image.fromarray(im1).convert('RGB')
+            sag_ims_pil+=[imp]
+            #SoM.display_pil_image(imp)
+        
+        #sag_ims_pil= [ Image.fromarray(im).convert('RGB') for im in sag_ims ]  
+        #SoM.display_pil_image(sag_ims_pil[0])
+        
+        si_dims=[sag_ims[0].shape]
+        sag_im=SoM.combine_images(sag_ims_pil)
+        d1=ImageDraw.Draw(sag_im)
+        off=0
+        for i in range (len(sag_ims)):
+            sh=sag_ims[i].shape            
+            d1.rectangle([off,0,off+sh[1]-1,sh[0]-1],outline=colors[i],width=linwid)
+            off+=sh[1] 
+        
+        fname=outdir+'/'+pi.filename[:-4]+'_split_qc.png'
+        qc_im=SoM.combine_images([imz_qc,sag_im])
+        if itype=='PET': 
+            w,h=qc_im.size; qc_im=qc_im.resize((w*3,h*3),resample=Image.BILINEAR)
+        print('writing',fname)
+        qc_im.save(fname,'png')
+        return qc_im   
+#end of SoM class
 
 class DefParser(argparse.ArgumentParser):
     def error(self, message):
@@ -1078,12 +1288,12 @@ if __name__=="__main__":
     p=DefParser(description='Split a microPET image into individual animal images')
     p.add_argument('file_path',type=str,help='full path to microPET .img file')
     p.add_argument('out_dir',type=str,help='output directory')
-    p.add_argument('-n',metavar='<int>', type=int,help='expected number of animals [auto-detect]')
-    p.add_argument('-t',metavar='<float>', type=float,help='separation threshold between 0..1 [0.9]')
+    p.add_argument('-n',metavar='<int>', type=int,help='(PET only) expected number of animals [auto-detect]')
+    p.add_argument('-t',metavar='<float>', type=float,help='separation threshold between 0..1 [0.9 PET/0.99 CT]')
     p.add_argument('-a',action='store_true',help='save a copy in Analyze 7.5 format to output directory')
     p.add_argument('-q',action='store_true',help='output a QC .png image')
     p.add_argument('-m',metavar='<int>', type=int, help='maximum margin on axial slice in pixels [20]')
-    p.add_argument('-p',metavar='<int>', type=int, help='minimum number of pixels in detectable region [200]')
+    p.add_argument('-p',metavar='<int>', type=int, help='minimum number of pixels in detectable region [200 PET/4000 CT]')
     a=p.parse_args()
     print ('split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={})'.
            format(a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p))
