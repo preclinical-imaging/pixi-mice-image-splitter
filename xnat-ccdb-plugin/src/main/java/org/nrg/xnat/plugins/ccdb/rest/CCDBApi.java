@@ -18,16 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.nrg.xdat.security.helpers.AccessLevel.Authorizer;
 
@@ -38,8 +37,7 @@ public class CCDBApi extends AbstractXapiRestController {
 
     private final CatalogService _catalogService;
     private final SiteConfigPreferences _preferences;
-    private static final Logger _log = LoggerFactory.getLogger( CCDBApi.class);
-    private final Zipper _zipper;
+    private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
     @Autowired
     public CCDBApi(final UserManagementServiceI userManagementServiceI,
@@ -49,25 +47,23 @@ public class CCDBApi extends AbstractXapiRestController {
         super( userManagementServiceI, roleHolder);
         _preferences = preferences;
         _catalogService = catalogService;
-        _zipper = new MyZipper();
     }
 
     @ApiOperation(value = "Upload CCDB Hotel data.", response = String.class)
     @ApiResponses({@ApiResponse(code = 200, message = "Successfully uploaded CCDB Hotel session(s)."),
             @ApiResponse(code = 500, message = "An unexpected or unknown error occurred")})
     @XapiRequestMapping(value = "projects/{projectID}/hotelSessions",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            consumes = {"application/zip"},
             method = RequestMethod.POST,
             restrictTo = Authorizer)
     @AuthDelegate(GuestUserAccessXapiAuthorization.class)
-    public ResponseEntity<String> doUploadHotelData(
+    public ResponseEntity<String> doUploadHotelDataCustom(
             @ApiParam("The project label or ID") @PathVariable final String  projectID,
-            @ApiParam("Zip file with hotel-session csv and image data") @RequestParam("file") final MultipartFile file) throws NrgServiceException {
+            @ApiParam("Zip file with hotel-session csv and image data") @RequestBody final Map<String, File> files) throws NrgServiceException {
         try {
-            List<File> files = _zipper.unzip(file.getInputStream());
             if( ! files.isEmpty()) {
 
-                Collection<HotelSession> hotelSessions = HotelSession.getSessionsFromFiles( files);
+                Collection<HotelSession> hotelSessions = HotelSession.getSessionsFromFiles( files.values().stream().collect(Collectors.toList()));
                 if( hotelSessions.isEmpty()) {
                     return new ResponseEntity<>("Failed to find hotel-scan csv.", HttpStatus.BAD_REQUEST);
                 }
@@ -85,14 +81,55 @@ public class CCDBApi extends AbstractXapiRestController {
         }
         catch( Exception e) {
             HttpStatus status = (e instanceof HandlerException)? ((HandlerException) e).getHttpStatus(): HttpStatus.INTERNAL_SERVER_ERROR;
-            String msg = "An error occurred when user '" + getSessionUser().getUsername() + "' tried to upload CCDB hotel-data zip file: " + file.getOriginalFilename();
+            String msg = "An error occurred when user '" + getSessionUser().getUsername() + "' tried to upload CCDB hotel-data zip file.";
             msg += "\n" + e.getMessage();
             _log.error( msg, e);
             ResponseEntity<String> response = new ResponseEntity<> (msg, status);
             return response;
         }
-        finally {
-            try { _zipper.close();} catch (IOException e) { /* ignore */}
-        }
     }
+
+//    @ApiOperation(value = "Upload CCDB Hotel data.", response = String.class)
+//    @ApiResponses({@ApiResponse(code = 200, message = "Successfully uploaded CCDB Hotel session(s)."),
+//            @ApiResponse(code = 500, message = "An unexpected or unknown error occurred")})
+//    @XapiRequestMapping(value = "projects/{projectID}/hotelSessions",
+//            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+//            method = RequestMethod.POST,
+//            restrictTo = Authorizer)
+//    @AuthDelegate(GuestUserAccessXapiAuthorization.class)
+//    public ResponseEntity<String> doUploadHotelDataMultipart(
+//            @ApiParam("The project label or ID") @PathVariable final String  projectID,
+//            @ApiParam("Zip file with hotel-session csv and image data") @RequestParam("file") final MultipartFile file) throws NrgServiceException {
+//        try {
+//            List<File> files = _zipper.unzip(file.getInputStream());
+//            if( ! files.isEmpty()) {
+//
+//                Collection<HotelSession> hotelSessions = HotelSession.getSessionsFromFiles( files);
+//                if( hotelSessions.isEmpty()) {
+//                    return new ResponseEntity<>("Failed to find hotel-scan csv.", HttpStatus.BAD_REQUEST);
+//                }
+//                UserI user = getSessionUser();
+//
+//                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService);
+//
+//                sessionHandler.handleSessions( projectID, hotelSessions, user);
+//
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+//            else {
+//                return new ResponseEntity<>("Zip file is invalid or empty.", HttpStatus.BAD_REQUEST);
+//            }
+//        }
+//        catch( Exception e) {
+//            HttpStatus status = (e instanceof HandlerException)? ((HandlerException) e).getHttpStatus(): HttpStatus.INTERNAL_SERVER_ERROR;
+//            String msg = "An error occurred when user '" + getSessionUser().getUsername() + "' tried to upload CCDB hotel-data zip file: " + file.getOriginalFilename();
+//            msg += "\n" + e.getMessage();
+//            _log.error( msg, e);
+//            ResponseEntity<String> response = new ResponseEntity<> (msg, status);
+//            return response;
+//        }
+//        finally {
+//            try { _zipper.close();} catch (IOException e) { /* ignore */}
+//        }
+//    }
 }
