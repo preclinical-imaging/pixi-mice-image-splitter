@@ -1,0 +1,3 @@
+﻿Hotel Subject,Scan Name,Scan Type,Time Points,Hotel Position,Animal #,Animal Weight(g),Activity (mCi),Scan Time,Injection Time,Scanner,Tracer,Investigator,Study Date,Study Name,Notes
+mpet3631a,mpet3631a_ct1_v1,CT,,,1,,,10:38:21,,Inveon,18F FDG,Shoghi,7/16/18,mpet3631,
+mpet3631a,mpet3631a_em1_v1,PET,static,1,1,21.2,0.202,10:54:44,10:54:51,Inveon,18F FDG,Shoghi,7/16/18,mpet3631,
