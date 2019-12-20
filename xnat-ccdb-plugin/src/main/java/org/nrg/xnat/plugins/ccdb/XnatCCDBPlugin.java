@@ -13,11 +13,13 @@ import org.nrg.framework.annotations.XnatDataModel;
 import org.nrg.framework.annotations.XnatPlugin;
 import org.nrg.xdat.om.CcdbHotelct;
 import org.nrg.xdat.om.CcdbHotelpet;
+import org.nrg.xnat.plugins.ccdb.rest.converter.CcdbZipFileHttpMessageConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 
 @Configuration
 @XnatPlugin(value = "ccdbPlugin", name = "XNAT 1.7 CCDB Plugin", entityPackages = "org.nrg.xnat.plugins.ccdb.entities",
@@ -29,19 +31,23 @@ import org.springframework.context.annotation.Configuration;
                 @XnatDataModel(value = CcdbHotelct.SCHEMA_ELEMENT_NAME,
                         singular = "CT Hotel Session",
                         plural = "CT Hotel Sessions",
-                        code = "CT_HTL")})
+                        code = "CT_HTL")},
+        log4jPropertiesFile = "ccdb-log4j.properties")
 @ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest"})
 public class XnatCCDBPlugin {
     public XnatCCDBPlugin() {
         _log.info("Creating the XnatCCDBPlugin configuration class");
     }
 
-
+    @Bean
+    public HttpMessageConverter<?> zipFileHttpMessageConverter() {
+        return new CcdbZipFileHttpMessageConverter();
+    }
 
     @Bean
     public String templatePluginMessage() {
         return "This comes from deep within the template plugin.";
     }
 
-    private static final Logger _log = LoggerFactory.getLogger(XnatCCDBPlugin.class);
+    private static final Logger _log = LoggerFactory.getLogger("ccdbLogger");
 }

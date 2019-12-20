@@ -28,7 +28,7 @@ public class HotelSessionHandler  {
 
     private final SiteConfigPreferences _preferences;
     private final CatalogService _catalogService;
-    private static final Logger _log = LoggerFactory.getLogger( HotelSessionHandler.class);
+    private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
     public HotelSessionHandler( final SiteConfigPreferences preferences, final CatalogService catalogService) {
         _preferences = preferences;
