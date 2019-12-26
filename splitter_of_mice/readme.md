@@ -17,6 +17,7 @@ The algorithm only requires microPET image (img/img.hdr pair) as input. PET and 
 1 mouse: _ctr: single image <br>
 2 mice: _l, _r: left and right mice.<br>
 3-4 mice: _lt, _lb, _rt, _rb: left top, left bottom, right top, right bottom mouse, as they are seen in the GUI viewer.<br>
+To save split files under a different filename, supply your mappings to default (ctr,l,r,lt,rb) ones with -sm option.
 
 USAGE<br>
 splitter_of_mice.py [options] file_path out_dir<br>
@@ -30,6 +31,7 @@ optional arguments:<br>
   -t \<float\>  separation threshold between 0..1 [0.9 PET/0.99 CT]<br>
   -a          save a copy in Analyze 7.5 format to output directory<br>
   -q		save a quality control PNG snapshot to output directory<br>
+  -sm \<str\>   ouput file suffix map [ctr:ctr,l:l,r:r,lt:lt,rt:rt,rb:rb,lb:lb]<br>
   -m \<int\>    maximum margin on axial slice in pixels [20]<br>
   -p \<int\>    minimum number of pixels in detectable region [200 PET/4000 CT]<br>
   
