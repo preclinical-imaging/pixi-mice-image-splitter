@@ -941,9 +941,9 @@ class SoM:
                 if mp[0] in d.keys(): d[mp[0]]=mp[1]
                 
         if self.modality=='PET': return self.split_mice_pet(outdir,d,save_analyze,num_anim,
-                sep_thresh,margin,minpix,output_qc,d)
+                sep_thresh,margin,minpix,output_qc)
         if self.modality=='CT': return self.split_mice_ct(outdir,d,save_analyze,num_anim,
-                sep_thresh,margin,minpix,output_qc,d)
+                sep_thresh,margin,minpix,output_qc)
         else: return -1
              
     @staticmethod
