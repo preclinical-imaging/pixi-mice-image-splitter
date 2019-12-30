@@ -1,5 +1,12 @@
 FROM python-base:v1
 
-RUN mkdir /home/splitter
+ARG homedir=/home/splitter
+ARG inFile=$homedir/inFile
+ARG outDir=$homedir/outDir
+ARG script=splitter_of_mice.py
 
-COPY splitter_of_mice.py /home/splitter
+RUN mkdir -p $outDir
+
+COPY splitter_of_mice.py $homedir
+
+CMD [ "python", "/home/splitter/splitter_of_mice.py", "/home/splitter/inFile", "/home/splitter/outDir" ]
