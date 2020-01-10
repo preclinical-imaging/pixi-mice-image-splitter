@@ -1,32 +1,25 @@
-import org.nrg.xnat.plugins.ccdb.separate.FrontDesk
-import org.nrg.xnat.plugins.ccdb.separate.FrontDesk_WU
-import org.nrg.xnat.plugins.ccdb.separate.Guest
-import org.nrg.xnat.plugins.ccdb.service.XnatService
+package scripts
+
+import org.nrg.xft.security.UserI
 
 try {
-    out.println "${externalId}"
-    out.println "${dataId}"
 
-//    String hotelSessionID = dataId
-    FrontDesk frontDesk = new FrontDesk_WU()
-    out.println "xnatService: ${frontDesk.xnatService}"
-//    List<Guest> guestList = frontDesk.getGuests(hotelSessionID, user)
+    String projectID = externalId
+    String hotelSessionID = dataId
 
-//    for (Guest g : guestList) {
-//        out.println "${g.label}"
-//        g.sessions.each{ sess ->
-//            println "${sess}"
-//            println "label: ${sess.label}"
-//            println "resource files:"
-//            sess.resourceFiles.each { rf ->
-//                println "${rf.absolutePath}"
-//            }
-//        }
-//    }
+    def connection = new URL( "https://localhost/" +
+            URLEncoder.encode(
+                    "/data/xapi/ccdb/projects/${projectID}/checkin/${hotelSessionID}",
+                    'UTF-8' ) )
+            .openConnection() as HttpURLConnection
 
-//    XnatService service = frontDesk.xnatService
-//    XnatResourcecatalog catalog = service.createScanResource( user)
-//    out.println "catalog: ${catalog}"
+    // set some headers
+    connection.setRequestProperty( 'User-Agent', 'XNAT' )
+    connection.setRequestProperty( 'Accept', 'text/plain' )
+
+    // get the response code - automatically sends the request
+    int responseCode = connection.getResponseCode()
+    println connection.responseCode + ": " + connection.inputStream.text
 
 } catch( Exception e) {
     out.println "Exception: ${e}"

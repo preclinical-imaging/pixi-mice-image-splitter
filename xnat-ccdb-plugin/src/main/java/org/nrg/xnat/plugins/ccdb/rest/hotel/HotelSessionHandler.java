@@ -1,8 +1,7 @@
-package org.nrg.xnat.plugins.ccdb.rest;
+package org.nrg.xnat.plugins.ccdb.rest.hotel;
 
 import org.nrg.xdat.om.*;
 import org.nrg.xdat.preferences.SiteConfigPreferences;
-import org.nrg.xft.XFTItem;
 import org.nrg.xft.event.EventMetaI;
 import org.nrg.xft.event.EventUtils;
 import org.nrg.xft.security.UserI;

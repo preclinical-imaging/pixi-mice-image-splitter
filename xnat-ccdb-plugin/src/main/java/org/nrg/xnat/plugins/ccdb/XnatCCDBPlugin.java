@@ -14,13 +14,17 @@ import org.nrg.framework.annotations.XnatPlugin;
 import org.nrg.xdat.om.CcdbHotelct;
 import org.nrg.xdat.om.CcdbHotelpet;
 import org.nrg.xnat.plugins.ccdb.rest.converter.CcdbZipFileHttpMessageConverter;
+import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk;
+import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk_WU;
 import org.nrg.xnat.plugins.ccdb.service.XnatService;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 
 @Configuration
@@ -35,7 +39,8 @@ import org.springframework.http.converter.HttpMessageConverter;
                         plural = "CT Hotel Sessions",
                         code = "CT_HTL")},
         log4jPropertiesFile = "ccdb-log4j.properties")
-@ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest", "org.nrg.xnat.plugins.ccdb.service", "org.nrg.xnat.plugins.ccdb.separate"})
+@ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest", "org.nrg.xnat.plugins.ccdb.service"})
+@Import({org.nrg.xnat.configuration.ApplicationConfig.class})
 public class XnatCCDBPlugin {
     public XnatCCDBPlugin() {
         _log.info("Creating the XnatCCDBPlugin configuration class");
@@ -53,6 +58,9 @@ public class XnatCCDBPlugin {
 
     @Bean
     public XnatService xnatService(CatalogService catalogService) { return new XnatService( catalogService); }
+
+    @Bean
+    public FrontDesk frontDesk( XnatService xnatService) { return new FrontDesk_WU( xnatService); }
 
     private static final Logger _log = LoggerFactory.getLogger("ccdbLogger");
 }

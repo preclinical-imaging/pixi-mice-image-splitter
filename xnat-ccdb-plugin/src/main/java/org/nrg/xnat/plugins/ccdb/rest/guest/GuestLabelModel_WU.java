@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.separate;
+package org.nrg.xnat.plugins.ccdb.rest.guest;
 
 public class GuestLabelModel_WU implements GuestLabelModel {
     private String scanName;

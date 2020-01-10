@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.separate;
+package org.nrg.xnat.plugins.ccdb.rest.guest;
 
 import org.nrg.xdat.om.*;
 import org.nrg.xft.security.UserI;
@@ -18,13 +18,14 @@ public class FrontDesk_WU implements FrontDesk {
     private final GuestPositionLabelModel_WU guestPositionLabelModel;
     private final GuestLabelModel_WU guestLabelModel;
     private final GuestSessionLabelModel_WU guestSessionLabelModel;
-    @Autowired
     private XnatService _xnatService;
 
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
-    public FrontDesk_WU() {
+    @Autowired
+    public FrontDesk_WU( XnatService xnatService) {
         this( new GuestPositionLabelModel_WU(), new GuestLabelModel_WU(), new GuestSessionLabelModel_WU());
+        _xnatService = xnatService;
     }
 
     public FrontDesk_WU(GuestPositionLabelModel_WU gplm, GuestLabelModel_WU glm, GuestSessionLabelModel_WU gslm) {

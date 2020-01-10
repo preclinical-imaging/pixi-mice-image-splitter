@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.rest;
+package org.nrg.xnat.plugins.ccdb.rest.hotel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
