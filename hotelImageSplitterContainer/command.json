@@ -1,88 +1,139 @@
 {
-    "name": "hotelsplitter",
-    "description": "Runs splitter_of_mice.py",
-    "label": "hotelsplitter",
-    "info-url": "",
-    "version": "1.0",
-    "schema-version": "1.0",
-    "type": "docker",
-    "image": "hotel_splitter",
-    "command-line": "python splitter_of_mice.py [BIDS] [OTHER_OPTIONS] -o /output /input",
-    "mounts": [
+  "name": "hotel-image-splitter",
+  "label": "hotel-image-splitter",
+  "description": "Runs splitter_of_mice.py",
+  "version": "1.0",
+  "schema-version": "1.0",
+  "info-url": "",
+  "image": "hotel_splitter:v1",
+  "type": "docker",
+  "command-line": "python splitter_of_mice.py [OTHER_OPTIONS] /input/[SESSION_LABEL] /output",
+  "mounts": [
+    {
+      "name": "input",
+      "writable": false,
+      "path": "/input"
+    },
+    {
+      "name": "output",
+      "writable": true,
+      "path": "/output"
+    }
+  ],
+  "environment-variables": {},
+  "ports": {},
+  "inputs": [
+    {
+      "name": "session-label",
+      "description": "Session's label",
+      "type": "string",
+      "matcher": null,
+      "default-value": null,
+      "required": true,
+      "replacement-key": "[SESSION_LABEL]",
+      "sensitive": null,
+      "command-line-flag": null,
+      "command-line-separator": null,
+      "true-value": null,
+      "false-value": null
+    },
+    {
+      "name": "other-options",
+      "description": "Other command-line flags to pass to splitter_of_mice.py",
+      "type": "string",
+      "matcher": null,
+      "default-value": null,
+      "required": false,
+      "replacement-key": "[OTHER_OPTIONS]",
+      "sensitive": null,
+      "command-line-flag": null,
+      "command-line-separator": null,
+      "true-value": null,
+      "false-value": null
+    }
+  ],
+  "outputs": [
+    {
+      "name": "split_output",
+      "description": "The split microPET output files",
+      "required": true,
+      "mount": "output",
+      "path": null,
+      "glob": null
+    }
+  ],
+  "xnat": [
+    {
+      "name": "hotel-image splitter on session",
+      "label": "hotelimagesplitter",
+      "description": "Run hotelsplitter on a session",
+      "contexts": [
+        "xnat:imageSessionData"
+      ],
+      "external-inputs": [
         {
-            "name": "dicom-in",
-            "writable": "false",
-            "path": "/input"
+          "name": "session",
+          "description": "Input session",
+          "type": "Session",
+          "matcher": "'imageData' in @.resources[*].label",
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": null,
+          "provides-files-for-command-mount": null,
+          "via-setup-command": null,
+          "user-settable": null,
+          "load-children": true
+        }
+      ],
+      "derived-inputs": [
+        {
+          "name": "session-label-di",
+          "description": "The session label",
+          "type": "string",
+          "matcher": null,
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": "session-label",
+          "provides-files-for-command-mount": null,
+          "user-settable": false,
+          "load-children": true,
+          "derived-from-wrapper-input": "session",
+          "derived-from-xnat-object-property": "label",
+          "via-setup-command": null
         },
         {
-            "name": "nifti-out",
-            "writable": "true",
-            "path": "/output"
+          "name": "scan-images",
+          "description": "The microPET resource on the scan",
+          "type": "Resource",
+          "matcher": "@.label == 'imageData'",
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": null,
+          "provides-files-for-command-mount": "input",
+          "user-settable": null,
+          "load-children": true,
+          "derived-from-wrapper-input": "session",
+          "derived-from-xnat-object-property": null,
+          "via-setup-command": null
         }
-    ],
-    "inputs": [
+      ],
+      "output-handlers": [
         {
-            "name": "bids",
-            "description": "Create BIDS metadata file",
-            "type": "boolean",
-            "required": false,
-            "default-value": false,
-            "replacement-key": "[BIDS]",
-            "command-line-flag": "-b",
-            "true-value": "y",
-            "false-value": "n"
-        },
-        {
-            "name": "other-options",
-            "description": "Other command-line flags to pass to dcm2niix",
-            "type": "string",
-            "required": false,
-            "replacement-key": "[OTHER_OPTIONS]"
+          "name": "microPET-resource",
+          "accepts-command-output": "split_output",
+          "via-wrapup-command": null,
+          "as-a-child-of": "session",
+          "type": "Resource",
+          "label": "microPET",
+          "format": null
         }
-    ],
-    "outputs": [
-        {
-            "name": "nifti",
-            "description": "The nifti files",
-            "mount": "nifti-out",
-            "required": "true"
-        }
-    ],
-    "xnat": [
-        {
-            "name": "dcm2niix-scan",
-            "description": "Run dcm2niix on a Scan",
-            "label": "dcm2niix",
-            "contexts": ["xnat:imageScanData"],
-            "external-inputs": [
-                {
-                    "name": "scan",
-                    "description": "Input scan",
-                    "type": "Scan",
-                    "required": true,
-                    "matcher": "'DICOM' in @.resources[*].label"
-                }
-            ],
-            "derived-inputs": [
-                {
-                    "name": "scan-dicoms",
-                    "description": "The dicom resource on the scan",
-                    "type": "Resource",
-                    "derived-from-wrapper-input": "scan",
-                    "provides-files-for-command-mount": "dicom-in",
-                    "matcher": "@.label == 'DICOM'"
-                }
-            ],
-            "output-handlers": [
-                {
-                    "name": "nifti-resource",
-                    "accepts-command-output": "nifti",
-                    "as-a-child-of-wrapper-input": "scan",
-                    "type": "Resource",
-                    "label": "NIFTI"
-                }
-            ]
-        }
-    ]
+      ]
+    }
+  ]
 }
-

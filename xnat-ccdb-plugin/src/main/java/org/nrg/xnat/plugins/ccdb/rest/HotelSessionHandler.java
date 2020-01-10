@@ -9,6 +9,8 @@ import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.ResourceFile;
 import org.nrg.xft.utils.SaveItemHelper;
 import org.nrg.xnat.helpers.uri.UriParserUtils;
+import org.nrg.xnat.plugins.ccdb.service.XnatService;
+import org.nrg.xnat.plugins.ccdb.service.XnatServiceException;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +30,14 @@ public class HotelSessionHandler  {
 
     private final SiteConfigPreferences _preferences;
     private final CatalogService _catalogService;
+    private final XnatService _xnatService;
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
     public HotelSessionHandler( final SiteConfigPreferences preferences, final CatalogService catalogService) {
         _preferences = preferences;
         _catalogService = catalogService;
+        // TODO: inject this
+        _xnatService = new XnatService(_catalogService);
     }
 
     /**
@@ -72,52 +77,27 @@ public class HotelSessionHandler  {
             throw new HandlerException(msg, HttpStatus.BAD_REQUEST);
         }
 
-        XnatSubjectdata subjectdata = getOrCreateSubject( projectdata, session.getSubjectLabel(), user);
+        try {
+            XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject(projectdata, session.getSubjectLabel(), user);
 
-        for( HotelScan scan: session.getScans()) {
-            XnatSubjectassessordata assessor = getAssessor(subjectdata, scan, user);
-            if( assessor == null) {
-                assessor = createAssessor(subjectdata, scan, user);
-                try {
-                    subjectdata.addExperiments_experiment(assessor);
+            for( HotelScan scan: session.getScans()) {
+                XnatSubjectassessordata assessor = getAssessor(subjectdata, scan, user);
+                if( assessor == null) {
+                    assessor = createAssessor(subjectdata, scan, user);
+                    try {
+                        subjectdata.addExperiments_experiment(assessor);
+                    }
+                    catch( Exception e) {
+                        String msg = "Error adding assessor to hotel subject: " + subjectdata.getLabel();
+                        throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 }
-                catch( Exception e) {
-                    String msg = "Error adding assessor to hotel subject: " + subjectdata.getLabel();
-                    throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+                addScan( assessor, scan, user);
+                addImages( assessor, scan.getImages(), user);
             }
-            addScan( assessor, scan, user);
-            addImages( assessor, scan.getImages(), user);
+        } catch( XnatServiceException e) {
+            throw new HandlerException( e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * Get existing subject or create a new one.
-     *
-     * @param projectdata The project data for the subject
-     * @param subjectLabel The subject's label.
-     * @param user The user performing this action.
-     * @return The subject data for the specified subject.
-     * @throws HandlerException
-     */
-    protected XnatSubjectdata getOrCreateSubject( XnatProjectdata projectdata, String subjectLabel, UserI user) throws HandlerException {
-        XnatSubjectdata subjectdata = XnatSubjectdata.GetSubjectByProjectIdentifier( projectdata.getProject(), subjectLabel, user, false);
-        if( subjectdata == null) {
-            try {
-                XFTItem item = XFTItem.NewItem("xnat:subjectData", user);
-                subjectdata = new XnatSubjectdata( item);
-                String id = XnatSubjectdata.CreateNewID();
-                subjectdata.setProject( projectdata.getId());
-                subjectdata.setId( id);
-                subjectdata.setLabel( subjectLabel);
-                EventMetaI eventMeta = EventUtils.DEFAULT_EVENT( user, "create subject");
-                subjectdata.save( user, false, false, eventMeta);
-            } catch (Exception e) {
-                String msg = "Error creating hotel subject: " + subjectLabel;
-                throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        return subjectdata;
     }
 
     /**

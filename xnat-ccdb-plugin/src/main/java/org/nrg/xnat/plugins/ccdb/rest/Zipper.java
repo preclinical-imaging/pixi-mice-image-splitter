@@ -91,6 +91,7 @@ public class Zipper {
 //    }
 
 
+    // TODO:  I think this doesn't close the zip file correctly.
     public static void zip(Map<String, File> fileMap, OutputStream os) throws IOException {
         if( os != null) {
             ZipOutputStream zos = new ZipOutputStream( os);

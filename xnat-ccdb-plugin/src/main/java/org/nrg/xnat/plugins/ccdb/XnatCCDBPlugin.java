@@ -14,6 +14,8 @@ import org.nrg.framework.annotations.XnatPlugin;
 import org.nrg.xdat.om.CcdbHotelct;
 import org.nrg.xdat.om.CcdbHotelpet;
 import org.nrg.xnat.plugins.ccdb.rest.converter.CcdbZipFileHttpMessageConverter;
+import org.nrg.xnat.plugins.ccdb.service.XnatService;
+import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +35,7 @@ import org.springframework.http.converter.HttpMessageConverter;
                         plural = "CT Hotel Sessions",
                         code = "CT_HTL")},
         log4jPropertiesFile = "ccdb-log4j.properties")
-@ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest"})
+@ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest", "org.nrg.xnat.plugins.ccdb.service", "org.nrg.xnat.plugins.ccdb.separate"})
 public class XnatCCDBPlugin {
     public XnatCCDBPlugin() {
         _log.info("Creating the XnatCCDBPlugin configuration class");
@@ -48,6 +50,9 @@ public class XnatCCDBPlugin {
     public String templatePluginMessage() {
         return "This comes from deep within the template plugin.";
     }
+
+    @Bean
+    public XnatService xnatService(CatalogService catalogService) { return new XnatService( catalogService); }
 
     private static final Logger _log = LoggerFactory.getLogger("ccdbLogger");
 }
