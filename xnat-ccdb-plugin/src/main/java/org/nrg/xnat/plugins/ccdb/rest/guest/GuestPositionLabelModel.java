@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.separate;
+package org.nrg.xnat.plugins.ccdb.rest.guest;
 
 public interface GuestPositionLabelModel {
 

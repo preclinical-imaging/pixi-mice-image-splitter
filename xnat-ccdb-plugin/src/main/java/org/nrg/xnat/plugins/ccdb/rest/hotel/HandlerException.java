@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.rest;
+package org.nrg.xnat.plugins.ccdb.rest.hotel;
 
 import org.springframework.http.HttpStatus;
 

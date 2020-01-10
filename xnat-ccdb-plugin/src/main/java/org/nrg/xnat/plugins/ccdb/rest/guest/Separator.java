@@ -1,4 +1,4 @@
-package org.nrg.xnat.plugins.ccdb.separate;
+package org.nrg.xnat.plugins.ccdb.rest.guest;
 
 import org.nrg.xdat.XDAT;
 import org.nrg.xdat.om.XnatExperimentdata;
