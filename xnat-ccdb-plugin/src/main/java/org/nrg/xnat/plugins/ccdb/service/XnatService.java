@@ -6,11 +6,14 @@ import org.nrg.xft.event.EventMetaI;
 import org.nrg.xft.event.EventUtils;
 import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.SaveItemHelper;
+import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HandlerException;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,7 +60,7 @@ public class XnatService {
     }
 
     public XnatImagesessiondata getOrCreateImageSession(XnatSubjectdata subjectdata,
-                                                        String sessionLabel,
+                                                        String modality, String sessionLabel,
                                                         UserI user) throws XnatServiceException {
         XnatImagesessiondata imagesessiondata = null;
 
@@ -70,7 +73,7 @@ public class XnatService {
                 .collect(Collectors.toList());
 
         if( imagesessiondataList.isEmpty()) {
-            imagesessiondata = createImageSession( sessionLabel, subjectdata, user);
+            imagesessiondata = createImageSession( modality, sessionLabel, subjectdata, user);
         }
         else {
             imagesessiondata = imagesessiondataList.get(0);
@@ -78,11 +81,22 @@ public class XnatService {
         return imagesessiondata;
     }
 
-    public XnatImagesessiondata createImageSession( String sessionLabel, XnatSubjectdata subjectdata, UserI user) throws XnatServiceException {
+    public XnatImagesessiondata createImageSession( String modality, String sessionLabel, XnatSubjectdata subjectdata, UserI user) throws XnatServiceException {
         try {
-            XnatImagesessiondata imagesessiondata = new XnatImagesessiondata();
+            XnatImagesessiondata imagesessiondata;
+            switch( modality) {
+                case "PET":
+                    imagesessiondata = new XnatPetsessiondata();
+                    break;
+                case "CT":
+                    imagesessiondata = new XnatCtsessiondata();
+                    break;
+                default:
+                    imagesessiondata = new XnatImagesessiondata();
+            }
             imagesessiondata.setId( XnatExperimentdata.CreateNewID());
             imagesessiondata.setLabel( sessionLabel);
+            imagesessiondata.setModality( modality);
 
             imagesessiondata.setProject( subjectdata.getProject());
             imagesessiondata.setSubjectId( subjectdata.getId());
@@ -99,10 +113,37 @@ public class XnatService {
         }
     }
 
-    public XnatResourcecatalog createScanResource(UserI user) throws XnatServiceException {
+    public XnatImagescandata createImageScan( String imageSessionID, String modality, String id, String type, UserI user) throws XnatServiceException {
+        try {
+            XnatImagescandata scandata;
+            switch (modality) {
+                case "PET":
+                    scandata = new XnatPetscandata(user);
+                    break;
+                case "CT":
+                    scandata = new XnatCtscandata( user);
+                    break;
+                default:
+                    scandata = new XnatImagescandata( user);
+            }
+            scandata.setId( id);
+            scandata.setType( type);
+            scandata.setImageSessionId( imageSessionID);
+
+            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "create image scan.");
+            SaveItemHelper.authorizedSave( scandata.getItem(), user, false, false, false, false, eventMeta);
+            return scandata;
+        }
+        catch( Exception e) {
+            String msg = "Error creating image scan data for session: " + imageSessionID;
+            throw new XnatServiceException(msg, e);
+        }
+    }
+
+    public XnatResourcecatalog createScanResource(XnatImagesessiondata imagesessiondata, UserI user) throws XnatServiceException {
         try {
             final XnatResourcecatalog catalog;
-            String parentURI = "";
+            String parentURI = UriParserUtils.getArchiveUri( imagesessiondata);
             String resourceName = "microPET";
             String format = "microPET";
             String content = "microPET";
@@ -114,6 +155,10 @@ public class XnatService {
             String msg = "Error creating scan resource. ";
             throw new XnatServiceException(msg, e);
         }
+    }
+
+    public XnatResourcecatalog insertResources(String parentUri, Collection<File> resources, final boolean preserveDirectories, final String label, final String description, final String format, final String content, UserI user) throws Exception {
+        return _catalogService.insertResources( user, parentUri, resources, preserveDirectories, label, description, format, content);
     }
 
 //    public XnatImagescandata createImageScan(String scanLabel, List<ResourceFile> files) throws XnatServiceException {

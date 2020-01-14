@@ -13,7 +13,6 @@ import org.nrg.xdat.security.services.UserManagementServiceI;
 import org.nrg.xft.security.UserI;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk_WU;
-import org.nrg.xnat.plugins.ccdb.rest.guest.Guest;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HandlerException;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSession;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSessionHandler;
@@ -23,11 +22,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -153,25 +154,9 @@ public class CCDBApi extends AbstractXapiRestController {
             UserI user = getSessionUser();
             FrontDesk_WU frontDesk = (FrontDesk_WU) _frontDesk;
 
-            List<Guest> guestList = frontDesk.getGuests(hotelSessionID, user);
+            frontDesk.checkInHotelSession( projectID, hotelSessionID, user);
 
-//            for (Guest g : guestList) {
-//                out.println "${g.label}"
-//                g.sessions.each{ sess ->
-//                    println "${sess}"
-//                    println "label: ${sess.label}"
-//                    println "resource files:"
-//                    sess.resourceFiles.each { rf ->
-//                        println "${rf.absolutePath}"
-//                    }
-//                }
-//            }
-//
-//            XnatService service = frontDesk.xnatService
-//            XnatResourcecatalog catalog = service.createScanResource( user)
-//            out.println "catalog: ${catalog}"
-
-            return new ResponseEntity<>(HttpStatus.OK);
+           return new ResponseEntity<>(HttpStatus.OK);
         }
         catch( Exception e) {
             HttpStatus status = (e instanceof HandlerException)? ((HandlerException) e).getHttpStatus(): HttpStatus.INTERNAL_SERVER_ERROR;

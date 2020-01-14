@@ -61,7 +61,7 @@ public class HotelScan {
     @CsvBindByName( column = "Scanner", required = true)
     private String scanner;
 
-    @CsvBindByName( column = "Tracer", required = true)
+    @CsvBindByName( column = "Tracer", required = false)
     private String tracer;
 
     @CsvBindByName( column = "Study Date", required = true)
