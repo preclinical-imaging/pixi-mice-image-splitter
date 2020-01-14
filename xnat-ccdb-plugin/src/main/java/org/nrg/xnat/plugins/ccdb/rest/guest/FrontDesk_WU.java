@@ -3,6 +3,7 @@ package org.nrg.xnat.plugins.ccdb.rest.guest;
 import org.nrg.xdat.om.*;
 import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.ResourceFile;
+import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.plugins.ccdb.service.XnatService;
 import org.nrg.xnat.plugins.ccdb.service.XnatServiceException;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class FrontDesk_WU implements FrontDesk {
         this.guestSessionLabelModel = gslm;
     }
 
-    public void checkInHotelSession( String projectLabel, String hotelSessionID, UserI user) {
+    public void checkInHotelSession( String projectLabel, String hotelSessionID, UserI user) throws Exception {
         try {
             XnatProjectdata projectdata = XnatProjectdata.getProjectByIDorAlias(projectLabel, user, false);
             if (projectdata != null) {
@@ -62,6 +63,8 @@ public class FrontDesk_WU implements FrontDesk {
             XnatSubjectassessordata subjectassessordata = (XnatSubjectassessordata) exptData;
             XnatSubjectdata subjectdata = subjectassessordata.getSubjectData();
 
+            String modality = getModaliity( subjectassessordata);
+
             String subjectOrderString = (String) subjectdata.getFieldByName("subjectorder");
             if( subjectOrderString == null || subjectOrderString.isEmpty()) {
                 String msg = String.format("Unknown subject order in hotel session: %s", hotelSessionLabel);
@@ -82,7 +85,7 @@ public class FrontDesk_WU implements FrontDesk {
 
             switch (hotelSize) {
                 case 1:
-                    Guest guest = getGuest( 1, 0, fileResources);
+                    Guest guest = getGuest( 1, modality, 0, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 0 of 1-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
@@ -91,14 +94,14 @@ public class FrontDesk_WU implements FrontDesk {
                     guests.add( guest);
                     break;
                 case 2:
-                    guest = getGuest( 2, 0, fileResources);
+                    guest = getGuest( 2, modality, 0, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 0 of 2-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
                         break;
                     }
                     guests.add( guest);
-                    guest = getGuest( 2, 1, fileResources);
+                    guest = getGuest( 2, modality, 1, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 1 of 2-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
@@ -107,28 +110,28 @@ public class FrontDesk_WU implements FrontDesk {
                     guests.add( guest);
                     break;
                 case 4:
-                    guest = getGuest( 4, 0, fileResources);
+                    guest = getGuest( 4, modality, 0, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 0 of 4-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
                         break;
                     }
                     guests.add( guest);
-                    guest = getGuest( 4, 1, fileResources);
+                    guest = getGuest( 4, modality, 1, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 1 of 4-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
                         break;
                     }
                     guests.add( guest);
-                    guest = getGuest( 4, 2, fileResources);
+                    guest = getGuest( 4, modality, 2, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 2 of 4-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
                         break;
                     }
                     guests.add( guest);
-                    guest = getGuest( 4, 3, fileResources);
+                    guest = getGuest( 4, modality, 3, fileResources);
                     if( guest == null) {
                         String msg = String.format("No guest found for position 3 of 4-room hotel session %s", hotelSessionLabel);
                         _log.warn( msg);
@@ -147,7 +150,18 @@ public class FrontDesk_WU implements FrontDesk {
         return guests;
     }
 
-    protected Guest getGuest( int hotelSize, int position, List<ResourceFile> resourceFiles) {
+    protected String getModaliity( XnatSubjectassessordata sad) {
+        String modality = "Unknown";
+        if( sad instanceof CcdbHotelpet) {
+            modality = "PET";
+        }
+        else if( sad instanceof CcdbHotelct) {
+            modality = "CT";
+        }
+        return modality;
+    }
+
+    protected Guest getGuest( int hotelSize, String modality, int position, List<ResourceFile> resourceFiles) {
         Guest guest = null;
         List<ResourceFile> guestResourceFiles = resourceFiles.stream()
                 .filter(r -> r.getF().getName().contains( guestPositionLabelModel.getLabel( hotelSize, position)))
@@ -156,27 +170,28 @@ public class FrontDesk_WU implements FrontDesk {
             String guestName = guestLabelModel.getLabel( hotelSize, position);
             guest = new Guest(guestName);
             String guestSessionName = guestSessionLabelModel.getLabel( hotelSize, position);
-            GuestSession guestSession = new GuestSession(guestSessionName, guestResourceFiles);
+            GuestSession guestSession = new GuestSession(guestSessionName, modality, guestResourceFiles);
             guest.addSession(guestSession);
         }
         return guest;
     }
 
-    public void checkInGuest( Guest guest, XnatProjectdata projectdata, UserI user) throws XnatServiceException {
+    public void checkInGuest( Guest guest, XnatProjectdata projectdata, UserI user) throws Exception {
         XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject( projectdata, guest.getLabel(), user);
         String sessionLabel = "sessionLabel";
         for( GuestSession gs: guest.getSessions()) {
-            XnatImagesessiondata imagesessiondata = _xnatService.getOrCreateImageSession(subjectdata, gs.getLabel(), user);
-            XnatResourcecatalog catalog = _xnatService.createScanResource( user);
-//            for( ResourceFile rf: gs.getResourceFiles()) {
-//
-//            }
+            XnatImagesessiondata sessiondata = _xnatService.getOrCreateImageSession(subjectdata, gs.getModality(), gs.getLabel(), user);
+            XnatImagescandata scan = _xnatService.createImageScan(sessiondata.getId(), sessiondata.getModality(), "1", "microPET", user);
+
+//            String parentUri = UriParserUtils.getArchiveUri( scan);
+            String parentUri = String.format("/archive/experiments/%s/scans/%s", scan.getImageSessionId(), scan.getId());
+            final boolean preserveDirectories = false;
+            final String label = "microPET";
+            final String description = "description";
+            final String format = "microPET";
+            final String content = "content";
+            XnatResourcecatalog resourcecatalog = _xnatService.insertResources( parentUri, gs.getFiles(),  preserveDirectories, label, description, format, content, user);
         }
-
     }
 
-    // aids debugging
-    public XnatService getXnatService() {
-        return _xnatService;
-    }
 }
