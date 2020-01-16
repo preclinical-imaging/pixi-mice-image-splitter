@@ -80,8 +80,13 @@ public class FrontDesk_WU implements FrontDesk {
             // don't know why the above returns all file resources and not just the microPET ones.
             _log.debug( "Found {} fileResources for hotel session {}.", fileResources.size(), hotelSessionLabel);
 
-            guestLabelModel.setScanName( "scanName");
+            String hotelSubjectName = subjectdata.getLabel();
+            guestLabelModel.setScanName( hotelSubjectName);
             guestLabelModel.setSubjectOrderArray( subjectOrderArray);
+
+            guestSessionLabelModel.setHotelSubjectName( hotelSubjectName);
+            guestSessionLabelModel.setModality( modality);
+            guestSessionLabelModel.setSubjectOrderArray( subjectOrderArray);
 
             switch (hotelSize) {
                 case 1:

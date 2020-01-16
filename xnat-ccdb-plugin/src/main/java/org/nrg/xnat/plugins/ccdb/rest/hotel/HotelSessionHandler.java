@@ -24,7 +24,6 @@ import java.util.List;
  * Handle the loading of a collection of Hotel Sessions.
  *
  */
-//@Component
 public class HotelSessionHandler  {
 
     private final SiteConfigPreferences _preferences;
@@ -140,7 +139,7 @@ public class HotelSessionHandler  {
             SaveItemHelper.authorizedSave(assessor.getItem(), user, false, false, false, false, eventMeta);
         }
         catch( Exception e) {
-            String msg = "Error saving assessor for hotel subject: " + subjectdata.getLabel();
+            String msg = "Error saving assessor for hotel subject: '" + subjectdata.getLabel() + "'.";
             throw new HandlerException(msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return assessor;
