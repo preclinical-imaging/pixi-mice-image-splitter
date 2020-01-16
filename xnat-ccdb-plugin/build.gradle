@@ -126,6 +126,7 @@ dependencies {
         transitive = false
     }
     compileAndInclude 'com.opencsv:opencsv:4.6'
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.17.RELEASE'
 
     implementation "log4j:log4j"
     implementation "io.springfox:springfox-swagger2"

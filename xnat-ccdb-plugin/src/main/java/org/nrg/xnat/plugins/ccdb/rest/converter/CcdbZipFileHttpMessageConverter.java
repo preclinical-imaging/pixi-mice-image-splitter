@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
 public class CcdbZipFileHttpMessageConverter extends AbstractHttpMessageConverter< Map< String, File>> {
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 

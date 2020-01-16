@@ -64,9 +64,9 @@
                             <TR><TD>Injection Time</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_injection_time")</TD></TR>
                         </TABLE>
                     </TD>
-                    <TD valign="top" align="right">
-                        #parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
-                    </TD>
+##                    <TD valign="top" align="right">
+##                        #parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
+##                    </TD>
                 </TR>
             </TABLE>
         </TD>
