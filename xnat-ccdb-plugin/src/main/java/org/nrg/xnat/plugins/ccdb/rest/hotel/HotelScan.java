@@ -114,6 +114,7 @@ public class HotelScan {
         for( File f: files) {
             if( isHotelScanCSV(f)) {
                 scans = readCSV(f);
+                break;
             }
         }
 
@@ -143,179 +144,69 @@ public class HotelScan {
         return f.getName().endsWith(".csv");
     }
 
-    public String getHotelSubject() {
-        return hotelSubject;
-    }
+    public String getHotelSubject() { return hotelSubject; }
+    public void setHotelSubject(String hotelSubject) { this.hotelSubject = hotelSubject; }
 
-    public void setHotelSubject(String hotelSubject) {
-        this.hotelSubject = hotelSubject;
-    }
+    public String getScanName() { return scanName; }
+    public void setScanName(String scanName) { this.scanName = scanName; }
 
-    public String getScanName() {
-        return scanName;
-    }
+    public String getScanType() { return scanType; }
+    public void setScanType(String scanType) { this.scanType = scanType; }
 
-    public void setScanName(String scanName) {
-        this.scanName = scanName;
-    }
+    public String getTimePoints() { return timePoints; }
+    public void setTimePoints(String timePoints) { this.timePoints = timePoints; }
 
-    public String getScanType() {
-        return scanType;
-    }
+    public String getHotelPosition() { return hotelPosition; }
+    public void setHotelPosition(String hotelPosition) { this.hotelPosition = hotelPosition; }
 
-    public void setScanType(String scanType) {
-        this.scanType = scanType;
-    }
+    public List<String> getAnimalNumbers() { return animalNumbers; }
+    public void setAnimalNumbers(List<String> animalNumbers) { this.animalNumbers = animalNumbers; }
 
-    public String getTimePoints() {
-        return timePoints;
-    }
+    public String getAnimalWeight() { return animalWeight; }
+    public void setAnimalWeight(String animalWeight) { this.animalWeight = animalWeight; }
 
-    public void setTimePoints(String timePoints) {
-        this.timePoints = timePoints;
-    }
+    public String getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
-    public String getHotelPosition() {
-        return hotelPosition;
-    }
+    public String getDateWeaned() { return dateWeaned; }
+    public void setDateWeaned(String dateWeaned) { this.dateWeaned = dateWeaned; }
 
-    public void setHotelPosition(String hotelPosition) {
-        this.hotelPosition = hotelPosition;
-    }
+    public String getSex() { return sex; }
+    public void setSex(String sex) { this.sex = sex; }
 
-    public List<String> getAnimalNumbers() {
-        return animalNumbers;
-    }
+    public String getActivity() { return activity; }
+    public void setActivity(String activity) { this.activity = activity; }
 
-    public void setAnimalNumbers(List<String> animalNumbers) {
-        this.animalNumbers = animalNumbers;
-    }
+    public String getScanTime() { return scanTime; }
+    public void setScanTime(String scanTime) { this.scanTime = scanTime; }
 
-    public String getAnimalWeight() {
-        return animalWeight;
-    }
+    public String getInjectionTime() { return injectionTime; }
+    public void setInjectionTime(String injectionTime) { this.injectionTime = injectionTime; }
 
-    public void setAnimalWeight(String animalWeight) {
-        this.animalWeight = animalWeight;
-    }
+    public String getScanner() { return scanner; }
+    public void setScanner(String scanner) { this.scanner = scanner; }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
+    public String getTracer() { return tracer; }
+    public void setTracer(String tracer) { this.tracer = tracer; }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
+    public String getStudyDate() { return studyDate; }
+    public void setStudyDate(String studyDate) { this.studyDate = studyDate; }
 
-    public String getDateWeaned() {
-        return dateWeaned;
-    }
+    public String getStudyName() { return studyName; }
+    public void setStudyName(String studyName) { this.studyName = studyName; }
 
-    public void setDateWeaned(String dateWeaned) {
-        this.dateWeaned = dateWeaned;
-    }
+    public String getProtocolNumber() { return protocolNumber; }
+    public void setProtocolNumber(String protocolNumber) { this.protocolNumber = protocolNumber; }
 
-    public String getSex() {
-        return sex;
-    }
+    public String getSpecies() { return species; }
+    public void setSpecies(String species) { this.species = species; }
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
+    public String getStrain() { return strain; }
+    public void setStrain(String strain) { this.strain = strain; }
 
-    public String getActivity() {
-        return activity;
-    }
+    public String getLitterID() { return litterID; }
+    public void setLitterID(String litterID) { this.litterID = litterID; }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
-    }
-
-    public String getScanTime() {
-        return scanTime;
-    }
-
-    public void setScanTime(String scanTime) {
-        this.scanTime = scanTime;
-    }
-
-    public String getInjectionTime() {
-        return injectionTime;
-    }
-
-    public void setInjectionTime(String injectionTime) {
-        this.injectionTime = injectionTime;
-    }
-
-    public String getScanner() {
-        return scanner;
-    }
-
-    public void setScanner(String scanner) {
-        this.scanner = scanner;
-    }
-
-    public String getTracer() {
-        return tracer;
-    }
-
-    public void setTracer(String tracer) {
-        this.tracer = tracer;
-    }
-
-    public String getStudyDate() {
-        return studyDate;
-    }
-
-    public void setStudyDate(String studyDate) {
-        this.studyDate = studyDate;
-    }
-
-    public String getStudyName() {
-        return studyName;
-    }
-
-    public void setStudyName(String studyName) {
-        this.studyName = studyName;
-    }
-
-    public String getProtocolNumber() {
-        return protocolNumber;
-    }
-
-    public void setProtocolNumber(String protocolNumber) {
-        this.protocolNumber = protocolNumber;
-    }
-
-    public String getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
-    public String getStrain() {
-        return strain;
-    }
-
-    public void setStrain(String strain) {
-        this.strain = strain;
-    }
-
-    public String getLitterID() {
-        return litterID;
-    }
-
-    public void setLitterID(String litterID) {
-        this.litterID = litterID;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 }
