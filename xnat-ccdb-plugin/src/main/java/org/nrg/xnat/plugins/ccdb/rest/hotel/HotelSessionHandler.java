@@ -170,8 +170,12 @@ public class HotelSessionHandler  {
         try {
             if (assessor instanceof CcdbHotelpet) {
                 CcdbHotelpet petHotel = (CcdbHotelpet) assessor;
-                switch (scan.getHotelPosition()) {
+                switch (scan.getHotelPosition().get(0)) {
                     case "1":
+                    case "ctr":
+                    case "l":
+                    case "tl":
+                    case "lt":
                         petHotel.setPos1TimePoints(scan.getTimePoints());
                         petHotel.setPos1ActivityMcl(scan.getActivity());
                         petHotel.setPos1InjectionTime(scan.getInjectionTime());
@@ -179,6 +183,9 @@ public class HotelSessionHandler  {
                         petHotel.setPos1Weight(scan.getAnimalWeight());
                         break;
                     case "2":
+                    case "r":
+                    case "tr":
+                    case "rt":
                         petHotel.setPos2TimePoints(scan.getTimePoints());
                         petHotel.setPos2ActivityMcl(scan.getActivity());
                         petHotel.setPos2InjectionTime(scan.getInjectionTime());
@@ -186,6 +193,8 @@ public class HotelSessionHandler  {
                         petHotel.setPos2Weight(scan.getAnimalWeight());
                         break;
                     case "3":
+                    case "rb":
+                    case "br":
                         petHotel.setPos3TimePoints(scan.getTimePoints());
                         petHotel.setPos3ActivityMcl(scan.getActivity());
                         petHotel.setPos3InjectionTime(scan.getInjectionTime());
@@ -193,6 +202,8 @@ public class HotelSessionHandler  {
                         petHotel.setPos3Weight(scan.getAnimalWeight());
                         break;
                     case "4":
+                    case "lb":
+                    case "bl":
                         petHotel.setPos4TimePoints(scan.getTimePoints());
                         petHotel.setPos4ActivityMcl(scan.getActivity());
                         petHotel.setPos4InjectionTime(scan.getInjectionTime());

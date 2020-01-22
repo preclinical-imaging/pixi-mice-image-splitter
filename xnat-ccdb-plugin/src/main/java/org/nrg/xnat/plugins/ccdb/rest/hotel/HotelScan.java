@@ -31,10 +31,10 @@ public class HotelScan {
     @CsvBindByName( column = "Time Points", required = false)
     private String timePoints;
 
-    @CsvBindByName( column = "Hotel Position", required = false)
-    private String hotelPosition;
+    @CsvBindAndSplitByName( column = "Hotel Position", required = true, elementType = String.class, splitOn = " ")
+    private List<String> hotelPosition;
 
-    @CsvBindAndSplitByName( column = "Animal #", required = false, elementType = String.class, splitOn = ",")
+    @CsvBindAndSplitByName( column = "Animal #", required = false, elementType = String.class, splitOn = " ")
     private List<String> animalNumbers;
 
     @CsvBindByName( column = "Animal Weight(g)", required = false)
@@ -81,6 +81,9 @@ public class HotelScan {
 
     @CsvBindByName( column = "Litter ID", required = false)
     private String litterID;
+
+    @CsvBindByName( column = "Organ of Interest", required = false)
+    private String organOfInterest;
 
     @CsvBindByName( column = "Notes", required = false)
     private String notes;
@@ -156,8 +159,8 @@ public class HotelScan {
     public String getTimePoints() { return timePoints; }
     public void setTimePoints(String timePoints) { this.timePoints = timePoints; }
 
-    public String getHotelPosition() { return hotelPosition; }
-    public void setHotelPosition(String hotelPosition) { this.hotelPosition = hotelPosition; }
+    public List<String> getHotelPosition() { return hotelPosition; }
+    public void setHotelPosition(List<String> hotelPosition) { this.hotelPosition = hotelPosition; }
 
     public List<String> getAnimalNumbers() { return animalNumbers; }
     public void setAnimalNumbers(List<String> animalNumbers) { this.animalNumbers = animalNumbers; }
@@ -206,6 +209,9 @@ public class HotelScan {
 
     public String getLitterID() { return litterID; }
     public void setLitterID(String litterID) { this.litterID = litterID; }
+
+    public String getOrganOfInterest() { return organOfInterest; }
+    public void setOrganOfInterest(String organOfInterest) { this.organOfInterest = organOfInterest; }
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
