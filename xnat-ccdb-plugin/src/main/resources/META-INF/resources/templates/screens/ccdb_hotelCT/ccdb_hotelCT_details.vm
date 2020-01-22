@@ -3,3 +3,85 @@
 
 
 <!-- END templates/screens/ccdb_hotel/ccdb_hotelCT_details.vm -->
+
+<TABLE width="100%">
+    <TR>
+        <TD>
+            <table width="100%">
+                <TR>
+                    <TD align="left" valign="middle">
+                        <font face="$ui.sansSerifFonts" size="3"><b>Hotel Session Details</b></font>
+                    </TD>
+                </TR>
+            </TABLE>
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            <TABLE width="100%">
+				<TR>
+                    <TD valign="top">
+                        <TABLE>
+							<TR><TD>Organ Of Interest</TD><TD>$!item.getStringProperty("ccdb:hotelCT/organ_of_interest")</TD></TR>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD valign="top">
+                        <TABLE>
+                            <TH>Position 1</TH>
+							<TR><TD>Animal Number</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_animal_num")</TD></TR>
+							<TR><TD>Hotel Position</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_hotel_position")</TD></TR>
+							<TR><TD>Subject Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_subject_label")</TD></TR>
+							<TR><TD>Session Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_session_label")</TD></TR>
+                            <TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_scan_time_pet")</TD></TR>
+							<TR><TD>Notes</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos1_notes")</TD></TR>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD valign="top">
+                        <TABLE>
+                            <TH>Position 2</TH>
+							<TR><TD>Animal Number</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_animal_num")</TD></TR>
+							<TR><TD>Hotel Position</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_hotel_position")</TD></TR>
+							<TR><TD>Subject Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_subject_label")</TD></TR>
+							<TR><TD>Session Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_session_label")</TD></TR>
+                            <TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_scan_time_pet")</TD></TR>
+							<TR><TD>Notes</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos2_notes")</TD></TR>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD valign="top">
+                        <TABLE>
+                            <TH>Position 3</TH>
+							<TR><TD>Animal Number</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_animal_num")</TD></TR>
+							<TR><TD>Hotel Position</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_hotel_position")</TD></TR>
+							<TR><TD>Subject Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_subject_label")</TD></TR>
+							<TR><TD>Session Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_session_label")</TD></TR>
+                            <TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_scan_time_pet")</TD></TR>
+							<TR><TD>Notes</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos3_notes")</TD></TR>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD valign="top">
+                        <TABLE>
+                            <TH>Position 4</TH>
+							<TR><TD>Animal Number</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_animal_num")</TD></TR>
+							<TR><TD>Hotel Position</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_hotel_position")</TD></TR>
+							<TR><TD>Subject Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_subject_label")</TD></TR>
+							<TR><TD>Session Label</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_session_label")</TD></TR>
+                            <TR><TD>PET Scan Time</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_scan_time_pet")</TD></TR>
+							<TR><TD>Notes</TD><TD>$!item.getStringProperty("ccdb:hotelCT/pos4_notes")</TD></TR>
+                        </TABLE>
+                    </TD>
+                    <TD valign="top" align="right">
+                        #parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
+                    </TD>
+                </TR>
+            </TABLE>
+        </TD>
+    </TR>
+</TABLE>
