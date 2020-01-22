@@ -186,6 +186,14 @@ $page.setVlinkColor($ui.vlink)
 					<TR>
 						<TD valign="top">
 							<TABLE>
+								<TR><TD>Organ Of Interest</TD><TD>#xdatStringBox("ccdb:hotelPET/organ_of_interest" $item "" $vr)</TD></TR>
+								<br />
+							</TABLE>
+						</TD>
+					</TR>
+					<TR>
+						<TD valign="top">
+							<TABLE>
 								<TH>Position 1</TH>
 								<TR><TD>Animal Number</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_animal_num" $item "" $vr)</TD></TR>
 								<TR><TD>Hotel Position</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_hotel_position" $item "" $vr)</TD></TR>

@@ -23,6 +23,7 @@
                     <TD valign="top">
                         <TABLE>
 							<TR><TD>Organ Of Interest</TD><TD>$!item.getStringProperty("ccdb:hotelCT/organ_of_interest")</TD></TR>
+							<br />
                         </TABLE>
                     </TD>
                 </TR>
