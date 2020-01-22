@@ -5,7 +5,6 @@ import org.nrg.xdat.preferences.SiteConfigPreferences;
 import org.nrg.xft.event.EventMetaI;
 import org.nrg.xft.event.EventUtils;
 import org.nrg.xft.security.UserI;
-import org.nrg.xft.utils.ResourceFile;
 import org.nrg.xft.utils.SaveItemHelper;
 import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.plugins.ccdb.service.XnatService;
@@ -17,8 +16,9 @@ import org.springframework.http.HttpStatus;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Handle the loading of a collection of Hotel Sessions.
@@ -38,37 +38,13 @@ public class HotelSessionHandler  {
         _xnatService = new XnatService(_catalogService);
     }
 
-    /**
-     * Ingest the collection of Hotel Sessions.
-     *
-     * @param project The project label of the project to receive the hotel sessions.
-     * @param sessions The collection of hotel sessions to be processed.
-     * @param user The user doing the processing.
-     * @throws HandlerException
-     */
-    public void handleSessions(String project, Collection<HotelSession> sessions, UserI user) throws HandlerException {
-        for( HotelSession session: sessions) {
-            handleSession( project, session, user);
+    public void handleSubjects(String project, Collection<HotelSubject> subjects, UserI user) throws Exception {
+        for( HotelSubject subject: subjects) {
+            handleSubject( project, subject, user);
         }
     }
 
-    /**
-     * Ingest a single Hotel Session.
-     *
-     * The central method that defines the processing flow.
-     * The basic flow is:
-     * 1. Find or create the subject
-     * 2. for each scan in the session...
-     *  a. Find or create the hotel scan (subject assessor).
-     *  b. Add scan data to the assessor.
-     *  c. Add image data as resource on the subject assessor.
-     *
-     * @param project The project label of the project to receive the hotel sessions.
-     * @param session The collection of hotel sessions to be processed.
-     * @param user The user doing the processing.
-     * @throws HandlerException
-     */
-    public void handleSession( String project, HotelSession session, UserI user) throws HandlerException {
+    public void handleSubject( String project, HotelSubject subject, UserI user) throws Exception {
         XnatProjectdata projectdata = XnatProjectdata.getProjectByIDorAlias( project, user, false);
         if( projectdata == null) {
             String msg = "Project not found: " + project;
@@ -76,26 +52,38 @@ public class HotelSessionHandler  {
         }
 
         try {
-            XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject(projectdata, session.getSubjectLabel(), user);
+            XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject(projectdata, subject.getSubjectLabel(), user);
 
-            for( HotelScan scan: session.getScans()) {
-                XnatSubjectassessordata assessor = getAssessor(subjectdata, scan, user);
-                if( assessor == null) {
-                    assessor = createAssessor(subjectdata, scan, user);
-                    try {
-                        subjectdata.addExperiments_experiment(assessor);
+            _xnatService.insertOrUpdateField( subjectdata, "subjectorder", subject.getSubjectOrderString(), user);
+
+            for( HotelSession session: subject.getSessions()) {
+
+                XnatImagesessiondata imageSession = getOrCreateHotelImageSession( project, subjectdata, session.getModalities(), session.getHotelSessionLabel(), user);
+
+                Set<String> loadedScans = new HashSet<>();
+                for( HotelScan scan: session.getScans()) {
+                    if( ! loadedScans.contains( scan.getScanName())) {
+                    // add the first scan to the session.
+                        final XnatImagescandata imageScan = _xnatService.createImageScan(imageSession.getId(), scan.getScanType(), "1", "IMAGE", user);
+                        String uri = String.format("/archive/experiments/%s/scans/%s", imageSession.getId(), imageScan.getId());
+                        addResources(uri, scan.getImages(), user);
+                        loadedScans.add( scan.getScanName());
                     }
-                    catch( Exception e) {
-                        String msg = "Error adding assessor to hotel subject: " + subjectdata.getLabel();
-                        throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
+                    // update the session with all the scans' metadata.
+                    udateScanInfo(imageSession, scan, user);
                 }
-                addScan( assessor, scan, user);
-                addImages( assessor, scan.getImages(), user);
             }
         } catch( XnatServiceException e) {
             throw new HandlerException( e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    protected XnatImagesessiondata getOrCreateHotelImageSession( String project, XnatSubjectdata subjectdata, String modality, String label, UserI user) throws Exception {
+        XnatImagesessiondata imageSession = XnatImagesessiondata.getXnatImagesessiondatasById( label, user, false);
+        if( imageSession == null) {
+            imageSession = createHotelImageSession( project, subjectdata, modality, label, user);
+        }
+        return imageSession;
     }
 
     /**
@@ -118,131 +106,54 @@ public class HotelSessionHandler  {
         }
         return assessor;
     }
-
-    /**
-     * Create a subject assessor (Hotel Session).
-     *
-     * @param subjectdata The subject
-     * @param hotelScan A hotel scan that is contained by the session.
-     * @param user The user.
-     * @return The subject assessor (hotel session) for this scan.
-     */
-    protected XnatSubjectassessordata createAssessor(XnatSubjectdata subjectdata, HotelScan hotelScan, UserI user) throws HandlerException {
-        XnatSubjectassessordata assessor = null;
-        assessor = createHotelAssessor(hotelScan);
-        assessor.setProject(subjectdata.getProject());
-        assessor.setSubjectId(subjectdata.getId());
-        assessor.setDate(new Date());
-
-        try {
-            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "update hotel-subject assessor.");
-            SaveItemHelper.authorizedSave(assessor.getItem(), user, false, false, false, false, eventMeta);
-        }
-        catch( Exception e) {
-            String msg = "Error saving assessor for hotel subject: '" + subjectdata.getLabel() + "'.";
-            throw new HandlerException(msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return assessor;
-    }
-
     /**
      * Create the particular class of subject assessor (Hotel Session) based on the type of scan.
      *
-     * @param scan The hotel scan.
-     * @return The appropriate subclass of assessor: CccdbHotelct or CccdbHotelpt.
-     * @throws HandlerException
      */
-    public XnatSubjectassessordata createHotelAssessor( HotelScan scan) throws HandlerException {
+    public XnatImagesessiondata createHotelImageSession( String project, XnatSubjectdata subjectdata, String modality, String label, UserI user) throws Exception {
+        XnatImagesessiondata imagesessiondata = null;
+        switch (modality) {
+            case "CT":
+                CcdbHotelct ctSession = new CcdbHotelct();
+                ctSession.setId( XnatExperimentdata.CreateNewID());
+                ctSession.setLabel( label);
+                imagesessiondata = ctSession;
+                break;
+            case "PT":
+            case "PET":
+                CcdbHotelpet petSesion = new CcdbHotelpet();
+                petSesion.setId( XnatExperimentdata.CreateNewID());
+                petSesion.setLabel( label);
+                imagesessiondata = petSesion;
+                break;
+            default:
+                // unknown scan type
+                imagesessiondata = null;
+                break;
+        }
+        if( imagesessiondata != null) {
+            imagesessiondata.setSubjectId(subjectdata.getId());
+            imagesessiondata.setProject(project);
+            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "update hotel-subject assessor with scan.");
+            SaveItemHelper.authorizedSave(imagesessiondata.getItem(), user, false, false, false, false, eventMeta);
+        }
+        return imagesessiondata;
+    }
+
+    public XnatResourcecatalog addResources( String parentUri, List<File> files, UserI user) throws HandlerException {
         try {
-            XnatSubjectassessordata assessor = null;
-            switch (scan.getScanType()) {
-                case "CT":
-                    CcdbHotelct ctSession = new CcdbHotelct();
-                    ctSession.setId( XnatExperimentdata.CreateNewID());
-                    ctSession.setLabel(scan.getScanName());
-                    assessor = ctSession;
-                    break;
-                case "PT":
-                case "PET":
-                    CcdbHotelpet petSesion = new CcdbHotelpet();
-                    petSesion.setId( XnatExperimentdata.CreateNewID());
-                    petSesion.setLabel(scan.getScanName());
-                    petSesion.setScanner(scan.getScanner());
-                    assessor = petSesion;
-                    break;
-                default:
-                    // unknown scan type
-                    assessor = null;
-                    break;
-            }
-            return assessor;
+            final boolean preserveDirectories = false;
+            final String label = "imageData";
+            final String format = "weird binary";
+            final String description = "description";
+            final String content = "content";
+
+            final XnatResourcecatalog resourcecatalog = _xnatService.insertResources( parentUri, files, preserveDirectories, label, description, format, content, user);
+
+            return  resourcecatalog;
         }
         catch( Exception e) {
-            String msg = "Error creating hotel subject assessor. type: " + scan.getScanType();
-            throw new HandlerException(msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Add the list of files as resource on the assessor if the images are not present.
-     * @param assessor The assessor
-     * @param files The list of files
-     * @param user The user
-     * @throws HandlerException
-     */
-    public void addImages( XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
-        if( ! assessorHasFiles( assessor, files, user)) {
-            addResources( assessor, files, user);
-        }
-    }
-
-    /**
-     * Test if list of files are all present as resources on assessor.
-     * The resource name is currently hard coded as "imageData".
-     * @param assessor The assessor.
-     * @param files The list of files.
-     * @param user The user.
-     * @return true if all are present, false otherwise.
-     */
-    public boolean assessorHasFiles(XnatSubjectassessordata assessor, List<File> files, UserI user) {
-        List<ResourceFile> resourceFiles = assessor.getFileResources("imageData");
-        for( ResourceFile resourceFile: resourceFiles) {
-//            if( resourceMatches( resourceFile, files)) {
-//                return true;
-//            }
-        }
-        return false;
-    }
-
-    /**
-     * Test that defines criteria for and existing resource file to match a proposed file.
-     * @param rf  Existing resource file.
-     * @param f Proposed file to add.
-     * @return true if they are the same, false otherwise.
-     */
-    public boolean resourceMatches( ResourceFile rf, File f) {
-        return rf.getF().getName().equals( f.getName());
-    }
-
-    /**
-     * Add the list of files as resources to the assessor.
-     * This currently hard codes the resource label as "imageData" and the resource format as "weird binary".
-     * @param assessor The assessor.
-     * @param files The list of files.
-     * @param user The user.
-     * @throws HandlerException
-     */
-    public void addResources(XnatSubjectassessordata assessor, List<File> files, UserI user) throws HandlerException {
-        try {
-            String parentUri = UriParserUtils.getArchiveUri(assessor);
-            String label = "imageData";
-            String format = "weird binary";
-            final XnatResourcecatalog resourcecatalog = _catalogService.insertResources(user, parentUri, files, true, label, null, format, null);
-            String createdUri = UriParserUtils.getArchiveUri(resourcecatalog);
-//        _catalogService.refreshResourceCatalog( user, createdUri );
-        }
-        catch( Exception e) {
-            String msg = "Error attaching resources to assessor: " + assessor.getId();
+            String msg = "Error attaching resources to uri: " + parentUri;
             throw new HandlerException( msg, e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -255,7 +166,7 @@ public class HotelSessionHandler  {
      * @param user The user.
      * @throws HandlerException
      */
-    public void addScan( XnatSubjectassessordata assessor, HotelScan scan, UserI user) throws HandlerException {
+    public void udateScanInfo(XnatSubjectassessordata assessor, HotelScan scan, UserI user) throws HandlerException {
         try {
             if (assessor instanceof CcdbHotelpet) {
                 CcdbHotelpet petHotel = (CcdbHotelpet) assessor;

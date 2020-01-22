@@ -1,5 +1,6 @@
 package org.nrg.xnat.plugins.ccdb.service;
 
+import org.nrg.xdat.model.XnatSubjectdataFieldI;
 import org.nrg.xdat.om.*;
 import org.nrg.xft.XFTItem;
 import org.nrg.xft.event.EventMetaI;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -180,4 +182,28 @@ public class XnatService {
 //            throw new XnatServiceException(msg, e);
 //        }
 //    }
+
+    public void insertOrUpdateField( XnatSubjectdata subjectdata, String key, String value, UserI user) throws XnatServiceException {
+        List<XnatSubjectdataFieldI> fields = subjectdata.getFields_field();
+        XnatSubjectdataField field;
+        try {
+            Optional<XnatSubjectdataFieldI> f = fields.stream().filter( i -> i.getName().equals( key)).findAny();
+            if( f.isPresent()) {
+                if( ! f.get().getField().equals(value)) {
+                    f.get().setField(value);
+                }
+            } else {
+                XnatSubjectdataField newField = new XnatSubjectdataField(user);
+                newField.setName(key);
+                newField.setField(value);
+                subjectdata.addFields_field(newField);
+            }
+            EventMetaI eventMeta = EventUtils.DEFAULT_EVENT(user, "update data field on subject.");
+            SaveItemHelper.authorizedSave(subjectdata.getItem(), user, false, false, false, false, eventMeta);
+        }
+        catch( Exception e) {
+            String msg = String.format("Error editing custom field (%s=%s) on subject '%s'.", key, value, subjectdata.getId());
+            throw new XnatServiceException(msg, e);
+        }
+    }
 }

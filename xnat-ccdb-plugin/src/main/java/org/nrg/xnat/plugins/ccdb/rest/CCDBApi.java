@@ -14,8 +14,8 @@ import org.nrg.xft.security.UserI;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk_WU;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HandlerException;
-import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSession;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSessionHandler;
+import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSubject;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,15 +70,15 @@ public class CCDBApi extends AbstractXapiRestController {
         try {
             if( ! files.isEmpty()) {
 
-                Collection<HotelSession> hotelSessions = HotelSession.getSessionsFromFiles( files.values().stream().collect(Collectors.toList()));
-                if( hotelSessions.isEmpty()) {
+                Collection<HotelSubject> hotelSubjects = HotelSubject.getSubjectsFromFiles( files.values().stream().collect(Collectors.toList()));
+                if( hotelSubjects.isEmpty()) {
                     return new ResponseEntity<>("Failed to find hotel-scan csv.", HttpStatus.BAD_REQUEST);
                 }
                 UserI user = getSessionUser();
 
                 HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService);
 
-                sessionHandler.handleSessions( projectID, hotelSessions, user);
+                sessionHandler.handleSubjects( projectID, hotelSubjects, user);
 
                 return new ResponseEntity<>(HttpStatus.OK);
             }
