@@ -187,11 +187,17 @@ $page.setVlinkColor($ui.vlink)
 						<TD valign="top">
 							<TABLE>
 								<TH>Position 1</TH>
+								<TR><TD>Animal Number</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_animal_num" $item "" $vr)</TD></TR>
+								<TR><TD>Hotel Position</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_hotel_position" $item "" $vr)</TD></TR>
+								<TR><TD>Subject Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_subject_label" $item "" $vr)</TD></TR>
+								<TR><TD>Session Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_session_label" $item "" $vr)</TD></TR>
+								<TR><TD>Tracer</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_tracer" $item "" $vr)</TD></TR>
 								<TR><TD>Time Points</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_time_points" $item "" $vr)</TD></TR>
 								<TR><TD>Weight</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_weight" $item "" $vr)</TD></TR>
 								<TR><TD>Activity mCl</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_activity_mCl" $item "" $vr)</TD></TR>
 								<TR><TD>PET Scan Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_scan_time_pet" $item "" $vr)</TD></TR>
 								<TR><TD>Injection Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_injection_time" $item "" $vr)</TD></TR>
+								<TR><TD>Notes</TD><TD>#xdatStringBox("ccdb:hotelPET/pos1_notes" $item "" $vr)</TD></TR>
 							</TABLE>
 						</TD>
 					</TR>
@@ -199,11 +205,17 @@ $page.setVlinkColor($ui.vlink)
 						<TD valign="top">
 							<TABLE>
 								<TH>Position 2</TH>
+								<TR><TD>Animal Number</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_animal_num" $item "" $vr)</TD></TR>
+								<TR><TD>Hotel Position</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_hotel_position" $item "" $vr)</TD></TR>
+								<TR><TD>Subject Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_subject_label" $item "" $vr)</TD></TR>
+								<TR><TD>Session Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_session_label" $item "" $vr)</TD></TR>
+								<TR><TD>Tracer</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_tracer" $item "" $vr)</TD></TR>
 								<TR><TD>Time Points</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_time_points" $item "" $vr)</TD></TR>
 								<TR><TD>Weight</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_weight" $item "" $vr)</TD></TR>
 								<TR><TD>Activity mCl</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_activity_mCl" $item "" $vr)</TD></TR>
 								<TR><TD>PET Scan Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_scan_time_pet" $item "" $vr)</TD></TR>
 								<TR><TD>Injection Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_injection_time" $item "" $vr)</TD></TR>
+								<TR><TD>Notes</TD><TD>#xdatStringBox("ccdb:hotelPET/pos2_notes" $item "" $vr)</TD></TR>
 							</TABLE>
 						</TD>
 					</TR>
@@ -211,22 +223,35 @@ $page.setVlinkColor($ui.vlink)
 						<TD valign="top">
 							<TABLE>
 								<TH>Position 3</TH>
+								<TR><TD>Animal Number</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_animal_num" $item "" $vr)</TD></TR>
+								<TR><TD>Hotel Position</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_hotel_position" $item "" $vr)</TD></TR>
+								<TR><TD>Subject Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_subject_label" $item "" $vr)</TD></TR>
+								<TR><TD>Session Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_session_label" $item "" $vr)</TD></TR>
+								<TR><TD>Tracer</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_tracer" $item "" $vr)</TD></TR>
 								<TR><TD>Time Points</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_time_points" $item "" $vr)</TD></TR>
 								<TR><TD>Weight</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_weight" $item "" $vr)</TD></TR>
 								<TR><TD>Activity mCl</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_activity_mCl" $item "" $vr)</TD></TR>
 								<TR><TD>PET Scan Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_scan_time_pet" $item "" $vr)</TD></TR>
 								<TR><TD>Injection Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_injection_time" $item "" $vr)</TD></TR>
+								<TR><TD>Notes</TD><TD>#xdatStringBox("ccdb:hotelPET/pos3_notes" $item "" $vr)</TD></TR>
 							</TABLE>
 						</TD>
-					</TR>									<TR>
+					</TR>									
+					<TR>
 					<TD valign="top">
 						<TABLE>
 							<TH>Position 4</TH>
+							<TR><TD>Animal Number</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_animal_num" $item "" $vr)</TD></TR>
+							<TR><TD>Hotel Position</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_hotel_position" $item "" $vr)</TD></TR>
+							<TR><TD>Subject Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_subject_label" $item "" $vr)</TD></TR>
+							<TR><TD>Session Label</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_session_label" $item "" $vr)</TD></TR>
+							<TR><TD>Tracer</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_tracer" $item "" $vr)</TD></TR>
 							<TR><TD>Time Points</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_time_points" $item "" $vr)</TD></TR>
 							<TR><TD>Weight</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_weight" $item "" $vr)</TD></TR>
 							<TR><TD>Activity mCl</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_activity_mCl" $item "" $vr)</TD></TR>
 							<TR><TD>PET Scan Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_scan_time_pet" $item "" $vr)</TD></TR>
 							<TR><TD>Injection Time</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_injection_time" $item "" $vr)</TD></TR>
+							<TR><TD>Notes</TD><TD>#xdatStringBox("ccdb:hotelPET/pos4_notes" $item "" $vr)</TD></TR>
 						</TABLE>
 					</TD>
 				</TR>
