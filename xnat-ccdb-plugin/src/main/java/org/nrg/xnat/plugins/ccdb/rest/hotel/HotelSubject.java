@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 
 public class HotelSubject {
     private String _subjectLabel;
-    private List<String> _subjectOrder;
     private List<HotelSession> _sessions;
 
-    public HotelSubject( String subjectLabel, List<String> subjectOrder) {
+    public HotelSubject( String subjectLabel) {
         _subjectLabel = subjectLabel;
-        _subjectOrder = subjectOrder;
         _sessions = new ArrayList<>();
     }
 
@@ -32,35 +30,16 @@ public class HotelSubject {
         for( HotelSession session: sessions) {
             String subjectLabel = session.getHotelSubjectLabel();
             if( ! subjectMap.containsKey( subjectLabel)) {
-                subjectMap.put( subjectLabel, new HotelSubject( subjectLabel, session.getSubjectOrder()));
+                subjectMap.put( subjectLabel, new HotelSubject( subjectLabel));
             }
             HotelSubject hotelSubject = subjectMap.get( subjectLabel);
             hotelSubject.addSession( session);
-
-            // insure that subject order is set by the CT session.
-            if( "CT".equals( session.getModalities())) {
-                hotelSubject.setSubjectOrder( session.getSubjectOrder());
-            }
-
         }
         return subjectMap.values();
     }
 
     public String getSubjectLabel() {
         return _subjectLabel;
-    }
-
-    public void setSubjectOrder( List<String> subjectOrder) {
-        _subjectOrder = subjectOrder;
-    }
-
-    public List<String> getSubjectOrder() {
-        return _subjectOrder;
-    }
-
-    public String getSubjectOrderString() {
-        return _subjectOrder.stream()
-                .collect(Collectors.joining(","));
     }
 
     public List<HotelSession> getSessions() {
