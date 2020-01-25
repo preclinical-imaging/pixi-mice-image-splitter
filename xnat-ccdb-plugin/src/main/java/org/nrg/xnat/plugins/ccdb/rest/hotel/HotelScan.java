@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * Each row in a CSV file maps to a unique hotelScan.
  *
  */
+@SuppressWarnings("unused")
 public class HotelScan {
     @CsvBindByName( column = "Hotel Subject", required = true)
     private String hotelSubject;
@@ -49,7 +50,7 @@ public class HotelScan {
     @CsvBindByName( column = "Sex", required = false)
     private String sex;
 
-    @CsvBindByName( column = "Activity(mCi)", required = false)
+    @CsvBindByName( column = "Activity (mCi)", required = false)
     private String activity ;
 
     @CsvBindByName( column = "Scan Time", required = true)
@@ -139,6 +140,14 @@ public class HotelScan {
                 .collect(Collectors.toList());
     }
 
+    public String getSubjectLabel( String positionLabel) {
+        return String.format("%s_%s", studyName, getAnimalNumber( positionLabel));
+    }
+
+    public String getSessionLabel( String positionLabel) {
+        return String.format("%s_%s", scanName, getAnimalNumber( positionLabel));
+    }
+
     public List<File> getImages() {
         return _imageFiles;
     }
@@ -161,9 +170,14 @@ public class HotelScan {
 
     public List<String> getHotelPosition() { return hotelPosition; }
     public void setHotelPosition(List<String> hotelPosition) { this.hotelPosition = hotelPosition; }
+    public String getHotelPositionString() {  return String.join(",", hotelPosition); }
 
     public List<String> getAnimalNumbers() { return animalNumbers; }
     public void setAnimalNumbers(List<String> animalNumbers) { this.animalNumbers = animalNumbers; }
+    public String getAnimalNumbersString() {  return String.join(",", animalNumbers); }
+    public String getAnimalNumber( String positionLabel) {
+        return animalNumbers.get( hotelPosition.indexOf( positionLabel));
+    }
 
     public String getAnimalWeight() { return animalWeight; }
     public void setAnimalWeight(String animalWeight) { this.animalWeight = animalWeight; }
