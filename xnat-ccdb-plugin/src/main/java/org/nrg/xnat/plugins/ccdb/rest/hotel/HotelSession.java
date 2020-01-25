@@ -78,6 +78,36 @@ public class HotelSession {
                .collect(Collectors.joining(",")).toString();
     }
 
+    /**
+     * Get the Study Date.
+     *
+     * @return the StudyDate of any scan, under the assumption they are all the same for the session.
+     */
+    public String getStudyDate() {
+        Optional<HotelScan> scan = _scans.stream().findAny();
+        return (scan.isPresent())? scan.get().getStudyDate(): "Unknown";
+    }
+
+    /**
+     * Get the Scan time.
+     *
+     * @return the ScanTime of any scan, under the assumption they are all the same for the session.
+     */
+    public String getScanTime() {
+        Optional<HotelScan> scan = _scans.stream().findAny();
+        return (scan.isPresent())? scan.get().getScanTime(): "Unknown";
+    }
+
+    /**
+     * Get the Organ of Interest.
+     *
+     * @return the organ of interest of any scan, under the assumption they are all the same for the session.
+     */
+    public String getOrganOfInterest() {
+        Optional<HotelScan> scan = _scans.stream().findAny();
+        return (scan.isPresent())? scan.get().getOrganOfInterest(): "Unknown";
+    }
+
     public String getHotelSubjectLabel() { return _hotelSubjectLabel;}
     public String getHotelSessionLabel() { return _hotelSessionLabel;}
     public List<String> getSubjectOrder() { return _subjectOrder;}

@@ -183,6 +183,7 @@ public class FrontDesk_WU implements FrontDesk {
 
     public void checkInGuest( Guest guest, XnatProjectdata projectdata, UserI user) throws Exception {
         XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject( projectdata, guest.getLabel(), user);
+        subjectdata.setGroup("individual");
         String sessionLabel = "sessionLabel";
         for( GuestSession gs: guest.getSessions()) {
             XnatImagesessiondata sessiondata = _xnatService.getOrCreateImageSession(subjectdata, gs.getModality(), gs.getLabel(), user);
