@@ -840,7 +840,7 @@ class SoM:
     
     def __init__(self,file,modality=None):
         self.filename=file
-        self.pi,self.modality=SoM.load_image(file,modality)
+        self.pi,self.modality=SoM.load_image(file,modality)        
     
     @staticmethod
     def add_cuts_to_image(im,boxes,desc_map,save_analyze_dir=None):
@@ -1113,8 +1113,26 @@ class SoM:
             display(ipw.HBox([ipw.Image(value=f.getvalue())]))
         
     @staticmethod
-    def load_image(file,modality=None):                
-        detect_mod=None
+    def load_image_ex(file,modality):
+        pi=None
+        if modality=='PET':
+            try:
+                pi=PETImage(file); pi.load_header(); pi.load_image()
+            except Exception as e: print(str(e)); return None,None
+            return pi,modality
+        elif modality=='CT':
+            try:
+                pi=CTImage(file); pi.load_header(); pi.load_image()
+            except Exception as e: print(str(e)); return None,None
+            return pi,modality
+        else: print('error: unknown modality'); return None,None
+            
+    @staticmethod
+    def load_image(file,modality=None):
+        if modality is not None:
+            return SoM.load_image_ex(file,modality.upper())
+        
+        detect_mod=None        
         try:
             print ('checking if PET modality')
             pi=PETImage(file); pi.load_header()
@@ -1167,7 +1185,7 @@ class SoM:
             pi.save_cut(ind,outdir+'/')
         
         if output_qc:
-            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir,desc_map)
             SoM.display_pil_image(im)
         pi.clean_cuts(); pi.unload_image()
         return 0
@@ -1210,7 +1228,7 @@ class SoM:
         SoM.add_cuts_to_image(pi,cuts,desc_map,save_analyze_dir)
         
         if output_qc:
-            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir,desc_map)
             #debug
             #SoM.display_pil_image(im) 
         
@@ -1231,7 +1249,7 @@ class SoM:
         return im1
     
     @staticmethod
-    def qc_image(pi,labels,rects_dict,outdir):    
+    def qc_image(pi,labels,rects_dict,outdir,desc_map):    
         imz,itype=None,None
         
         if isinstance(pi,PETImage):
@@ -1248,21 +1266,38 @@ class SoM:
         if imz is None: 
             print('qc_image: unknown image type'); return
         
-        imz_qc=np.uint8(255*skimage.color.label2rgb(labels,image=imz,bg_label=0,alpha=alpha))
-        #наложить области на изображеніе.                     
-        imz_qc=Image.fromarray(imz_qc).convert('RGB')
+        imz_qc_arr=np.uint8(255*skimage.color.label2rgb(labels,image=imz,bg_label=0,alpha=alpha))
+                
+        #наложить области на изображеніе.      
+        imz_qc=Image.fromarray(imz_qc_arr).convert('RGB')
+        
+        #make individual axial images.
+        ax_ims_pil=[]
+        ax_ims_lbl=[]
+        
         d=ImageDraw.Draw(imz_qc)
         colors=['lightblue','red','violet','lightgreen']
         for i in range(0,len(rects_dict)):
             rd=rects_dict[i]
             r=rd['rect']
+            im0=r.subimage(imz_qc_arr); #print('axial subimage ',i,', ',im0.shape)
+            ax_ims_pil+=[Image.fromarray(im0).convert('RGB')]            
+            ax_ims_lbl+=[rd['desc']]; print (ax_ims_lbl)
             d.rectangle([r.xlt,r.ylt,r.xrb,r.yrb],outline=colors[i],width=linwid)
                    
         sag_ims=[ SoM.get_sag_image(pi.cuts[i].img_data) for i in range(len(pi.cuts)) ]        
         sag_ims_pil=[]
-        for im in sag_ims:                
+        for i,im in zip(range(0,len(rects_dict)),sag_ims):
             im1=SoM.standardize_range(im,pct=pct); imp=Image.fromarray(im1).convert('RGB')
             sag_ims_pil+=[imp]
+            #print('sagittal subimage ',i,', ',np.swapaxes(im1,0,1).shape)            
+            #code to combine axial and sagittal images, and save subimage.            
+            individual_qc_im=SoM.combine_images([ax_ims_pil[i],Image.fromarray(np.swapaxes(im1,0,1)).convert('RGB')])
+            if itype=='PET': 
+                w,h=individual_qc_im.size; individual_qc_im=individual_qc_im.resize((w*3,h*3),resample=Image.BILINEAR)
+            fnamei=outdir+'/'+pi.filename[:-4]+'_qc_'+desc_map[ax_ims_lbl[i]]+'.png'
+            print('writing',fnamei)
+            individual_qc_im.save(fnamei,'png')
             #SoM.display_pil_image(imp)
         
         #sag_ims_pil= [ Image.fromarray(im).convert('RGB') for im in sag_ims ]  
@@ -1302,10 +1337,11 @@ if __name__=="__main__":
     p.add_argument('-q',action='store_true',help='output a QC .png image')
     p.add_argument('-m',metavar='<int>', type=int, help='maximum margin on axial slice in pixels [20]')
     p.add_argument('-sm',metavar='<str>',type=str, help='ouput file suffix map [ctr:ctr,l:l,r:r,lt:lt,rt:rt,rb:rb,lb:lb]')
+    p.add_argument('--mod',metavar='<str>',type=str,help='force input image modality (ct|pet) [autodetect]')
     p.add_argument('-p',metavar='<int>', type=int, help='minimum number of pixels in detectable region [200 PET/4000 CT]')
     a=p.parse_args()
-    print ('split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={})'.
-           format(a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p))
-    sys.exit(SoM(a.file_path).split_mice(a.out_dir,save_analyze=a.a,
+    print ('modality: {}, split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={},out_qc={})'.
+           format(a.mod,a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p,a.q))
+    sys.exit(SoM(a.file_path,modality=a.mod).split_mice(a.out_dir,save_analyze=a.a,
                    num_anim=a.n,sep_thresh=a.t,margin=a.m,minpix=a.p,output_qc=a.q,suffix_map=a.sm))
     
