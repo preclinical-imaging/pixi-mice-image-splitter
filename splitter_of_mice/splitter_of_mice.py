@@ -691,7 +691,6 @@ class CTImage(BaseImage):
                 'y_dimension',
                 'pixel_size',
                 'total_frames',
-                'calibration_factor',
                 'scale_factor',
                 'animal_number',
                 'frame_duration',
