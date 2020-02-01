@@ -14,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Handle the loading of a collection of Hotel Sessions.
@@ -37,13 +34,13 @@ public class HotelSessionHandler  {
         _xnatService = new XnatService(_catalogService);
     }
 
-    public void handleSubjects(String project, Collection<HotelSubject> subjects, UserI user) throws Exception {
+    public void handleSubjects(String project, Collection<HotelSubject> subjects, Map<String, File> files, UserI user) throws Exception {
         for( HotelSubject subject: subjects) {
-            handleSubject( project, subject, user);
+            handleSubject( project, subject, files, user);
         }
     }
 
-    public void handleSubject( String project, HotelSubject subject, UserI user) throws Exception {
+    public void handleSubject(String project, HotelSubject subject, Map<String, File> files, UserI user) throws Exception {
         XnatProjectdata projectdata = XnatProjectdata.getProjectByIDorAlias( project, user, false);
         if( projectdata == null) {
             String msg = "Project not found: " + project;
@@ -53,6 +50,24 @@ public class HotelSessionHandler  {
         try {
             XnatSubjectdata subjectdata = _xnatService.getOrCreateSubject(projectdata, subject.getSubjectLabel(), user);
             subjectdata.setGroup("hotel");
+
+            Optional<File> csvFile = getCSVFile( files);
+            if( csvFile.isPresent()) {
+                _xnatService.addResources(subjectdata, Arrays.asList(csvFile.get()), false, "metaData", "", "csv", "metadata", user);
+                _xnatService.insertResources(subjectdata, Arrays.asList(csvFile.get()), false, "metaData", "", "csv", "metadata", user);
+            }
+            else {
+                _log.warn("Missing CSV file for subject {}.", subject.getSubjectLabel());
+            }
+
+            Optional<File> xlsFile = getXLSXFile( files, subject.getSubjectLabel());
+            if( xlsFile.isPresent()) {
+                _xnatService.addResources(subjectdata, Arrays.asList(csvFile.get()), false, "metaData", "", "csv", "metadata", user);
+                _xnatService.insertResources( subjectdata, Arrays.asList(xlsFile.get()), false, "metaData", "", "xlsx", "metadata", user);
+            }
+            else {
+                _log.warn("Missing XLS file for subject {}.", subject.getSubjectLabel());
+            }
 
             // don't do this per CCDB-16
             // _xnatService.insertOrUpdateField( subjectdata, "subjectorder", subject.getSubjectOrderString(), user);
@@ -321,4 +336,15 @@ public class HotelSessionHandler  {
         }
     }
 
+    private Optional<File> getCSVFile( Map<String, File> files) {
+        return files.values().stream().filter(f -> f.getName().endsWith(".csv")).findAny();
+    }
+
+    private Optional<File> getXLSXFile( Map<String, File> files, String subjectLabel) {
+        String matchString = subjectLabel.substring(0,8);
+        return files.values().stream()
+                .filter(f -> f.getName().endsWith(".xlsx"))
+                .filter(f -> f.getName().startsWith( matchString))
+                .findAny();
+    }
 }
