@@ -98,7 +98,7 @@ public class HotelScan {
      * @return List of HotelScan entries.
      * @throws FileNotFoundException
      */
-    static List<HotelScan> readCSV(File f) throws FileNotFoundException {
+    public static List<HotelScan> readCSV(File f) throws FileNotFoundException {
         return new CsvToBeanBuilder( new FileReader(f))
                 .withType(HotelScan.class).build().parse();
     }
@@ -113,7 +113,7 @@ public class HotelScan {
      * @return list of HotelScans.
      * @throws FileNotFoundException
      */
-    static List<HotelScan> createScans( List<File> files) throws FileNotFoundException {
+    public static List<HotelScan> createScans( List<File> files) throws FileNotFoundException {
         List<HotelScan> scans = new ArrayList<>();
         for( File f: files) {
             if( isHotelScanCSV(f)) {

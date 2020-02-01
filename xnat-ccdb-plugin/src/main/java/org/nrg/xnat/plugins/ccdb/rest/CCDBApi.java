@@ -78,7 +78,7 @@ public class CCDBApi extends AbstractXapiRestController {
 
                 HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService);
 
-                sessionHandler.handleSubjects( projectID, hotelSubjects, user);
+                sessionHandler.handleSubjects( projectID, hotelSubjects, files, user);
 
                 return new ResponseEntity<>(HttpStatus.OK);
             }

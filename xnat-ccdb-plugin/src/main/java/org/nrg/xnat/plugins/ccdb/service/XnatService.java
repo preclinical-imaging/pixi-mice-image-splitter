@@ -1,5 +1,9 @@
 package org.nrg.xnat.plugins.ccdb.service;
 
+import org.apache.commons.io.FileUtils;
+import org.nrg.xdat.bean.CatCatalogBean;
+import org.nrg.xdat.bean.CatEntryBean;
+import org.nrg.xdat.model.XnatAbstractresourceI;
 import org.nrg.xdat.model.XnatSubjectdataFieldI;
 import org.nrg.xdat.om.*;
 import org.nrg.xft.XFTItem;
@@ -10,14 +14,15 @@ import org.nrg.xft.utils.SaveItemHelper;
 import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HandlerException;
 import org.nrg.xnat.services.archive.CatalogService;
+import org.nrg.xnat.utils.CatalogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 public class XnatService {
     private final CatalogService _catalogService;
+    private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
     @Autowired
     public XnatService(CatalogService catalogService) {
@@ -159,9 +165,81 @@ public class XnatService {
         }
     }
 
+    public XnatResourcecatalog createScanResource(XnatImagescandata imagescandata, String resourceName, String format, String content, UserI user) throws XnatServiceException {
+        try {
+            final XnatResourcecatalog catalog;
+            _log.debug("imagescandata: {}", imagescandata);
+//            String parentURI = UriParserUtils.getArchiveUri( imagescandata);
+            String parentURI = String.format("/archive/experiments/%s/scans/%s/resources/%s",imagescandata.getImageSessionId(), imagescandata.getId(), resourceName);
+            _log.debug("uri: {}", parentURI);
+            catalog = _catalogService.createAndInsertResourceCatalog(user, parentURI, resourceName, "description" + resourceName, format, content);
+
+            return catalog;
+        }
+        catch( Exception e) {
+            String msg = "Error creating scan resource: " + e.getMessage();
+            throw new XnatServiceException(msg, e);
+        }
+    }
+
+    public XnatResourcecatalog addResources( XnatSubjectdata sd, Collection<File> resources, final boolean preserveDirectories, final String label, final String description, final String format, final String content, UserI user) throws Exception {
+        String uri = UriParserUtils.getArchiveUri( sd);
+        List<XnatAbstractresourceI> resources_resource = sd.getResources_resource();
+        for( XnatAbstractresourceI resource: resources_resource) {
+        }
+        Map<String, String> params = new HashMap<>();
+        String resourceURI = UriParserUtils.getArchiveUriFromParameterTypes(params);
+        resourceURI = String.format("/archive/subjects/%s/resources/%s", sd.getId(), label);
+        XnatResource xnatResourcesByUri = XnatResourcecatalog.getXnatResourcesByUri(resourceURI, user, false);
+//        XnatResourcecatalog.getXnatAbstractresourcesByField()
+        XnatResourcecatalog resourcecatalog;
+        return null;
+    }
+
+    public XnatResourcecatalog insertResources( XnatSubjectdata sd, Collection<File> resources, final boolean preserveDirectories, final String label, final String description, final String format, final String content, UserI user) throws Exception {
+        String uri = UriParserUtils.getArchiveUri( sd);
+        return _catalogService.insertResources( user, uri, resources, preserveDirectories, label, description, format, content);
+    }
+
     public XnatResourcecatalog insertResources(String parentUri, Collection<File> resources, final boolean preserveDirectories, final String label, final String description, final String format, final String content, UserI user) throws Exception {
         return _catalogService.insertResources( user, parentUri, resources, preserveDirectories, label, description, format, content);
     }
+
+    /*
+     * Ugh.  Why so hard?  entries are in catalog file but Manage Files doesn't see them.
+     */
+    public XnatResourcecatalog insertResource( XnatResourcecatalog catalog, String rootPath, final File resource, final boolean preserveDirectories, final String format, final String content, final UserI user) throws Exception {
+
+        String fileName = resource.getName();
+        final File destination = new File(catalog.getUri()).getParentFile();
+        if (resource.isDirectory() && preserveDirectories) {
+            FileUtils.copyDirectoryToDirectory(resource, destination);
+        } else if (resource.isDirectory() && !preserveDirectories) {
+            FileUtils.copyDirectory(resource, destination);
+        } else {
+            FileUtils.copyFileToDirectory(resource, destination);
+        }
+
+        CatCatalogBean catCatalogBean = CatalogUtils.getCatalog(rootPath, catalog);
+
+        Path destinationFilepath = destination.toPath().resolve( fileName);
+        _log.debug("destinationFilepath: {}", destinationFilepath);
+        CatEntryBean catEntry = new CatEntryBean();
+        catEntry.setId( String.format("%s", fileName));
+        catEntry.setName( fileName);
+        catEntry.setFormat( format);
+        catEntry.setContent( content);
+        catEntry.setUri( fileName);
+        catCatalogBean.addEntries_entry( catEntry);
+
+        CatalogUtils.writeCatalogToFile( catCatalogBean, new File(catalog.getUri()), false);
+        EventMetaI now = EventUtils.DEFAULT_EVENT(user, "insert resource.");
+
+//        catCatalogBean.save(user, false, false, now);
+
+        return catalog;
+    }
+
 
 //    public XnatImagescandata createImageScan(String scanLabel, List<ResourceFile> files) throws XnatServiceException {
 //        try {
