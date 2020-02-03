@@ -38,7 +38,7 @@ public int requestCheckin( String projectID, String sessionID, String httpSessio
 String projectID = externalId
 String sessionID = dataId
 
-String httpSessionID = getJSession( "dmaffitt:vor.viss")
+String httpSessionID = getJSession( "xxx")
 out.println "projectID: ${projectID}"
 out.println "sessionID: ${sessionID}"
 out.println "httpSessionID: ${httpSessionID}"
