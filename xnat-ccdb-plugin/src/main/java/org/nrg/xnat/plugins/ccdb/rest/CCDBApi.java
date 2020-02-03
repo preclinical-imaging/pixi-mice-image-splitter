@@ -1,6 +1,8 @@
 package org.nrg.xnat.plugins.ccdb.rest;
 
 import io.swagger.annotations.*;
+import org.nrg.containers.services.CommandService;
+import org.nrg.containers.services.ContainerService;
 import org.nrg.framework.annotations.XapiRestController;
 import org.nrg.framework.exceptions.NrgServiceException;
 import org.nrg.xapi.authorization.GuestUserAccessXapiAuthorization;
@@ -14,8 +16,10 @@ import org.nrg.xft.security.UserI;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk_WU;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HandlerException;
+import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelImageSplitHandler;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSessionHandler;
 import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelSubject;
+import org.nrg.xnat.plugins.ccdb.service.XnatService;
 import org.nrg.xnat.services.archive.CatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +44,11 @@ import static org.nrg.xdat.security.helpers.AccessLevel.Authorizer;
 public class CCDBApi extends AbstractXapiRestController {
 
     private final CatalogService _catalogService;
+    private final XnatService _xnatService;
     private final SiteConfigPreferences _preferences;
     private final FrontDesk _frontDesk;
+    private final CommandService _commandService;
+    private final ContainerService _containerService;
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
     @Autowired
@@ -49,11 +56,17 @@ public class CCDBApi extends AbstractXapiRestController {
                    final RoleHolder roleHolder,
                    final SiteConfigPreferences preferences,
                    final CatalogService catalogService,
-                   final FrontDesk frontDesk) {
+                   final XnatService xnatService,
+                   final FrontDesk frontDesk,
+                   final CommandService commandService,
+                   final ContainerService containerService) {
         super( userManagementServiceI, roleHolder);
         _preferences = preferences;
         _catalogService = catalogService;
+        _xnatService = xnatService;
         _frontDesk = frontDesk;
+        _commandService = commandService;
+        _containerService = containerService;
     }
 
     @ApiOperation(value = "Upload CCDB Hotel data.", response = String.class)
@@ -140,6 +153,34 @@ public class CCDBApi extends AbstractXapiRestController {
 //        }
 //    }
 
+    @ApiOperation(value = "Split hotel image data into multiple individual image data.", response = String.class)
+    @ApiResponses({@ApiResponse(code = 200, message = "Successfully split hotel image data."),
+            @ApiResponse(code = 500, message = "An unexpected or unknown error occurred")})
+    @XapiRequestMapping(value = "projects/{projectID}/experiments/{sessionID}/splitimages",
+            method = RequestMethod.PUT,
+            restrictTo = Authorizer)
+    @AuthDelegate(GuestUserAccessXapiAuthorization.class)
+    public ResponseEntity<String> doSplitHotelImages(
+            @ApiParam("The project label or ID") @PathVariable final String projectID,
+            @ApiParam("The hotel session ID") @PathVariable final String sessionID) throws NrgServiceException {
+        try {
+            UserI user = getSessionUser();
+            HotelImageSplitHandler sessionHandler = new HotelImageSplitHandler( _preferences, _xnatService, _commandService, _containerService);
+
+            sessionHandler.handleHotelSession( projectID, sessionID, user);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch( Exception e) {
+            HttpStatus status = (e instanceof HandlerException)? ((HandlerException) e).getHttpStatus(): HttpStatus.INTERNAL_SERVER_ERROR;
+            String msg = "An error occurred when user '" + getSessionUser().getUsername() + "' tried to checkin hotel session '" + sessionID + "'.";
+            msg += "\n" + e.getMessage();
+            _log.error( msg, e);
+            ResponseEntity<String> response = new ResponseEntity<> (msg, status);
+            return response;
+        }
+    }
+
     @ApiOperation(value = "Split hotel session into multiple guest sessions.", response = String.class)
     @ApiResponses({@ApiResponse(code = 200, message = "Successfully created guest session(s)."),
             @ApiResponse(code = 500, message = "An unexpected or unknown error occurred")})
@@ -156,7 +197,7 @@ public class CCDBApi extends AbstractXapiRestController {
 
             frontDesk.checkInHotelSession( projectID, hotelSessionID, user);
 
-           return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch( Exception e) {
             HttpStatus status = (e instanceof HandlerException)? ((HandlerException) e).getHttpStatus(): HttpStatus.INTERNAL_SERVER_ERROR;
