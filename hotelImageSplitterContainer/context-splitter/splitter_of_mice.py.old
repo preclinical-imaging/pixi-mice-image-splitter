@@ -691,6 +691,7 @@ class CTImage(BaseImage):
                 'y_dimension',
                 'pixel_size',
                 'total_frames',
+                'calibration_factor',
                 'scale_factor',
                 'animal_number',
                 'frame_duration',
@@ -833,22 +834,23 @@ class Rect:
         else:
             return False
 #end class Rect            
+
 #splitter of mice.
 class SoM:
     ipw_on=False
     
     def __init__(self,file,modality=None):
         self.filename=file
-        self.pi,self.modality=SoM.load_image(file,modality)        
+        self.pi,self.modality=SoM.load_image(file,modality)
     
     @staticmethod
-    def add_cuts_to_image(im,boxes,desc_map,save_analyze_dir=None):
+    def add_cuts_to_image(im,boxes, save_analyze_dir=None):
         
         ims=[]
         
         mag=2 if isinstance(im,PETImage) else 0.5        
         for b in boxes:
-            r,desc=b['rect'],desc_map[b['desc']]
+            r,desc=b['rect'],b['desc']
             ix=len(im.cuts)+1
             xmax,xmin=int(round(r.xrb)),int(round(r.xlt))
             ymax,ymin=int(round(r.yrb)),int(round(r.ylt))
@@ -930,18 +932,11 @@ class SoM:
         return im
 
     def split_mice(self,outdir,save_analyze=False,num_anim=None,
-                   sep_thresh=None,margin=None,minpix=None,output_qc=False,suffix_map=None):
+                   sep_thresh=None,margin=None,minpix=None,output_qc=False):
         
-        d={'l':'l','r':'r','ctr':'ctr','lb':'lb','rb':'rb','lt':'lt','rt':'rt'}
-        if suffix_map is not None: 
-            for s in suffix_map.split(','): 
-                mp=s.split(':')
-                if len(mp)<2: continue
-                if mp[0] in d.keys(): d[mp[0]]=mp[1]
-                
-        if self.modality=='PET': return self.split_mice_pet(outdir,d,save_analyze,num_anim,
+        if self.modality=='PET': return self.split_mice_pet(outdir,save_analyze,num_anim,
                 sep_thresh,margin,minpix,output_qc)
-        if self.modality=='CT': return self.split_mice_ct(outdir,d,save_analyze,num_anim,
+        if self.modality=='CT': return self.split_mice_ct(outdir,save_analyze,num_anim,
                 sep_thresh,margin,minpix,output_qc)
         else: return -1
              
@@ -1027,6 +1022,7 @@ class SoM:
             
     
     @staticmethod
+    #статическій мѣтодъ
     def z_compress_ct(pi,thresh,binary=True):
         n=12;  img=pi.img_data; sh=img.shape; nsl=sh[0]
         sl=np.zeros((sh[1],sh[2])).astype('float32')
@@ -1111,26 +1107,8 @@ class SoM:
             display(ipw.HBox([ipw.Image(value=f.getvalue())]))
         
     @staticmethod
-    def load_image_ex(file,modality):
-        pi=None
-        if modality=='PET':
-            try:
-                pi=PETImage(file); pi.load_header(); pi.load_image()
-            except Exception as e: print(str(e)); return None,None
-            return pi,modality
-        elif modality=='CT':
-            try:
-                pi=CTImage(file); pi.load_header(); pi.load_image()
-            except Exception as e: print(str(e)); return None,None
-            return pi,modality
-        else: print('error: unknown modality'); return None,None
-            
-    @staticmethod
-    def load_image(file,modality=None):
-        if modality is not None:
-            return SoM.load_image_ex(file,modality.upper())
-        
-        detect_mod=None        
+    def load_image(file,modality=None):                
+        detect_mod=None
         try:
             print ('checking if PET modality')
             pi=PETImage(file); pi.load_header()
@@ -1159,7 +1137,7 @@ class SoM:
         pi.load_image()
         return pi,detect_mod        
 
-    def split_mice_ct(self,outdir,desc_map,save_analyze=False,num_anim=None,
+    def split_mice_ct(self,outdir,save_analyze=False,num_anim=None,
                    sep_thresh=None,margin=None,minpix=None,output_qc=False):
         print ('Splitting '+self.pi.filename)      
         SoM.num_anim=num_anim
@@ -1169,25 +1147,26 @@ class SoM:
         pi=self.pi        
         rt=outdir+'/'+pi.filename[:-4]        
         
+        #imz0: нормальная cумма всѣхъ бинарныхъ сѣченій. imz: открытая область (бинарная)
         imz0,imz=SoM.z_compress_ct(pi,50)
         blobs_labels,num=SoM.detect_animals_ct(imz,0.1)
         rects=SoM.get_valid_regs(blobs_labels)
         cuts=SoM.split_coords(imz,rects,1)
         save_analyze_dir=outdir if save_analyze else None
         #save_analyze_dir=None #debug
-        ims=SoM.add_cuts_to_image(pi,cuts,desc_map,save_analyze_dir)
+        ims=SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
         #write the images.
         for ind in range(len(pi.cuts)):
             #pass #debug
             pi.save_cut(ind,outdir+'/')
         
         if output_qc:
-            im=SoM.qc_image(pi,blobs_labels,cuts,outdir,desc_map)
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
             SoM.display_pil_image(im)
         pi.clean_cuts(); pi.unload_image()
         return 0
     
-    def split_mice_pet(self,outdir,desc_map,save_analyze=False,num_anim=None,
+    def split_mice_pet(self,outdir,save_analyze=False,num_anim=None,
                    sep_thresh=None,margin=None,minpix=None,output_qc=False):
         print ('Splitting '+self.pi.filename)
         SoM.num_anim=num_anim
@@ -1222,10 +1201,10 @@ class SoM:
                     rects=SoM.get_valid_regs(blobs_labels)
         cuts=SoM.split_coords(imz,rects)
         save_analyze_dir=outdir if save_analyze else None
-        SoM.add_cuts_to_image(pi,cuts,desc_map,save_analyze_dir)
+        SoM.add_cuts_to_image(pi,cuts,save_analyze_dir)
         
         if output_qc:
-            im=SoM.qc_image(pi,blobs_labels,cuts,outdir,desc_map)
+            im=SoM.qc_image(pi,blobs_labels,cuts,outdir)
             #debug
             #SoM.display_pil_image(im) 
         
@@ -1239,14 +1218,12 @@ class SoM:
     def standardize_range(im, ignore_min=False, pct=5):
         mx=np.percentile(im,100-pct)
         mn=0 if ignore_min else np.percentile(im,pct)
-        im1=im; im1[im>mx]=mx; im1[im<mn]=mn; rng=mx-mn
-        print('min,max,rng',mn,mx,rng)
-        im1=((im1-mn)/rng)*255
-        print('min_new,max_new',np.min(im1),np.max(im1))
+        im1=im; im1[im>mx]=mx; im1[im<mn]=mn; rng=mx-mn        
+        im1=((im1-mn)/rng)*255        
         return im1
     
     @staticmethod
-    def qc_image(pi,labels,rects_dict,outdir,desc_map):    
+    def qc_image(pi,labels,rects_dict,outdir):    
         imz,itype=None,None
         
         if isinstance(pi,PETImage):
@@ -1263,37 +1240,21 @@ class SoM:
         if imz is None: 
             print('qc_image: unknown image type'); return
         
-        imz_qc_arr=np.uint8(255*skimage.color.label2rgb(labels,image=imz,bg_label=0,alpha=alpha))
-                
-        imz_qc=Image.fromarray(imz_qc_arr).convert('RGB')
-        
-        #make individual axial images.
-        ax_ims_pil=[]
-        ax_ims_lbl=[]
-        
+        imz_qc=np.uint8(255*skimage.color.label2rgb(labels,image=imz,bg_label=0,alpha=alpha))
+        #наложить области на изображеніе.                     
+        imz_qc=Image.fromarray(imz_qc).convert('RGB')
         d=ImageDraw.Draw(imz_qc)
         colors=['lightblue','red','violet','lightgreen']
         for i in range(0,len(rects_dict)):
             rd=rects_dict[i]
             r=rd['rect']
-            im0=r.subimage(imz_qc_arr); #print('axial subimage ',i,', ',im0.shape)
-            ax_ims_pil+=[Image.fromarray(im0).convert('RGB')]            
-            ax_ims_lbl+=[rd['desc']]; print (ax_ims_lbl)
             d.rectangle([r.xlt,r.ylt,r.xrb,r.yrb],outline=colors[i],width=linwid)
                    
         sag_ims=[ SoM.get_sag_image(pi.cuts[i].img_data) for i in range(len(pi.cuts)) ]        
         sag_ims_pil=[]
-        for i,im in zip(range(0,len(rects_dict)),sag_ims):
+        for im in sag_ims:                
             im1=SoM.standardize_range(im,pct=pct); imp=Image.fromarray(im1).convert('RGB')
             sag_ims_pil+=[imp]
-            #print('sagittal subimage ',i,', ',np.swapaxes(im1,0,1).shape)            
-            #code to combine axial and sagittal images, and save subimage.            
-            individual_qc_im=SoM.combine_images([ax_ims_pil[i],Image.fromarray(np.swapaxes(im1,0,1)).convert('RGB')])
-            if itype=='PET': 
-                w,h=individual_qc_im.size; individual_qc_im=individual_qc_im.resize((w*3,h*3),resample=Image.BILINEAR)
-            fnamei=outdir+'/'+pi.filename[:-4]+'_qc_'+desc_map[ax_ims_lbl[i]]+'.png'
-            print('writing',fnamei)
-            individual_qc_im.save(fnamei,'png')
             #SoM.display_pil_image(imp)
         
         #sag_ims_pil= [ Image.fromarray(im).convert('RGB') for im in sag_ims ]  
@@ -1314,7 +1275,7 @@ class SoM:
             w,h=qc_im.size; qc_im=qc_im.resize((w*3,h*3),resample=Image.BILINEAR)
         print('writing',fname)
         qc_im.save(fname,'png')
-        return qc_im       
+        return qc_im   
 #end of SoM class
 
 class DefParser(argparse.ArgumentParser):
@@ -1332,12 +1293,10 @@ if __name__=="__main__":
     p.add_argument('-a',action='store_true',help='save a copy in Analyze 7.5 format to output directory')
     p.add_argument('-q',action='store_true',help='output a QC .png image')
     p.add_argument('-m',metavar='<int>', type=int, help='maximum margin on axial slice in pixels [20]')
-    p.add_argument('-sm',metavar='<str>',type=str, help='ouput file suffix map [ctr:ctr,l:l,r:r,lt:lt,rt:rt,rb:rb,lb:lb]')
-    p.add_argument('--mod',metavar='<str>',type=str,help='force input image modality (ct|pet) [autodetect]')
     p.add_argument('-p',metavar='<int>', type=int, help='minimum number of pixels in detectable region [200 PET/4000 CT]')
     a=p.parse_args()
-    print ('modality: {}, split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={},out_qc={})'.
-           format(a.mod,a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p,a.q))
-    sys.exit(SoM(a.file_path,modality=a.mod).split_mice(a.out_dir,save_analyze=a.a,
-                   num_anim=a.n,sep_thresh=a.t,margin=a.m,minpix=a.p,output_qc=a.q,suffix_map=a.sm))
+    print ('split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={})'.
+           format(a.file_path,a.out_dir,a.a,a.n,a.t,a.m,a.p))
+    sys.exit(SoM(a.file_path).split_mice(a.out_dir,save_analyze=a.a,
+                   num_anim=a.n,sep_thresh=a.t,margin=a.m,minpix=a.p,output_qc=a.q))
     
