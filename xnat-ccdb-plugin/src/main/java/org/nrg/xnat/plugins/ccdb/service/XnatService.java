@@ -284,4 +284,9 @@ public class XnatService {
             throw new XnatServiceException(msg, e);
         }
     }
+
+    public XnatImagesessiondata getImageSession( String sessionID, UserI user) {
+        XnatImagesessiondata isd = XnatImagesessiondata.getXnatImagesessiondatasById( sessionID, user, false);
+        return isd;
+    }
 }
