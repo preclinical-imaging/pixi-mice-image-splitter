@@ -1,13 +1,13 @@
 {
-  "name": "hotel-image-splitter",
-  "label": "hotel-image-splitter",
+  "name": "hotel-image-splitter-qc",
+  "label": "hotel-image-splitter-qc",
   "description": "Runs splitter_of_mice.py",
   "version": "1.0",
   "schema-version": "1.0",
   "info-url": "",
-  "image": "hotel_splitter:v1",
+  "image": "hotel_splitter:v2",
   "type": "docker",
-  "command-line": "python splitter_of_mice.py [OTHER_OPTIONS] /input/[SESSION_LABEL]*.img /output",
+  "command-line": "sh -c './split.sh [XSI_TYPE]'",
   "override-entrypoint": true,
   "mounts": [
     {
@@ -19,39 +19,58 @@
       "name": "output",
       "writable": true,
       "path": "/output"
-    }
+    },
+    {
+      "name": "output-qc",
+      "writable": true,
+      "path": "/output-qc"
+    }  
   ],
   "environment-variables": {},
   "ports": {},
   "inputs": [
-    {
-      "name": "session-label",
-      "description": "Session's label",
-      "type": "string",
-      "matcher": null,
-      "default-value": null,
-      "required": true,
-      "replacement-key": "[SESSION_LABEL]",
-      "sensitive": null,
-      "command-line-flag": null,
-      "command-line-separator": null,
-      "true-value": null,
-      "false-value": null
-    },
-    {
-      "name": "other-options",
-      "description": "Other command-line flags to pass to splitter_of_mice.py",
-      "type": "string",
-      "matcher": null,
-      "default-value": null,
-      "required": false,
-      "replacement-key": "[OTHER_OPTIONS]",
-      "sensitive": null,
-      "command-line-flag": null,
-      "command-line-separator": null,
-      "true-value": null,
-      "false-value": null
-    }
+      {
+        "name": "xsiType",
+        "description": "xsiType",
+        "type": "string",
+        "matcher": null,
+        "default-value": null,
+        "required": true,
+        "replacement-key": "[XSI_TYPE]",
+        "sensitive": null,
+        "command-line-flag": null,
+        "command-line-separator": null,
+        "true-value": null,
+        "false-value": null
+      },
+      {
+        "name": "session-label",
+        "description": "Session's label",
+        "type": "string",
+        "matcher": null,
+        "default-value": null,
+        "required": true,
+        "replacement-key": "[SESSION_LABEL]",
+        "sensitive": null,
+        "command-line-flag": null,
+        "command-line-separator": null,
+        "true-value": null,
+        "false-value": null
+      },
+      {
+        "name": "other-options",
+        "description": "Other command-line flags to pass to splitter_of_mice.py",
+        "type": "string",
+        "matcher": null,
+        "default-value": null,
+        "required": false,
+        "replacement-key": "[OTHER_OPTIONS]",
+        "sensitive": null,
+        "command-line-flag": null,
+        "command-line-separator": null,
+        "true-value": null,
+        "false-value": null
+      }
   ],
   "outputs": [
     {
@@ -61,13 +80,21 @@
       "mount": "output",
       "path": null,
       "glob": null
+    },
+    {
+      "name": "qc_output",
+      "description": "The qc thumbnail file",
+      "required": true,
+      "mount": "output-qc",
+      "path": null,
+      "glob": null
     }
   ],
   "xnat": [
     {
-      "name": "hotel-image splitter on session",
-      "label": "hotelimagesplitter",
-      "description": "Run hotelsplitter on a session",
+      "name": "hotel-image splitter on session qc",
+      "label": "hotelimagesplitterqc",
+      "description": "Run hotelsplitter on a session qc",
       "contexts": [
         "xnat:imageSessionData"
       ],
@@ -90,6 +117,23 @@
       ],
       "derived-inputs": [
           {
+            "name": "xsiType",
+            "description": "xsiType",
+            "type": "string",
+            "matcher": null,
+            "default-value": null,
+            "required": true,
+            "replacement-key": null,
+            "sensitive": null,
+            "provides-value-for-command-input": "xsiType",
+            "provides-files-for-command-mount": null,
+            "user-settable": false,
+            "load-children": true,
+            "derived-from-wrapper-input": "session",
+            "derived-from-xnat-object-property": "xsiType",
+            "via-setup-command": null
+          },
+          {
             "name": "scan",
             "description": "The scan",
             "type": "Scan",
@@ -106,16 +150,23 @@
             "derived-from-xnat-object-property": null,
             "via-setup-command": null
           },
-          {
-              "name": "session-label-di",
-              "description": "The session label",
-              "type": "string",
-              "derived-from-wrapper-input": "session",
-              "derived-from-xnat-object-property": "label",
-              "replacement-key": null,
-              "user-settable": false,
-              "provides-value-for-command-input": "session-label"
-          },
+        {
+          "name": "session-label-di",
+          "description": "The session label",
+          "type": "string",
+          "matcher": null,
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": "session-label",
+          "provides-files-for-command-mount": null,
+          "user-settable": false,
+          "load-children": true,
+          "derived-from-wrapper-input": "session",
+          "derived-from-xnat-object-property": "label",
+          "via-setup-command": null
+        },
         {
           "name": "scan-images",
           "description": "The microPET resource on the scan",
@@ -143,6 +194,15 @@
           "type": "Resource",
           "label": "microPET",
           "format": null
+        },
+        {
+          "name": "qc",
+          "accepts-command-output": "qc_output",
+          "via-wrapup-command": null,
+          "as-a-child-of": "session",
+          "type": "Resource",
+          "label": "QC",
+          "format": "PNG"
         }
       ]
     }
