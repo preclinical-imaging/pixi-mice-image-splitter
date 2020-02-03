@@ -96,9 +96,9 @@
 							<TR><TD>Notes</TD><TD>$!item.getStringProperty("ccdb:hotelPET/pos4_notes")</TD></TR>
                         </TABLE>
                     </TD>
-                    <TD valign="top" align="right">
-                        #parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
-                    </TD>
+##                    <TD valign="top" align="right">
+##                        #parse($turbineUtils.getTemplateName("actions",$om.getXSIType(),$project))
+##                    </TD>
                 </TR>
             </TABLE>
         </TD>

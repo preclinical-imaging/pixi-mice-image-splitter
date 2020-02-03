@@ -1,5 +1,5 @@
 FROM python-base:v1
 
-RUN mkdir /home/splitter
+COPY split.sh splitter_of_mice.py ./
 
-COPY splitter_of_mice.py /home/splitter
+RUN chmod a+x split.sh

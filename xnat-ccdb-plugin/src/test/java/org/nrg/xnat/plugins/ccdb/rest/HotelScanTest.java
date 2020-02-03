@@ -1,6 +1,7 @@
 package org.nrg.xnat.plugins.ccdb.rest;
 
 import org.junit.Test;
+import org.nrg.xnat.plugins.ccdb.rest.hotel.HotelScan;
 
 import java.io.File;
 import java.io.IOException;

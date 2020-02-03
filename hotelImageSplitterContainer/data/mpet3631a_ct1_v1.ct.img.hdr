@@ -1,0 +1,1376 @@
+#
+# ASIPro VM 6.8.6.9 modifications of F:\Preclinical\Users\admin\User Folders\Facility\Datasets\mpet3631a_em1\mpet3631a_ct11_v1.ct.img on Wed Oct 25 13:52:59 2017
+#
+# __________________________________________________________________________
+#
+# Header file for data file F:\Preclinical\Users\admin\User Folders\Facility\Datasets\mpet3631a_em1\mpet3631a_ct11_v1.ct.img
+#    with 1 frames.
+#
+#
+#  Following parameters are used for ALL modalities.
+#
+#
+# Version of header parameters (float)
+#
+version 002.000
+#
+# Begin Protocol Parameters
+# End Protocol Parameters
+#
+# Manufacturer's name (string)
+#
+manufacturer  
+#
+# Scanner model number (integer)
+#
+#   0 - Unknown
+#   2000 - Primate
+#   2001 - Rodent
+#   2002 - microPET2
+#   2500 - Focus_220
+#   2501 - Focus_120
+#   3000 - mCAT
+#   3500 - mCATII
+#   4000 - mSPECT
+#   5000 - Inveon_Dedicated_PET
+#   5001 - Inveon_MM_Platform
+#   6000 - MR_PET_Head_Insert
+#   8000 - Tuebingen_PET_MR
+#
+model 5001
+#
+# Acquisition scanner modality (integer)
+#   -1 - Unknown acquisition modality
+#   0 - PET acquisition
+#   1 - CT acquisition
+#   2 - SPECT acquisition
+#
+modality 1
+#
+# Scanner modality configuration number (integer)
+#
+#   0 - Unknown
+#   3000 - mCAT
+#   3500 - mCATII
+#   3600 - Inveon_MM_Std_CT
+#   3601 - Inveon_MM_HiRes_Std_CT
+#   3602 - Inveon_MM_Std_LFOV_CT
+#   3603 - Inveon_MM_HiRes_LFOV_CT
+#
+modality_configuration 3603
+#
+# Institution identification (string)
+#
+institution  
+#
+# Study type/description (string)
+#
+study  
+#
+# Data filename, possibly including path (string)
+#    NOTE: Filename may contain spaces, therefore the ENTIRE 
+#          line, up to the EOL, is used after the parameter name.
+#
+file_name F:\Preclinical\Users\admin\User Folders\Facility\Datasets\mpet3631a_em1\mpet3631a_ct1_v1.ct.img
+#
+# Data file type (integer)
+#   0 - Unknown data file type
+#   1 - List mode data file
+#   2 - Sinogram data file
+#   3 - Normalization data file
+#   4 - Attenuation correction data file
+#   5 - Image data file
+#   6 - Blank data file
+#   8 - Mu map data file
+#   9 - Scatter correction data file
+#   10 - Crystal efficiency data
+#   11 - Crystal interference correction
+#   12 - Transaxial geometric correction
+#   13 - Axial geometric correction
+#   14 - CT projection data
+#   15 - SPECT raw projection data
+#   16 - SPECT energy data from projections
+#   17 - SPECT normalization data
+#   18 - SPECT tomography normalization crystalgram data
+#   19 - SPECT planar normalization crystalgram data
+#
+file_type 5
+#
+# Acquisition mode (integer)
+#   0 - Unknown acquisition mode
+#   1 - Blank acquisition
+#   2 - Emission acquisition
+#   3 - Dynamic acquisition
+#   4 - Gated acquisition
+#   5 - Continuous bed motion acquisition
+#   6 - Singles transmission acquisition
+#   7 - Windowed coincidence transmission acquisition
+#   8 - Non-windowed coincidence transmission acquisition
+#   9 - CT projection acquisition
+#   10 - CT calibration acquisition
+#   11 - SPECT planar projection acquisition
+#   12 - SPECT multi-projection acquisition
+#   13 - SPECT calibration acquisition
+#   14 - SPECT tomography normalization acquisition
+#   15 - SPECT detector setup acquisition
+#   16 - SPECT scout view acquisition
+#   17 - SPECT planar normalization acquisition
+#
+acquisition_mode 9
+#
+# Number of frames in data file (integer)
+#
+total_frames 1
+#
+# Number of time frames in data file (integer)
+#
+time_frames 0
+#
+# Bed control (integer)
+#   0 - Unknown bed control
+#   1 - Dedicated PET
+#   2 - microCAT II
+#   3 - Multimodality bed control
+#   4 - microPET bed control
+#
+bed_control 3
+#
+# Bed motion (integer)
+#   0 - Static or unknown bed motion
+#   1 - Continuous bed motion
+#   2 - Multiple bed positions, i.e. step and shoot
+#
+bed_motion 2
+#
+# Number of bed positions in data file (integer)
+#
+number_of_bed_positions 2
+#
+# Horizontal bed calibration, in microns (float)
+#
+horizontal_bed_calibration 0
+#
+# Vertical bed calibration, in microns (float)
+#
+vertical_bed_calibration 0
+#
+# Transaxial projection bin size, in cm (float)
+#
+transaxial_bin_size 0.0815
+#
+# Axial plane size, in cm (float)
+#
+axial_plane_size 0.0195782
+#
+# Number of detector panels ("rings/CT" are "1") (integer)
+#
+number_detector_panels 1
+#
+# Data type (integer)
+#   0 - Unknown data type
+#   1 - Byte (8-bits) data type
+#   2 - 2-byte integer - Intel style
+#   3 - 4-byte integer - Intel style
+#   4 - 4-byte float - Intel style
+#   5 - 4-byte float - Sun style
+#   6 - 2-byte integer - Sun style
+#   7 - 4-byte integer - Sun style
+#
+data_type 2
+#
+# Number of dimensions in data set (integer)
+#     Order from fastest to slowest is XYZW
+#
+number_of_dimensions 3
+#
+# Size of X dimension in data set (integer)
+#
+x_dimension 512
+#
+# Size of Y dimension in data set (integer)
+#
+y_dimension 512
+#
+# Size of Z dimension in data set (integer)
+#
+z_dimension 679
+#
+# Acquisition user ID (string)
+acquisition_user_id admin
+#
+# Histogram user ID (string)
+histogram_user_id 
+#
+# Reconstruction user ID (string)
+reconstruction_user_id 
+#
+# Scatter correction user ID (string)
+scatter_correction_user_id 
+#
+# Acquisition notes (string)
+acquisition_notes 
+#
+# Scan start date and time (string)
+#    Format is: Sun Sep 16 01:03:52 1973
+#
+scan_time Wed Oct 25 12:22:04 2017
+#
+# Scan start date and time - GMT-based (string)
+#    Format is: Sun Sep 16 01:03:52 1973
+#
+gmt_scan_time Wed Oct 25 17:22:04 2017
+#
+# X origin of volume, in voxels (integer)
+#
+volume_origin_x 255
+#
+# Y origin of volume, in voxels (integer)
+#
+volume_origin_y 255
+#
+# Z origin of volume, in voxels (integer)
+#
+volume_origin_z 338
+#
+# Registration data available (integer)
+#   0 - No registration data available
+#   1 - CT registration data available
+#   2 - PET registration data available
+#
+registration_available 0
+#
+# Transformation matrix filename, possibly including path (string)
+#    NOTE: Filename may contain spaces, therefore the ENTIRE 
+#          line, up to the EOL, is used after the parameter name.
+#
+transformation_matrix F:\Preclinical\Inveon\System Folders\CT\Datasets\Registration\TX MATRIX 8.23.17.trf
+#
+# Spatial identification for registration (string)
+#
+spatial_identifier  
+#
+# Normalization applied to data set (integer)
+#   0 - No normalization applied
+#   1 - Point source inversion
+#   2 - Point source component based
+#   3 - Cylinder source inversion
+#   4 - Cylinder source component based
+#   5 - Dark/bright field log normalization (CT)
+#   6 - SPECT flood inversion based
+#
+normalization_applied 0
+#
+# Reconstruction type (integer)
+#   0 - Unknown, or no, algorithm type
+#   1 - Filtered Backprojection
+#   2 - OSEM2d
+#   3 - OSEM3d
+#   4 - 3D Reprojection
+#   6 - OSEM3D/MAP
+#   7 - MAPTR for transmission image
+#   8 - MAP 3D reconstruction
+#   9 - Feldkamp cone beam
+#
+recon_algorithm 9
+#
+# Version of reconstruction program used (float)
+#
+recon_version 002.040
+#
+# X filter and/or apodizing windows type (integer)
+#       and cutoff (float)
+#   0 - No filter
+#   1 - Ramp filter (backprojection) or no filter
+#   2 - First-order Butterworth window
+#   3 - Hanning window
+#   4 - Hamming window
+#   5 - Parzen window
+#   6 - Shepp filter
+#   7 - Second-order Butterworth window
+#   NOTE that a cutoff of 0.5 is the Nyquist point
+#     i.e 1.0 / (2.0 * sampling).
+#     Also, the Ramp and Shepp should ONLY be used
+#     for backprojection
+#
+x_filter 6 0.5
+#
+# Y apodizing filter type (integer) and cutoff (float)
+#   0 - No filter
+#   2 - First-order Butterworth window
+#   3 - Hanning window
+#   4 - Hamming window
+#   5 - Parzen window
+#   7 - Second-order Butterworth window
+#   NOTE that a cutoff of 0.5 is the Nyquist point
+#     i.e 1.0 / (2.0 * sampling).
+#
+y_filter 0 0.5
+#
+# Z apodizing filter type (integer) and cutoff (float)
+#   0 - No filter
+#   2 - First-order Butterworth window
+#   3 - Hanning window
+#   4 - Hamming window
+#   5 - Parzen window
+#   7 - Second-order Butterworth window
+#   NOTE that a cutoff of 0.5 is the Nyquist point
+#     i.e 1.0 / (2.0 * sampling).
+#
+z_filter 0 0.5
+#
+# X offset, in cm, applied to data set (float)
+#
+x_offset 0
+#
+# Y offset, in cm, applied to data set (float)
+#
+y_offset 0
+#
+# Image reference shift (X, Y, Z), in mm, applied to data set (float float float)
+#
+image_ref_shift -2.52994 0.566405 3.3446
+#
+# Image reference rotations (X, Y, Z), in deg, applied to data set (float float float)
+#
+image_ref_rotation 0 0 0
+#
+# Zoom applied to data set (float)
+#
+zoom 1
+#
+# Reconstructed pixel size, in cm (float)
+#     NOTE: pixel_size = (((X_crystal_pitch / 2.0) * X_dim) /
+#           (image_size * zoom)) * (effective_radius / radius)
+#
+pixel_size 0
+#
+# Reconstructed pixel size in X, in mm (float)
+pixel_size_x 0.195782
+#
+# Reconstructed pixel size in Y, in mm (float)
+pixel_size_y 0.195782
+#
+# Reconstructed pixel size in Z, in mm (float)
+pixel_size_z 0.195782
+#
+# Investigator identification (string)
+#
+investigator  
+#
+# Operator identification (string)
+#
+operator ls
+#
+# Study identification (string)
+#
+study_identifier 1.1.05001.07010.00000.20171025122204
+#
+# Injected compound (string)
+#
+injected_compound  
+#
+# Subject identifier (string)
+#
+subject_identifier  
+#
+# Subject genus (string)
+#
+subject_genus  
+#
+# Subject orientation (integer)
+#   0 - Unknown subject orientation
+#   1 - Feet first, prone
+#   2 - Head first, prone
+#   3 - Feet first, supine
+#   4 - Head first, supine
+#   5 - Feet first, right
+#   6 - Head first, right
+#   7 - Feet first, left
+#   8 - Head first, left
+#
+subject_orientation 3
+#
+# Length units (integer)
+#   0 - Unknown length units
+#   1 - millimeters
+#   2 - centimeters
+#   3 - inches
+#
+subject_length_units 0
+#
+# Subject length (float)
+#
+subject_length 0
+#
+# Weight units (integer)
+#   0 - Unknown weight units
+#   1 - grams
+#   2 - ounces
+#   3 - kilograms
+#   4 - pounds
+#
+subject_weight_units 1
+#
+# Subject weight (float)
+#
+subject_weight 22.8
+#
+# Subject phenotype (string)
+#
+subject_phenotype  
+#
+# Study model (string)
+#
+study_model  
+#
+# Subject anesthesia (string)
+#
+anesthesia  
+#
+# Subject analgesia (string)
+#
+analgesia  
+#
+# Other drugs (string)
+#
+other_drugs  
+#
+# Food access (string)
+#
+food_access  
+#
+# Water access (string)
+#
+water_access  
+#
+# Subject date of birth (string)
+#
+subject_date_of_birth  
+#
+# Subject age (string)
+#
+subject_age  
+#
+# Subject sex (string)
+#
+subject_sex  
+#
+# Subject scan region (string)
+#
+subject_scan_region  
+#
+# Calibration units (integer)
+#   0 - Unknown calibration units
+#   1 - nCi/cc
+#   2 - Bq/cc
+#   3 - Hounsfield Unit
+#
+calibration_units 3
+#
+# Calibration factor (float)
+#   NOTE: Frame scale factor DOES NOT include
+#         calibration factor.
+#
+calibration_factor 2.7205
+#
+# Smooth types (integer)
+#   0 - Not known whether it was applied or not, or what method was used
+#   1 - 3 Point Boxcar
+#   2 - 3 Point Gaussian
+#   3 - 3 Point Triangular
+#
+smooth_types 0
+#
+# Number of iterations smoothing is applied (integer)
+#
+smooth_iter 0
+#
+# Threshold that smoothing is used (in percentage)
+#
+smooth_threshold 0
+#
+#  Following parameters are used for PET or CT modalities.
+#
+#
+# Original acquisition filename, DOES NOT INCLUDE path (string)
+#    NOTE: Filename may contain spaces, therefore the ENTIRE 
+#          line, up to the EOL, is used after the parameter name.
+#
+acquisition_file_name mpet3631a_ct1_v1.cat
+#
+#  Following parameters are used for CT or SPECT modalities.
+#
+#
+# Gantry rotation (integer)
+#
+#   0 - No gantry rotation
+#   1 - Rotation with discrete steps
+#   2 - Continuous rotation
+#
+gantry_rotation 1
+#
+# Rotation direction (integer)
+#
+#     0 - Clockwise
+#     1 - Counterclockwise
+#
+rotation_direction 1
+#
+# Rotating gantry starting angle, in degrees (float)
+#
+rotating_stage_start_position 0
+#
+# Rotating gantry stop angle, in degrees (float)
+#
+rotating_stage_stop_position 360
+#
+# Number of rotation projections per revolution for rotating gantry (integer)
+#
+number_of_projections 181
+#
+# Number of gantry revolutions for rotating gantry (float)
+#
+gantry_revolutions 1
+#
+#  Following parameters are used for CT modality only.
+#
+#
+# CAT file version (integer)
+#
+ct_file_version 4
+#
+# Header size of CAT files before dark and light projections (integer)
+#
+ct_header_size 50432
+#
+# CT transaxial projection size, in pixels (integer)
+#
+ct_proj_size_transaxial 1024
+#
+# CT axial projection size, in pixels (integer)
+#
+ct_proj_size_axial 800
+#
+# Number to average the dark calibration projections (integer)
+#
+ct_average_dark_projections 51
+#
+# Number to average the light calibration projections (integer)
+#
+ct_average_light_projections 51
+#
+# Total positions to acquire the light calibration projections (integer)
+#
+ct_light_calibration_projections 0
+#
+# Indicates if the positions to acquire light projections are same as scan projection positions (integer)
+#
+ct_dependent_light_calibration_projections 0
+#
+# CT X-ray detector offset, in mm (float)
+#
+ct_xray_detector_offset 0
+#
+# CT detector transaxial position, in cm (float)
+#
+ct_detector_transaxial_position 0
+#
+# CT detector uncropped transaxial pixels (integer)
+#
+ct_uncropped_transaxial_pixels 4096
+#
+# CT detector uncropped axial pixels (integer)
+#
+ct_uncropped_axial_pixels 4064
+#
+# CT detector cropped transaxial pixels (integer)
+#
+ct_cropped_transaxial_pixels 4096
+#
+# CT detector cropped axial pixels (integer)
+#
+ct_cropped_axial_pixels 3200
+#
+# CT X-ray detector pitch, in um (float)
+#
+ct_xray_detector_pitch 97.891
+#
+# CT horizontal rotation-axis-bed angle, in degrees (float)
+#
+ct_horiz_rot_axis_bed_angle -0.39
+#
+# CT vertical rotation-axis-bed angle, in degrees (float)
+#
+ct_vert_rot_axis_bed_angle 0.03
+#
+# CT exposure time, in msecs (float)
+#
+ct_exposure_time 300
+#
+# CT total scan time, in min:sec (integer:integer)
+#
+ct_scan_time 6:40
+#
+# CT warping type (integer)
+#   0 - Unknown warping type
+#   1 - No warping
+#   2 - Bilinear warping
+#   3 - Nearest neighbor warping
+#
+ct_warping 2
+#
+# CT defect map filename, possibly including path (string)
+#    NOTE: Filename may contain spaces, therefore the ENTIRE 
+#          line, up to the EOL, is used after the parameter name.
+#
+ct_defect_map_file_name 
+#
+# CT x-ray voltage, in kVp (float)
+#
+ct_xray_voltage 60
+#
+# CT anode current, in uA (float)
+#
+ct_anode_current 500
+#
+# Number of CT calibration exposures (integer)
+#
+ct_calibration_exposures 51
+#
+# CT cone angle, in degrees (float)
+#
+ct_cone_angle 21.4161
+#
+# CT projection interpolation type (integer)
+#   0 - Unknown projection interpolation type
+#   1 - Bilinear projection interpolation
+#   2 - Nearest neighbor projection interpolation
+#
+ct_projection_interpolation 0
+#
+# CT source to detector distance, in cm (float)
+#
+ct_source_to_detector 316.38
+#
+# CT source to center of rotation, in cm (float)
+#
+ct_source_to_crot 265.05
+#
+# CT vetical detector offset, in pixels (float)
+#
+ct_detector_vertical_offset 0
+#
+# CT detector tilt relative to horizontal axis, in degrees (float)
+#
+ct_detector_horizontal_tilt 0
+#
+# CT detector tilt relative to vertical axis, in degrees (float)
+#
+ct_detector_vertical_tilt 0
+#
+# CT axial projection bin factor, in pixels (integer)
+#
+ct_transaxial_bin_factor 4
+#
+# CT axial projection bin factor, in pixels (integer)
+#
+ct_axial_bin_factor 4
+#
+# CT gating signal used (integer)
+#
+ct_gating 0
+#
+# CT Hounsfield scale (float)
+#
+ct_hounsfield_scale 0
+#
+# CT Hounsfield offset (float)
+#
+ct_hounsfield_offset 0
+#
+# CT projection downsample factor (integer)
+#
+ct_proj_downsample_factor 0
+#
+# CT first projection used in reconstruction (integer)
+#
+ct_first_recon_proj 0
+#
+# CT last projection used in reconstruction (integer)
+#
+ct_last_recon_proj 0
+#
+# CT every Nth projection used for reconstruction (integer)
+#
+ct_recon_every_nth_proj 0
+#
+# CT attenuation of water, in cm^-1 (float)
+#
+ct_attenuation_water 0
+#
+# CT TX rotation offsets: X Y Z, in mm (float)
+#
+ct_tx_rotation_offsets 0 0 0
+#
+# CT TX transaxial offsets: X Y Z, in mm (float)
+#
+ct_tx_transaxial_offsets 0 0 0
+#
+# CT BH correction applied (int)
+#
+#     0 (FALSE) - CT BH correction has NOT been applied
+#     !0 (TRUE) - CT BH correction has been applied
+#
+ct_bh_correction 0
+#
+# CT aluminum filter thickness (mm) (float)
+#
+ct_aluminum_filter_thickness 0.5
+#
+# CT projection array (integer  float)
+#       projection_number    acquisition_position (degrees)
+#
+projection 0 0
+projection 1 2
+projection 2 4
+projection 3 6
+projection 4 8
+projection 5 10
+projection 6 12
+projection 7 14
+projection 8 16
+projection 9 18
+projection 10 20
+projection 11 22
+projection 12 24
+projection 13 26
+projection 14 28
+projection 15 30
+projection 16 32
+projection 17 34
+projection 18 36
+projection 19 38
+projection 20 40
+projection 21 42
+projection 22 44
+projection 23 46
+projection 24 48
+projection 25 50
+projection 26 52
+projection 27 54
+projection 28 56
+projection 29 58
+projection 30 60
+projection 31 62
+projection 32 64
+projection 33 66
+projection 34 68
+projection 35 70
+projection 36 72
+projection 37 74
+projection 38 76
+projection 39 78
+projection 40 80
+projection 41 82
+projection 42 84
+projection 43 86
+projection 44 88
+projection 45 90
+projection 46 92
+projection 47 94
+projection 48 96
+projection 49 98
+projection 50 100
+projection 51 102
+projection 52 104
+projection 53 106
+projection 54 108
+projection 55 110
+projection 56 112
+projection 57 114
+projection 58 116
+projection 59 118
+projection 60 120
+projection 61 122
+projection 62 124
+projection 63 126
+projection 64 128
+projection 65 130
+projection 66 132
+projection 67 134
+projection 68 136
+projection 69 138
+projection 70 140
+projection 71 142
+projection 72 144
+projection 73 146
+projection 74 148
+projection 75 150
+projection 76 152
+projection 77 154
+projection 78 156
+projection 79 158
+projection 80 160
+projection 81 162
+projection 82 164
+projection 83 166
+projection 84 168
+projection 85 170
+projection 86 172
+projection 87 174
+projection 88 176
+projection 89 178
+projection 90 180
+projection 91 182
+projection 92 184
+projection 93 186
+projection 94 188
+projection 95 190
+projection 96 192
+projection 97 194
+projection 98 196
+projection 99 198
+projection 100 200
+projection 101 202
+projection 102 204
+projection 103 206
+projection 104 208
+projection 105 210
+projection 106 212
+projection 107 214
+projection 108 216
+projection 109 218
+projection 110 220
+projection 111 222
+projection 112 224
+projection 113 226
+projection 114 228
+projection 115 230
+projection 116 232
+projection 117 234
+projection 118 236
+projection 119 238
+projection 120 240
+projection 121 242
+projection 122 244
+projection 123 246
+projection 124 248
+projection 125 250
+projection 126 252
+projection 127 254
+projection 128 256
+projection 129 258
+projection 130 260
+projection 131 262
+projection 132 264
+projection 133 266
+projection 134 268
+projection 135 270
+projection 136 272
+projection 137 274
+projection 138 276
+projection 139 278
+projection 140 280
+projection 141 282
+projection 142 284
+projection 143 286
+projection 144 288
+projection 145 290
+projection 146 292
+projection 147 294
+projection 148 296
+projection 149 298
+projection 150 300
+projection 151 302
+projection 152 304
+projection 153 306
+projection 154 308
+projection 155 310
+projection 156 312
+projection 157 314
+projection 158 316
+projection 159 318
+projection 160 320
+projection 161 322
+projection 162 324
+projection 163 326
+projection 164 328
+projection 165 330
+projection 166 332
+projection 167 334
+projection 168 336
+projection 169 338
+projection 170 340
+projection 171 342
+projection 172 344
+projection 173 346
+projection 174 348
+projection 175 350
+projection 176 352
+projection 177 354
+projection 178 356
+projection 179 358
+projection 180 360
+#
+# CT projection average center offset (float)
+#
+ct_projection_average_center_offset -3.13989
+#
+# CT projection average center offset array (integer  float)
+#       projection_number    average center offset (mm)
+#
+ct_projection_center_offset 0 -6.41
+ct_projection_center_offset 1 -6.37667
+ct_projection_center_offset 2 -6.41
+ct_projection_center_offset 3 -6.37667
+ct_projection_center_offset 4 -6.38667
+ct_projection_center_offset 5 -6.44
+ct_projection_center_offset 6 -6.49333
+ct_projection_center_offset 7 -6.55333
+ct_projection_center_offset 8 -6.62
+ct_projection_center_offset 9 -6.61333
+ct_projection_center_offset 10 -6.62
+ct_projection_center_offset 11 -6.64
+ct_projection_center_offset 12 -6.68
+ct_projection_center_offset 13 -6.71667
+ct_projection_center_offset 14 -6.75
+ct_projection_center_offset 15 -6.74333
+ct_projection_center_offset 16 -6.73667
+ct_projection_center_offset 17 -6.73
+ct_projection_center_offset 18 -6.74333
+ct_projection_center_offset 19 -6.76667
+ct_projection_center_offset 20 -6.8
+ct_projection_center_offset 21 -6.80667
+ct_projection_center_offset 22 -6.79
+ct_projection_center_offset 23 -6.75
+ct_projection_center_offset 24 -6.76333
+ct_projection_center_offset 25 -6.77667
+ct_projection_center_offset 26 -6.79
+ct_projection_center_offset 27 -6.79
+ct_projection_center_offset 28 -6.76333
+ct_projection_center_offset 29 -6.71
+ct_projection_center_offset 30 -6.69667
+ct_projection_center_offset 31 -6.68667
+ct_projection_center_offset 32 -6.68
+ct_projection_center_offset 33 -6.67333
+ct_projection_center_offset 34 -6.61333
+ct_projection_center_offset 35 -6.5
+ct_projection_center_offset 36 -6.46667
+ct_projection_center_offset 37 -6.42
+ct_projection_center_offset 38 -6.36
+ct_projection_center_offset 39 -6.38667
+ct_projection_center_offset 40 -6.36
+ct_projection_center_offset 41 -6.28
+ct_projection_center_offset 42 -6.25333
+ct_projection_center_offset 43 -6.22333
+ct_projection_center_offset 44 -6.19
+ct_projection_center_offset 45 -6.20333
+ct_projection_center_offset 46 -6.18333
+ct_projection_center_offset 47 -6.13
+ct_projection_center_offset 48 -6.03667
+ct_projection_center_offset 49 -5.98333
+ct_projection_center_offset 50 -5.97
+ct_projection_center_offset 51 -5.93667
+ct_projection_center_offset 52 -5.90667
+ct_projection_center_offset 53 -5.88
+ct_projection_center_offset 54 -5.81333
+ct_projection_center_offset 55 -5.77
+ct_projection_center_offset 56 -5.75
+ct_projection_center_offset 57 -5.75
+ct_projection_center_offset 58 -5.74
+ct_projection_center_offset 59 -5.72
+ct_projection_center_offset 60 -5.7
+ct_projection_center_offset 61 -5.68333
+ct_projection_center_offset 62 -5.67
+ct_projection_center_offset 63 -5.67
+ct_projection_center_offset 64 -5.67
+ct_projection_center_offset 65 -5.67
+ct_projection_center_offset 66 -5.65
+ct_projection_center_offset 67 -5.64
+ct_projection_center_offset 68 -5.64
+ct_projection_center_offset 69 -5.64667
+ct_projection_center_offset 70 -5.65667
+ct_projection_center_offset 71 -5.67
+ct_projection_center_offset 72 -5.67
+ct_projection_center_offset 73 -5.68
+ct_projection_center_offset 74 -5.7
+ct_projection_center_offset 75 -5.72
+ct_projection_center_offset 76 -5.74
+ct_projection_center_offset 77 -5.76
+ct_projection_center_offset 78 -5.78
+ct_projection_center_offset 79 -5.8
+ct_projection_center_offset 80 -5.82
+ct_projection_center_offset 81 -5.84667
+ct_projection_center_offset 82 -5.87667
+ct_projection_center_offset 83 -5.91
+ct_projection_center_offset 84 -5.98333
+ct_projection_center_offset 85 -6.04
+ct_projection_center_offset 86 -6.08
+ct_projection_center_offset 87 -6.12
+ct_projection_center_offset 88 -6.15667
+ct_projection_center_offset 89 -6.19
+ct_projection_center_offset 90 -6.22333
+ct_projection_center_offset 91 -6.29667
+ct_projection_center_offset 92 -6.41
+ct_projection_center_offset 93 -6.37667
+ct_projection_center_offset 94 -6.38667
+ct_projection_center_offset 95 -6.44
+ct_projection_center_offset 96 -6.49333
+ct_projection_center_offset 97 -6.55333
+ct_projection_center_offset 98 -6.62
+ct_projection_center_offset 99 -6.61333
+ct_projection_center_offset 100 -6.62
+ct_projection_center_offset 101 -6.64
+ct_projection_center_offset 102 -6.68
+ct_projection_center_offset 103 -6.71667
+ct_projection_center_offset 104 -6.75
+ct_projection_center_offset 105 -6.74333
+ct_projection_center_offset 106 -6.73667
+ct_projection_center_offset 107 -6.73
+ct_projection_center_offset 108 -6.74333
+ct_projection_center_offset 109 -6.76667
+ct_projection_center_offset 110 -6.8
+ct_projection_center_offset 111 -6.80667
+ct_projection_center_offset 112 -6.79
+ct_projection_center_offset 113 -6.75
+ct_projection_center_offset 114 -6.76333
+ct_projection_center_offset 115 -6.77667
+ct_projection_center_offset 116 -6.79
+ct_projection_center_offset 117 -6.79
+ct_projection_center_offset 118 -6.76333
+ct_projection_center_offset 119 -6.71
+ct_projection_center_offset 120 -6.69667
+ct_projection_center_offset 121 -6.68667
+ct_projection_center_offset 122 -6.68
+ct_projection_center_offset 123 -6.67333
+ct_projection_center_offset 124 -6.61333
+ct_projection_center_offset 125 -6.5
+ct_projection_center_offset 126 -6.46667
+ct_projection_center_offset 127 -6.42
+ct_projection_center_offset 128 -6.36
+ct_projection_center_offset 129 -6.38667
+ct_projection_center_offset 130 -6.36
+ct_projection_center_offset 131 -6.28
+ct_projection_center_offset 132 -6.25333
+ct_projection_center_offset 133 -6.22333
+ct_projection_center_offset 134 -6.19
+ct_projection_center_offset 135 -6.20333
+ct_projection_center_offset 136 -6.18333
+ct_projection_center_offset 137 -6.13
+ct_projection_center_offset 138 -6.03667
+ct_projection_center_offset 139 -5.98333
+ct_projection_center_offset 140 -5.97
+ct_projection_center_offset 141 -5.93667
+ct_projection_center_offset 142 -5.90667
+ct_projection_center_offset 143 -5.88
+ct_projection_center_offset 144 -5.81333
+ct_projection_center_offset 145 -5.77
+ct_projection_center_offset 146 -5.75
+ct_projection_center_offset 147 -5.75
+ct_projection_center_offset 148 -5.74
+ct_projection_center_offset 149 -5.72
+ct_projection_center_offset 150 -5.7
+ct_projection_center_offset 151 -5.68333
+ct_projection_center_offset 152 -5.67
+ct_projection_center_offset 153 -5.67
+ct_projection_center_offset 154 -5.67
+ct_projection_center_offset 155 -5.67
+ct_projection_center_offset 156 -5.65
+ct_projection_center_offset 157 -5.64
+ct_projection_center_offset 158 -5.64
+ct_projection_center_offset 159 -5.64667
+ct_projection_center_offset 160 -5.65667
+ct_projection_center_offset 161 -5.67
+ct_projection_center_offset 162 -5.67
+ct_projection_center_offset 163 -5.68
+ct_projection_center_offset 164 -5.7
+ct_projection_center_offset 165 -5.72
+ct_projection_center_offset 166 -5.74
+ct_projection_center_offset 167 -5.76
+ct_projection_center_offset 168 -5.78
+ct_projection_center_offset 169 -5.8
+ct_projection_center_offset 170 -5.82
+ct_projection_center_offset 171 -5.84667
+ct_projection_center_offset 172 -5.87667
+ct_projection_center_offset 173 -5.91
+ct_projection_center_offset 174 -5.98333
+ct_projection_center_offset 175 -6.04
+ct_projection_center_offset 176 -6.08
+ct_projection_center_offset 177 -6.12
+ct_projection_center_offset 178 -6.15667
+ct_projection_center_offset 179 -6.19
+ct_projection_center_offset 180 -6.22333
+#
+# CT projection horizontal bed offset array (integer  float)
+#       projection_number    horizontal bed offset (mm)
+#
+ct_projection_horizontal_bed_offset 0 0.156414
+ct_projection_horizontal_bed_offset 1 0.156414
+ct_projection_horizontal_bed_offset 2 0.156414
+ct_projection_horizontal_bed_offset 3 0.156414
+ct_projection_horizontal_bed_offset 4 0.156414
+ct_projection_horizontal_bed_offset 5 0.156414
+ct_projection_horizontal_bed_offset 6 0.156414
+ct_projection_horizontal_bed_offset 7 0.156414
+ct_projection_horizontal_bed_offset 8 0.156414
+ct_projection_horizontal_bed_offset 9 0.156414
+ct_projection_horizontal_bed_offset 10 0.156414
+ct_projection_horizontal_bed_offset 11 0.156414
+ct_projection_horizontal_bed_offset 12 0.156414
+ct_projection_horizontal_bed_offset 13 0.156414
+ct_projection_horizontal_bed_offset 14 0.156414
+ct_projection_horizontal_bed_offset 15 0.156414
+ct_projection_horizontal_bed_offset 16 0.156414
+ct_projection_horizontal_bed_offset 17 0.156414
+ct_projection_horizontal_bed_offset 18 0.156414
+ct_projection_horizontal_bed_offset 19 0.156414
+ct_projection_horizontal_bed_offset 20 0.156414
+ct_projection_horizontal_bed_offset 21 0.156414
+ct_projection_horizontal_bed_offset 22 0.156414
+ct_projection_horizontal_bed_offset 23 0.156414
+ct_projection_horizontal_bed_offset 24 0.156414
+ct_projection_horizontal_bed_offset 25 0.156414
+ct_projection_horizontal_bed_offset 26 0.156414
+ct_projection_horizontal_bed_offset 27 0.156414
+ct_projection_horizontal_bed_offset 28 0.156414
+ct_projection_horizontal_bed_offset 29 0.156414
+ct_projection_horizontal_bed_offset 30 0.156414
+ct_projection_horizontal_bed_offset 31 0.156414
+ct_projection_horizontal_bed_offset 32 0.156414
+ct_projection_horizontal_bed_offset 33 0.156414
+ct_projection_horizontal_bed_offset 34 0.156414
+ct_projection_horizontal_bed_offset 35 0.156414
+ct_projection_horizontal_bed_offset 36 0.156414
+ct_projection_horizontal_bed_offset 37 0.156414
+ct_projection_horizontal_bed_offset 38 0.156414
+ct_projection_horizontal_bed_offset 39 0.156414
+ct_projection_horizontal_bed_offset 40 0.156414
+ct_projection_horizontal_bed_offset 41 0.156414
+ct_projection_horizontal_bed_offset 42 0.156414
+ct_projection_horizontal_bed_offset 43 0.156414
+ct_projection_horizontal_bed_offset 44 0.156414
+ct_projection_horizontal_bed_offset 45 0.156414
+ct_projection_horizontal_bed_offset 46 0.156414
+ct_projection_horizontal_bed_offset 47 0.156414
+ct_projection_horizontal_bed_offset 48 0.156414
+ct_projection_horizontal_bed_offset 49 0.156414
+ct_projection_horizontal_bed_offset 50 0.156414
+ct_projection_horizontal_bed_offset 51 0.156414
+ct_projection_horizontal_bed_offset 52 0.156414
+ct_projection_horizontal_bed_offset 53 0.156414
+ct_projection_horizontal_bed_offset 54 0.156414
+ct_projection_horizontal_bed_offset 55 0.156414
+ct_projection_horizontal_bed_offset 56 0.156414
+ct_projection_horizontal_bed_offset 57 0.156414
+ct_projection_horizontal_bed_offset 58 0.156414
+ct_projection_horizontal_bed_offset 59 0.156414
+ct_projection_horizontal_bed_offset 60 0.156414
+ct_projection_horizontal_bed_offset 61 0.156414
+ct_projection_horizontal_bed_offset 62 0.156414
+ct_projection_horizontal_bed_offset 63 0.156414
+ct_projection_horizontal_bed_offset 64 0.156414
+ct_projection_horizontal_bed_offset 65 0.156414
+ct_projection_horizontal_bed_offset 66 0.156414
+ct_projection_horizontal_bed_offset 67 0.156414
+ct_projection_horizontal_bed_offset 68 0.156414
+ct_projection_horizontal_bed_offset 69 0.156414
+ct_projection_horizontal_bed_offset 70 0.156414
+ct_projection_horizontal_bed_offset 71 0.156414
+ct_projection_horizontal_bed_offset 72 0.156414
+ct_projection_horizontal_bed_offset 73 0.156414
+ct_projection_horizontal_bed_offset 74 0.156414
+ct_projection_horizontal_bed_offset 75 0.156414
+ct_projection_horizontal_bed_offset 76 0.156414
+ct_projection_horizontal_bed_offset 77 0.156414
+ct_projection_horizontal_bed_offset 78 0.156414
+ct_projection_horizontal_bed_offset 79 0.156414
+ct_projection_horizontal_bed_offset 80 0.156414
+ct_projection_horizontal_bed_offset 81 0.156414
+ct_projection_horizontal_bed_offset 82 0.156414
+ct_projection_horizontal_bed_offset 83 0.156414
+ct_projection_horizontal_bed_offset 84 0.156414
+ct_projection_horizontal_bed_offset 85 0.156414
+ct_projection_horizontal_bed_offset 86 0.156414
+ct_projection_horizontal_bed_offset 87 0.156414
+ct_projection_horizontal_bed_offset 88 0.156414
+ct_projection_horizontal_bed_offset 89 0.156414
+ct_projection_horizontal_bed_offset 90 0.156414
+ct_projection_horizontal_bed_offset 91 0.156414
+ct_projection_horizontal_bed_offset 92 0.156414
+ct_projection_horizontal_bed_offset 93 0.156414
+ct_projection_horizontal_bed_offset 94 0.156414
+ct_projection_horizontal_bed_offset 95 0.156414
+ct_projection_horizontal_bed_offset 96 0.156414
+ct_projection_horizontal_bed_offset 97 0.156414
+ct_projection_horizontal_bed_offset 98 0.156414
+ct_projection_horizontal_bed_offset 99 0.156414
+ct_projection_horizontal_bed_offset 100 0.156414
+ct_projection_horizontal_bed_offset 101 0.156414
+ct_projection_horizontal_bed_offset 102 0.156414
+ct_projection_horizontal_bed_offset 103 0.156414
+ct_projection_horizontal_bed_offset 104 0.156414
+ct_projection_horizontal_bed_offset 105 0.156414
+ct_projection_horizontal_bed_offset 106 0.156414
+ct_projection_horizontal_bed_offset 107 0.156414
+ct_projection_horizontal_bed_offset 108 0.156414
+ct_projection_horizontal_bed_offset 109 0.156414
+ct_projection_horizontal_bed_offset 110 0.156414
+ct_projection_horizontal_bed_offset 111 0.156414
+ct_projection_horizontal_bed_offset 112 0.156414
+ct_projection_horizontal_bed_offset 113 0.156414
+ct_projection_horizontal_bed_offset 114 0.156414
+ct_projection_horizontal_bed_offset 115 0.156414
+ct_projection_horizontal_bed_offset 116 0.156414
+ct_projection_horizontal_bed_offset 117 0.156414
+ct_projection_horizontal_bed_offset 118 0.156414
+ct_projection_horizontal_bed_offset 119 0.156414
+ct_projection_horizontal_bed_offset 120 0.156414
+ct_projection_horizontal_bed_offset 121 0.156414
+ct_projection_horizontal_bed_offset 122 0.156414
+ct_projection_horizontal_bed_offset 123 0.156414
+ct_projection_horizontal_bed_offset 124 0.156414
+ct_projection_horizontal_bed_offset 125 0.156414
+ct_projection_horizontal_bed_offset 126 0.156414
+ct_projection_horizontal_bed_offset 127 0.156414
+ct_projection_horizontal_bed_offset 128 0.156414
+ct_projection_horizontal_bed_offset 129 0.156414
+ct_projection_horizontal_bed_offset 130 0.156414
+ct_projection_horizontal_bed_offset 131 0.156414
+ct_projection_horizontal_bed_offset 132 0.156414
+ct_projection_horizontal_bed_offset 133 0.156414
+ct_projection_horizontal_bed_offset 134 0.156414
+ct_projection_horizontal_bed_offset 135 0.156414
+ct_projection_horizontal_bed_offset 136 0.156414
+ct_projection_horizontal_bed_offset 137 0.156414
+ct_projection_horizontal_bed_offset 138 0.156414
+ct_projection_horizontal_bed_offset 139 0.156414
+ct_projection_horizontal_bed_offset 140 0.156414
+ct_projection_horizontal_bed_offset 141 0.156414
+ct_projection_horizontal_bed_offset 142 0.156414
+ct_projection_horizontal_bed_offset 143 0.156414
+ct_projection_horizontal_bed_offset 144 0.156414
+ct_projection_horizontal_bed_offset 145 0.156414
+ct_projection_horizontal_bed_offset 146 0.156414
+ct_projection_horizontal_bed_offset 147 0.156414
+ct_projection_horizontal_bed_offset 148 0.156414
+ct_projection_horizontal_bed_offset 149 0.156414
+ct_projection_horizontal_bed_offset 150 0.156414
+ct_projection_horizontal_bed_offset 151 0.156414
+ct_projection_horizontal_bed_offset 152 0.156414
+ct_projection_horizontal_bed_offset 153 0.156414
+ct_projection_horizontal_bed_offset 154 0.156414
+ct_projection_horizontal_bed_offset 155 0.156414
+ct_projection_horizontal_bed_offset 156 0.156414
+ct_projection_horizontal_bed_offset 157 0.156414
+ct_projection_horizontal_bed_offset 158 0.156414
+ct_projection_horizontal_bed_offset 159 0.156414
+ct_projection_horizontal_bed_offset 160 0.156414
+ct_projection_horizontal_bed_offset 161 0.156414
+ct_projection_horizontal_bed_offset 162 0.156414
+ct_projection_horizontal_bed_offset 163 0.156414
+ct_projection_horizontal_bed_offset 164 0.156414
+ct_projection_horizontal_bed_offset 165 0.156414
+ct_projection_horizontal_bed_offset 166 0.156414
+ct_projection_horizontal_bed_offset 167 0.156414
+ct_projection_horizontal_bed_offset 168 0.156414
+ct_projection_horizontal_bed_offset 169 0.156414
+ct_projection_horizontal_bed_offset 170 0.156414
+ct_projection_horizontal_bed_offset 171 0.156414
+ct_projection_horizontal_bed_offset 172 0.156414
+ct_projection_horizontal_bed_offset 173 0.156414
+ct_projection_horizontal_bed_offset 174 0.156414
+ct_projection_horizontal_bed_offset 175 0.156414
+ct_projection_horizontal_bed_offset 176 0.156414
+ct_projection_horizontal_bed_offset 177 0.156414
+ct_projection_horizontal_bed_offset 178 0.156414
+ct_projection_horizontal_bed_offset 179 0.156414
+ct_projection_horizontal_bed_offset 180 0.156414
+#
+# End of Header indicator 
+#
+end_of_header
+#
+# Header for frame 0, detector_panel -1, event_type 0, energy_window -1, gate 0, bed 2.
+#
+#
+#  Following parameters are used for ALL modalities.
+#
+#
+# Frame number (integer)
+#
+frame 0
+#
+# Detector panel - NOTE: "ring" systems are "0" ONLY (integer)
+#
+detector_panel -1
+#
+# Event type (integer)
+#   0 - Unknown event type
+#   1 - Singles
+#   2 - Prompt events (coincidences)
+#   3 - Delay events
+#   4 - Trues (prompts - delays)
+#   5 - Energy spectrum data
+#
+event_type 0
+#
+# Energy window - NOTE PET/CT systems are typically "0" ONLY (integer)
+#
+energy_window -1
+#
+# Gate number (integer)
+#
+gate 0
+#
+# Bed number (integer)
+#
+bed 2
+#
+# Bed offset, in cm (float)
+#
+bed_offset 0.0156414
+#
+# Ending horizontal bed offset, in cm (float)
+#
+ending_bed_offset 5.48436
+#
+# Number of bed passes during frame (integer)
+#
+bed_passes 1
+#
+# Vertical bed offset, in cm (float)
+#
+vertical_bed_offset 2.681
+#
+# Data file offset to start of data (2 32-bit ints)
+#     Values are: low_part
+#             or: high_part low_part
+#
+data_file_pointer 0 0
+#
+# Frame start time, in secs (float)
+#
+frame_start 0
+#
+# Frame duration, in secs (float)
+#
+frame_duration 200
+#
+# Scale factor for data set (float)
+#
+scale_factor 1.00000
+#
+# Minimum value in data set (float)
+#
+minimum -32767
+#
+# Maximum value in data set (float)
+#
+maximum 32767
+#
+#  Following parameters are used for CT modality only.
+#
+#
+# End of Header indicator 
+#
+end_of_header
