@@ -10,7 +10,7 @@ ENVIRONMENT REQUREMENTS<br>
 Docker
 
 BUILD<br>
-1. Run 'source build-base2.sh' to generate Docker the image containing the required Python environment. The image tag is currently hardcoded as 'python-base:v1'.
+1. Run 'source build-base.sh' to generate Docker the image containing the required Python environment. The image tag is currently hardcoded as 'python-base:v1'.
 1. The version of 'splitter_of_mice.py' installed in the container is in the 'context-splitter' directory. Note the version in this repo is not the same as in the 'splitter_of_mice' directory.  This version has been modified to remove dependencies only needed if running in the Jupyter context and, for some reason, comments in Russian.
 1. Run 'source build-splitter2.sh'. This will build the Docker image 'hotel_splitter:v2' from the python-base image created in step 1. 
 
