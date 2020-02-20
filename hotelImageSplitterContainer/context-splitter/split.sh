@@ -1,6 +1,7 @@
 #!/bin/bash
 
 xsiType=$1
+options_flag=$2
 
 if [[ $xsiType = "ccdb:hotelCT" ]]
 then
@@ -13,7 +14,7 @@ else
 fi
 
 # allow optional params to be passed in.
-CMD="python splitter_of_mice.py -q $modality_flag  /input/*.img /output"
+CMD="python splitter_of_mice.py ${options_flag} -q $modality_flag  /input/*.img /output"
 
 echo $CMD
 

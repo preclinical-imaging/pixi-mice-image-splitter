@@ -7,7 +7,7 @@
   "info-url": "",
   "image": "hotel_splitter:v2",
   "type": "docker",
-  "command-line": "sh -c './split.sh [XSI_TYPE]'",
+  "command-line": "sh -c './split.sh [XSI_TYPE] [OTHER_OPTIONS]'",
   "override-entrypoint": true,
   "mounts": [
     {
