@@ -3,18 +3,15 @@ package org.nrg.xnat.plugins.ccdb.rest.guest;
 import org.nrg.xdat.om.*;
 import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.ResourceFile;
-import org.nrg.xnat.helpers.uri.UriParserUtils;
 import org.nrg.xnat.plugins.ccdb.service.XnatService;
 import org.nrg.xnat.plugins.ccdb.service.XnatServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class FrontDesk_WU implements FrontDesk {
     private final GuestPositionLabelModel_WU guestPositionLabelModel;
     private final GuestLabelModel_WU guestLabelModel;
@@ -23,7 +20,6 @@ public class FrontDesk_WU implements FrontDesk {
 
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
-    @Autowired
     public FrontDesk_WU( XnatService xnatService) {
         this( new GuestPositionLabelModel_WU(), new GuestLabelModel_WU(), new GuestSessionLabelModel_WU());
         _xnatService = xnatService;

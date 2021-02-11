@@ -11,7 +11,7 @@ import org.gradle.internal.jvm.Jvm
 
 buildscript {
     ext {
-        vXnat = '1.7.5.3'
+        vXnat = '1.7.6'
     }
     repositories {
         mavenLocal()
@@ -30,8 +30,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
-        classpath ("org.nrg.xnat.build:xnat-data-builder:1.7.5"){
+        classpath "io.franzbecker:gradle-lombok:3.3.0"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE"
+        classpath ("org.nrg.xnat.build:xnat-data-builder:1.7.6"){
             exclude group:'torque'
         }
         classpath ("org.nrg.xnat:web:${vXnat}"){

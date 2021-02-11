@@ -38,9 +38,16 @@ There currently is not a mechanism to run the entire workflow from a single inte
 ./gradlew clean fatJar
 ```
 
-# Configure #
+# Dependencies #
 
-1. Installing the plugin will cause the REST endpoints to automatically be created.  See the Swagger page: ccdb-api for details about these endpoints.
+1. Container Service plugin.
+1. Hotel-Splitter container.
+
+# Installation #
+
+1. This is a standard XNAT plugin installed by copying the jar file to the XNAT user's plugins directory.
+   Installing the plugin will cause the REST endpoints to automatically be created.  See the Swagger page: ccdb-api for details about these endpoints.
+1. Container Service plugin
 1. Hotel-Splitter Container
     1. The code to build and configure this container is in hotelImageSplitterContainer folder of this repo. Follow the instruction there.
 1. Hotel-QC Automation Script

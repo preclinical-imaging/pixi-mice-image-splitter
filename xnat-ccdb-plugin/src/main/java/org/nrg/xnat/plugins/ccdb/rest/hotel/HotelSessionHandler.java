@@ -27,11 +27,10 @@ public class HotelSessionHandler  {
     private final XnatService _xnatService;
     private static final Logger _log = LoggerFactory.getLogger( "ccdbLogger");
 
-    public HotelSessionHandler( final SiteConfigPreferences preferences, final CatalogService catalogService) {
+    public HotelSessionHandler( final SiteConfigPreferences preferences, final CatalogService catalogService, final XnatService xnatService) {
         _preferences = preferences;
         _catalogService = catalogService;
-        // TODO: inject this
-        _xnatService = new XnatService(_catalogService);
+        _xnatService = xnatService;
     }
 
     public void handleSubjects(String project, Collection<HotelSubject> subjects, Map<String, File> files, UserI user) throws Exception {

@@ -89,7 +89,7 @@ public class CCDBApi extends AbstractXapiRestController {
                 }
                 UserI user = getSessionUser();
 
-                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService);
+                HotelSessionHandler sessionHandler = new HotelSessionHandler( _preferences, _catalogService, _xnatService);
 
                 sessionHandler.handleSubjects( projectID, hotelSubjects, files, user);
 

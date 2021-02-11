@@ -22,7 +22,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="http://nrg.wustl.edu/xnat" schemaLocation="../xnat/xnat.xsd"/>
     <xs:element name="preclinDemographics" type="ccdb:preclinDemographicData"/>
-    <xs:complexType name=preclinDemographicData">
+    <xs:complexType name="preclinDemographicData">
 	<xs:annotation>
 		<xs:appinfo>
 			<xs:documentation>Pre-Clinical Demographic Data</xs:documentation>
