@@ -60,7 +60,7 @@ public class HotelImageSplitHandler {
                 } catch (ElementNotFoundException e) {
                     throw new HandlerException( String.format("Command not found for %s in project %s", session.getXSIType(), project), HttpStatus.BAD_REQUEST);
                 }
-_commandName = "hotel-image-splitter-qc";
+                _commandName = "hotel-image-splitter-qc";
                 Optional<CommandSummaryForContext> cs = available.stream().filter( c -> c.commandName().equals( _commandName)).findAny();
                 long commandID;
                 long wrapperID;

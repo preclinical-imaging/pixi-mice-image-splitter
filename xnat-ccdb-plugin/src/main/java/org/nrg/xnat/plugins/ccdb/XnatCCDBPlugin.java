@@ -17,8 +17,6 @@ import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk;
 import org.nrg.xnat.plugins.ccdb.rest.guest.FrontDesk_WU;
 import org.nrg.xnat.plugins.ccdb.service.XnatService;
 import org.nrg.xnat.services.archive.CatalogService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -34,19 +32,10 @@ import org.springframework.context.annotation.Import;
                 @XnatDataModel(value = CcdbHotelct.SCHEMA_ELEMENT_NAME,
                         singular = "CT Hotel Session",
                         plural = "CT Hotel Sessions",
-                        code = "CT_HTL")},
-        log4jPropertiesFile = "ccdb-log4j.properties")
+                        code = "CT_HTL")})
 @ComponentScan({ "org.nrg.xnat.plugins.ccdb.rest", "org.nrg.xnat.plugins.ccdb.service"})
 @Import({org.nrg.xnat.configuration.ApplicationConfig.class, org.nrg.containers.config.ContainersConfig.class})
 public class XnatCCDBPlugin {
-    public XnatCCDBPlugin() {
-        _log.info("Creating the XnatCCDBPlugin configuration class");
-    }
-
-    @Bean
-    public String templatePluginMessage() {
-        return "This comes from deep within the template plugin.";
-    }
 
     @Bean
     public XnatService xnatService(CatalogService catalogService) { return new XnatService( catalogService); }
@@ -54,5 +43,4 @@ public class XnatCCDBPlugin {
     @Bean
     public FrontDesk frontDesk( XnatService xnatService) { return new FrontDesk_WU( xnatService); }
 
-    private static final Logger _log = LoggerFactory.getLogger("ccdbLogger");
 }
