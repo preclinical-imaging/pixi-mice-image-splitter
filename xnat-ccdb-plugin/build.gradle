@@ -42,7 +42,7 @@ buildscript {
 }
 
 def groupName = 'org.nrg.xnat.plugins'
-def pluginVersion = '1.0.0-SNAPSHOT'
+def pluginVersion = '1.0.1-SNAPSHOT'
 
 group groupName
 version pluginVersion
@@ -129,7 +129,12 @@ dependencies {
     implementation("org.nrg:containers:2.0.1") {
         transitive = false
     }
-    compileAndInclude 'com.opencsv:opencsv:4.6'
+    compileAndInclude ('com.opencsv:opencsv:4.6') {
+        transitive = false
+    }
+    compileAndInclude  ('org.apache.commons:commons-collections4:4.2') {
+        transitive = false
+    }
     compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.17.RELEASE'
 
     implementation "log4j:log4j"
