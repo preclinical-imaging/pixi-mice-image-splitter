@@ -18,7 +18,7 @@
 	 - src/main/resources/META-INF/resources/templates/screens/XDATScreen_report_ccdb_hotel.vm
 	 - src/main/resources/META-INF/resources/templates/screens/xnat_subjectData/actionsBox/hotel.vm
 -->
-<xs:schema targetNamespace="http://nrg.wustl.edu/ccdb" xmlns:ccdb="http://nrg.wustl.edu/ccdb" xmlns:xnat="http://nrg.wustl.edu/xnat"
+<xs:schema targetNamespace="http://nrg.wustl.edu/ccdb" xmlns:ccdb="http://nrg.wustl.edu/ccdb" xmlns:xnat="http://nrg.wustl.edu/xnat" xmlns:xdat="http://nrg.wustl.edu/xnat"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xs:import namespace="http://nrg.wustl.edu/xnat" schemaLocation="../xnat/xnat.xsd"/>
     <xs:element name="preclinDemographics" type="ccdb:preclinDemographicData"/>
