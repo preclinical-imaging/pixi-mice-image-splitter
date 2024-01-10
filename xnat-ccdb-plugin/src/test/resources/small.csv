@@ -1,3 +1,0 @@
-Hotel Subject,Scan Name,Scan Type,Time Points,Hotel Position,Animal #,Animal Weight(g),Date of Birth,Date Weaned,Sex,Activity (mCi),Scan Time,Injection Time,Scanner,Tracer,Study Date,Study Name,Protocol Number,Species,Strain,Litter ID,Notes
-mpet3762a,mpet3762a_ct1,CT,,,"10,2",,,,,,10:38:21,,Inveon,18F FDG,7/16/2018,mpet3762,,,,,
-mpet3762a,mpet3762a_em1,PET,0-60min dynamic,2,2,21.2,5/16/2018,6/12/2018,F,0.202,10:54:44,10:54:51,Inveon,18F FDG,7/16/2018,mpet3762,20170246,mouse,NSG,93B-3,

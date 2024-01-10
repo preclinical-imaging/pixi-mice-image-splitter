@@ -1,8 +1,0 @@
-<!-- BEGIN xnat-templates/screens/ccdb_hotel/ccdb_hotelPET_keyFields.vm -->
-#* @vtlvariable name="item" type="org.nrg.xft.XFTItem" *#
-#* @vtlvariable name="project" type="java.lang.String" *#
-#* @vtlvariable name="turbineUtils" type="org.nrg.xdat.turbine.utils.TurbineUtils" *#
-
-#parse($turbineUtils.getTemplateName("_keyFields", "xnat:imageSessionData", $project))
-<TR><TD>Scan Time</TD><TD>$!item.getProperty("ccdb:hotelPET/time")</TD></TR>
-<!-- END templates/screens/ccdb_hotel/ccdb_hotelPET_keyFields.vm -->
