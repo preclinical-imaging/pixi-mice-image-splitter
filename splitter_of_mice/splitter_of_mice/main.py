@@ -42,7 +42,8 @@ if __name__ == "__main__":
     p.add_argument('--dicom', action='store_true', help='input file/folder is DICOM')
     p.add_argument('--log-level', metavar='<str>', type=str, help='log level [INFO | DEBUG]', default='INFO')
     p.add_argument('-z', action='store_true', help='Zip each split image')
-    p.add_argument('--remove-bed', action='store_true', help='Remove bed from CT image')
+    p.add_argument('--remove-bed', action='store_true',
+                   help='Attempt to remove the bed from CT images to improve animal detection')
 
     a = p.parse_args()
 
