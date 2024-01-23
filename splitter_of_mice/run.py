@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import glob
 import json
 import logging
@@ -56,13 +57,18 @@ def run(username: str, password: str, server: str,
         metadata = convert_hotel_scan_record(hotel_scan_record)
 
         for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
-            splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True, zip=True, dicom_metadata=metadata, output_qc=True)
+            splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
+                                zip=True, dicom_metadata=metadata, output_qc=True)
 
         # Upload each cut to XNAT
         for splitter in splitters:
             for zip_outputs in splitter.pi.zip_outputs:
                 subject, zip_file_path = zip_outputs
                 send_split_images(username, password, server, project, subject, experiment, zip_file_path)
+
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            send_qc_image(username, password, server, project, experiment,
+                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
 
         # update hotel scan record
         update_scan_record(username, password, server, experiment, hotel_scan_record)
@@ -183,6 +189,44 @@ def send_split_images(username: str, password: str, server: str,
                         f'project: {project} , session: {experiment} , subject: {subject}')
 
     return
+
+
+def send_qc_image(username: str, password: str, server: str, project: str, experiment: str, qc_image_path: str, **kwargs):
+    # create a resource on the scan record with the name QC_SNAPSHOTS_DATETIME or get from kwargs
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    resource_name = f"QC_SNAPSHOTS_{timestamp}" if 'resource_name' not in kwargs else kwargs['resource_name']
+    url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_name}?format=IMG&content=RAW"
+
+    r = requests.put(url, auth=HTTPBasicAuth(username, password))
+
+    if r.ok:
+        logging.info(f'QC image resource created for project: {project} , session: {experiment}')
+    elif r.status_code == 409:
+        logging.info(f'QC image resource already exists for project: {project} , session: {experiment}')
+    else:
+        logging.warning(
+            f'Failed to create QC image resource for project: {project} , session: {experiment}, status code: {r.status_code}')
+        return False
+
+    # put image files into scan record resource
+    # glob png files from qc image path and all subdirectories
+    qc_images = glob.glob(f'{qc_image_path}/**/*.png', recursive=True)
+
+    for qc_image in qc_images:
+        qc_image_name = os.path.relpath(qc_image, qc_image_path)
+
+        url = (f"{server}/data/projects/{project}/experiments/{experiment}_scan_record"
+               f"/resources/{resource_name}/files/{qc_image_name}?inbody=true")
+
+        with open(qc_image, 'rb') as f:
+            r = requests.put(url, auth=HTTPBasicAuth(username, password), data=f)
+
+            if r.ok:
+                logging.info(f'QC image {qc_image_name} uploaded to project: {project} , session: {experiment}')
+            else:
+                logging.warning(
+                    f'Failed to upload QC image {qc_image_name} to project: {project} , session: {experiment}, status code: {r.status_code}')
+                return False
 
 
 def get_hotel_scan_record(username: str, password: str, server: str,
