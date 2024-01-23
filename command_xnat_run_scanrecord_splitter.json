@@ -193,14 +193,6 @@
         }
       ],
       "output-handlers": [
-        {
-          "name": "split-session-qc-snapshots-resource",
-          "label": "split-session-qc-snapshots-resource",
-          "type": "Resource",
-          "accepts-command-output": "qc_snapshots_output",
-          "via-wrapup-command": null,
-          "as-a-child-of-wrapper-input": "session"
-        }
       ]
     }
   ],
