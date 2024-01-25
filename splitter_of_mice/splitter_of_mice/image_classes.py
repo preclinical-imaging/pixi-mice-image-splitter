@@ -821,8 +821,12 @@ class DicomImage(BaseImage):
                     patient_id = metadata['PatientID']
                 if 'PatientName' in metadata:
                     split_ds.PatientName = metadata['PatientName']
+                if 'PatientWeight' in metadata:
+                    split_ds.PatientWeight = metadata['PatientWeight']
                 if 'PatientOrientation' in metadata:
                     split_ds.PatientOrientation = metadata['PatientOrientation']
+                if 'PatientComments' in metadata:
+                    split_ds.PatientComments = metadata['PatientComments']
 
             if 'SeriesDescription' in split_ds and split_ds.SeriesDescription:
                 split_ds.SeriesDescription += ' split ' + patient_id
