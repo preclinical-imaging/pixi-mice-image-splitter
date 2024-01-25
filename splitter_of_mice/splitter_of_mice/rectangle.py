@@ -81,11 +81,13 @@ class Rect:
         a, b = self, other
         return type(self)(verts=[min(a.xlt, b.xlt), min(a.ylt, b.ylt), max(a.xrb, b.xrb), max(a.yrb, b.yrb)])
 
-    def __init__(self, bb=None, verts=None):
+    def __init__(self, bb=None, verts=None, label=None):
         if bb is not None:
             self.xlt, self.ylt, self.xrb, self.yrb = bb[0], bb[1], bb[2], bb[3]
         if verts is not None:
             self.xlt, self.ylt, self.xrb, self.yrb = verts[0], verts[1], verts[2], verts[3]
+
+        self.label = label
 
     def __copy__(self):
         return type(self)(bb=[self.xlt, self.ylt, self.xrb, self.yrb])

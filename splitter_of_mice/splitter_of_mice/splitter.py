@@ -229,20 +229,22 @@ class SoM:
         logger.info('split images (axial projection):')
         if len(valid_reg) == 1:
             bb = valid_reg[0].bbox
-            r = Rect(bb=bb)
+            label = valid_reg[0].label
+            r = Rect(bb=bb, label=label)
             r.expand(m)
             SoM.harmonize_rects({'ctr': r})
             out_boxes += [{'desc': 'ctr', 'rect': r}]
 
         elif len(valid_reg) == 2:
             bb1, bb2 = valid_reg[0].bbox, valid_reg[1].bbox
+            label1, label2 = valid_reg[0].label, valid_reg[1].label
 
             if bb1[1] < bb2[1]:
-                rl = Rect(bb=bb1)
-                rr = Rect(bb=bb2)
+                rl = Rect(bb=bb1, label=label1)
+                rr = Rect(bb=bb2, label=label2)
             else:
-                rl = Rect(bb=bb2)
-                rr = Rect(bb=bb1)
+                rl = Rect(bb=bb2, label=label2)
+                rr = Rect(bb=bb1, label=label1)
             rl.expand(m)
             rr.expand(m)
 
@@ -257,10 +259,14 @@ class SoM:
                 rr.yrb = img.shape[0]
 
             SoM.harmonize_rects({'l': rl, 'r': rr})
-            out_boxes += [{'desc': 'l', 'rect': rl}, {'desc': 'r', 'rect': rr}]
+
+            if bb1[1] < bb2[1]:
+                out_boxes += [{'desc': 'l', 'rect': rl}, {'desc': 'r', 'rect': rr}]
+            else:
+                out_boxes += [{'desc': 'r', 'rect': rr}, {'desc': 'l', 'rect': rl}]
 
         elif len(valid_reg) == 3 or len(valid_reg) == 4:
-            rs = [Rect(bb=valid_reg[i].bbox) for i in range(len(valid_reg))]
+            rs = [Rect(bb=valid_reg[i].bbox, label=valid_reg[i].label) for i in range(len(valid_reg))]
             big_box = Rect.union_list(rs)
             lr = [{'desc': big_box.quadrant(r.ctr()), 'rect': r} for r in rs]
             SoM.harmonize_rects(lr)
@@ -650,6 +656,9 @@ class SoM:
             'lt': 'lightblue',
             'rt': 'red'
         }
+
+        # sort rects_dict by label
+        rects_dict = sorted(rects_dict, key=lambda k: k['rect'].label)
 
         colors = [color_map[rd['desc']] if rd['desc'] in color_map else 'yellow' for rd in rects_dict]
         imz_qc_arr = np.uint8(255 * skimage.color.label2rgb(labels, image=imz, bg_label=0, alpha=alpha, colors=colors))
