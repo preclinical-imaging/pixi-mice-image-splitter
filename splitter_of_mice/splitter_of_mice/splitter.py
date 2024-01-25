@@ -625,7 +625,17 @@ class SoM:
             logger.info('qc_image: unknown image type')
             return
 
-        colors = ['lightblue', 'red', 'violet', 'lightgreen']
+        color_map = {
+            'l': 'lightblue',
+            'r': 'red',
+            'ctr': 'violet',
+            'lb': 'violet',
+            'rb': 'lightgreen',
+            'lt': 'lightblue',
+            'rt': 'red'
+        }
+
+        colors = [color_map[rd['desc']] if rd['desc'] in color_map else 'yellow' for rd in rects_dict]
         imz_qc_arr = np.uint8(255 * skimage.color.label2rgb(labels, image=imz, bg_label=0, alpha=alpha, colors=colors))
         imz_qc = Image.fromarray(imz_qc_arr).convert('RGB')
 
@@ -642,6 +652,7 @@ class SoM:
             ax_ims_lbl += [rd['desc']]
             logger.info(ax_ims_lbl)
             d.rectangle(((r.ylt, r.xlt), (r.yrb, r.xrb)), outline=colors[i], width=linwid)
+            # d.text((r.ylt, r.xlt), rd['desc'], fill=colors[i])
 
         sag_ims = [SoM.get_sag_image(pi.cuts[i].img_data) for i in range(len(pi.cuts))]
         sag_ims_pil = []
