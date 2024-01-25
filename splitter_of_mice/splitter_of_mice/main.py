@@ -44,6 +44,12 @@ if __name__ == "__main__":
     p.add_argument('-z', action='store_true', help='Zip each split image')
     p.add_argument('--remove-bed', action='store_true',
                    help='Attempt to remove the bed from CT images to improve animal detection')
+    p.add_argument('--pet-img-size', metavar='<int>', type=int, nargs=2,
+                   help='Desired size of the split PET images as a (height, width) tuple. Helpful for keeping the same '
+                        'image size across multiple scans.')
+    p.add_argument('--ct-img-size', metavar='<int>', type=int, nargs=2,
+                   help='Desired size of split CT images as a (height, width) tuple. Helpful for keeping the same '
+                        'image size across multiple scans.')
 
     a = p.parse_args()
 

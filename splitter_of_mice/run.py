@@ -57,8 +57,21 @@ def run(username: str, password: str, server: str,
         metadata = convert_hotel_scan_record(hotel_scan_record)
 
         for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
+            # custom code to handle wustl scanners
+            pet_img_size = None
+            ct_img_size = None
+            if 'nscan' in experiment:
+                # if experiment contains the word 'nscan'
+                pet_img_size = (65, 65)
+                ct_img_size = (260, 260)
+            elif 'mpet' in experiment:
+                # if experiment contains the word 'mpet'
+                pet_img_size = (43, 43)
+                ct_img_size = (172, 172)
+
             splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
-                                zip=True, dicom_metadata=metadata, output_qc=True)
+                                zip=True, dicom_metadata=metadata, output_qc=True,
+                                pet_img_size=pet_img_size, ct_img_size=ct_img_size)
 
         # Upload each cut to XNAT
         for splitter in splitters:
