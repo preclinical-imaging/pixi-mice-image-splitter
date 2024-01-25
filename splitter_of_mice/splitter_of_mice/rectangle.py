@@ -102,8 +102,8 @@ class Rect:
     # for a pt inside, return its quadrant.
     def quadrant(self, pt):
         c = self.ctr()
-        tl, tr = Rect(verts=[self.xlt, self.ylt, c[0], c[1]]), Rect(verts=[c[0], self.ylt, self.xrb, c[1]])
-        bl, br = Rect(verts=[self.xlt, c[1], c[0], self.yrb]), Rect(verts=[c[0], c[1], self.xrb, self.yrb])
+        tl, tr = Rect(verts=[self.xlt, self.ylt, c[0], c[1]]), Rect(verts=[self.xlt, c[1], c[0], self.yrb])
+        bl, br = Rect(verts=[c[0], self.ylt, self.xrb, c[1]]), Rect(verts=[c[0], c[1], self.xrb, self.yrb])
         if tl.pt_inside(pt):
             return 'lt'
         elif tr.pt_inside(pt):
