@@ -796,6 +796,9 @@ class DicomImage(BaseImage):
 
         patient_id = None
 
+        study_instance_uid = self.x667_uuid()
+        series_instance_uid = self.x667_uuid()
+
         for idx, dicom_file in enumerate(self.dicom_files):
             original_ds = pydicom.dcmread(dicom_file)
             split_ds = copy.deepcopy(original_ds)
@@ -805,17 +808,25 @@ class DicomImage(BaseImage):
 
             split_ds.ImageType = ['DERIVED', 'PRIMARY', 'SPLIT']
             split_ds.DerivationDescription = 'Original volume split into equal subvolumes for each patient'
-            split_ds.DerivationImageSequence = self.derive_image_sequence(split_ds.SOPClassUID, split_ds.SOPInstanceUID)
+            split_ds.DerivationImageSequence = self.derive_image_sequence(
+                copy.deepcopy(split_ds.SOPClassUID),
+                copy.deepcopy(split_ds.SOPInstanceUID)
+            )
+            split_ds.SourcePatientGroupIdentificationSequence = self.derive_source_patient_group(
+                copy.deepcopy(split_ds.PatientID)
+            )
 
-            split_ds.StudyInstanceUID = split_ds.StudyInstanceUID + '.0'
-            split_ds.SeriesInstanceUID = split_ds.SeriesInstanceUID + '.0'
+            split_ds.StudyInstanceUID = study_instance_uid
+            split_ds.SeriesInstanceUID = series_instance_uid
 
-            split_ds.SOPInstanceUID = split_ds.SOPInstanceUID + '.0'
+            split_ds.SOPInstanceUID = self.x667_uuid()
             split_ds.file_meta.MediaStorageSOPInstanceUID = split_ds.SOPInstanceUID
 
-            split_ds.StorageMediaFileSetUID = split_ds.SeriesInstanceUID + '.0'
+            split_ds.StorageMediaFileSetUID = series_instance_uid
 
             if metadata is not None:
+                if 'StudyInstanceUID' in metadata:
+                    split_ds.StudyInstanceUID = metadata['StudyInstanceUID']
                 if 'PatientID' in metadata:
                     split_ds.PatientID = metadata['PatientID']
                     patient_id = metadata['PatientID']
@@ -874,6 +885,11 @@ class DicomImage(BaseImage):
     @staticmethod
     def x667_uuid():
         return '2.25.%d' % uuid.uuid4()
+
+    def derive_source_patient_group(self, patient_id):
+        source_patient = Dataset()
+        source_patient.PatientID = patient_id
+        return Sequence([source_patient])
 
     def derive_image_sequence(self, sop_class_uid, sop_instance_uid):
         source_image = Dataset()

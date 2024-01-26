@@ -6,6 +6,7 @@ import logging
 import os
 import requests
 import sys
+import uuid
 import zipfile
 
 from collections import defaultdict
@@ -151,7 +152,7 @@ def convert_hotel_scan_record(hotel_scan_record: dict):
     for position in metadata.keys():
         if metadata[position]:
             hotel_subject = metadata[position]
-
+            hotel_subject['StudyInstanceUID'] = x667_uuid()  # New UID for each animal but same across scans
             hotel_subject['PatientID'] = hotel_subject['subjectLabel'] if 'subjectLabel' in hotel_subject else 'blank'
             hotel_subject['PatientName'] = hotel_subject['subjectLabel'] if 'subjectLabel' in hotel_subject else 'blank'
             hotel_subject['PatientOrientation'] = hotel_subject['orientation'] if 'orientation' in hotel_subject else ''
@@ -166,6 +167,8 @@ def convert_hotel_scan_record(hotel_scan_record: dict):
 
     return metadata
 
+def x667_uuid():
+    return '2.25.%d' % uuid.uuid4()
 
 def send_split_images(username: str, password: str, server: str,
                       project: str, subject: str, experiment: str,
