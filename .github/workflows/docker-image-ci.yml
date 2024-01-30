@@ -5,7 +5,6 @@ on:
     tags:
       - 'v*'
     branches:
-      - master
       - develop
 
 jobs:
@@ -33,9 +32,9 @@ jobs:
           images: |
             xnat/mice-image-splitter
           tags: |
-            type=raw,value=latest,event=push,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
-            type=raw,value=develop,event=push,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+            type=raw,value=latest,event=tag,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             type=semver,pattern={{version}},event=tag,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=raw,value=develop,event=push,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
           labels: |
             org.opencontainers.image.title=Mice Image Splitter
             org.opencontainers.image.description=Split multi-subject PET/CT mice images into individual subject images 
