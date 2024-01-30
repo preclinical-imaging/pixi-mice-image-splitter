@@ -3,7 +3,7 @@ name: Docker Image CI
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
 
 jobs:
 
@@ -30,7 +30,7 @@ jobs:
           images: |
             awlassit/mice-image-splitter
           tags: |
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             type=semver,pattern={{version}}
           labels: |
             org.opencontainers.image.title=Mice Image Splitter
