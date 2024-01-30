@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  build:
+  build-and-push:
 
     runs-on: ubuntu-latest
 
@@ -25,9 +25,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
+          flavor: |
+            latest=false
           images: |
             awlassit/mice-image-splitter
           tags: |
+            type=raw,value=latest
             type=semver,pattern={{version}}
           labels: |
             org.opencontainers.image.title=Mice Image Splitter
