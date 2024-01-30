@@ -1,0 +1,7 @@
+ipywidgets
+matplotlib
+numpy
+scikit-image
+nibabel
+pydicom
+requests

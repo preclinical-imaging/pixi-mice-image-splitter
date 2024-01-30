@@ -1,0 +1,49 @@
+# Ignore Python compiled files
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Ignore test and documentation directories
+/tests
+/docs
+
+# Ignore Git and GitHub files
+**/.git
+**/.gitignore
+**/.github
+
+# Ignore virtual environment directories
+**/venv
+**/*.venv
+**/.env
+
+# Ignore log files
+**/*.log
+
+# Ignore temporary files
+**/*.tmp
+**/*.bak
+**/*.swp
+**/*.swo
+
+# Ignore sample data inputs and outputs
+**/sample-data
+**/output
+**/*.dcm
+**/*.img
+**/*.img.hdr
+**/*.png
+**/*.zip
+
+# Ignore Jupyter Notebook
+**/*.ipynb
+**/.ipynb_checkpoints
+
+# Ignore Markdown
+**/*.md
+
+# Ignore Mac files
+**/.DS_Store
+**/__MACOSX
+
