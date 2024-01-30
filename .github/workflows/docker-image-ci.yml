@@ -32,7 +32,7 @@ jobs:
           images: |
             xnat/mice-image-splitter
           tags: |
-            type=raw,value=latest,event=tag,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=raw,value=latest,event=tag,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             type=semver,pattern={{version}},event=tag,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             type=raw,value=develop,event=push,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
           labels: |
