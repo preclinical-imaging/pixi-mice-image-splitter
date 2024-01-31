@@ -1,11 +1,10 @@
 {
-  "name": "scan-record-splitter-auto",
-  "label": "scan-record-splitter-auto",
-  "description": "Split hotel image sessions into single subject image sessions based on a scan record form",
-  "version": "develop",
+  "name": "pixi-mice-image-splitter",
+  "label": "pixi-mice-image-splitter",
+  "description": "Split hotel image sessions into single subject image sessions",
+  "version": "0.1.1-SNAPSHOT",
   "schema-version": "1.0",
-  "info-url": "",
-  "image": "xnat/mice-image-splitter:develop",
+  "info-url": "https://github.com/preclinical-imaging/pixi-mice-image-splitter",
   "container-name": "",
   "type": "docker",
   "index": "",
@@ -65,6 +64,76 @@
   "outputs": [
   ],
   "xnat": [
+    {
+      "name": "hotel-session-splitter",
+      "label": "Hotel Session Splitter",
+      "description": "Split hotel image sessions into single subject image sessions",
+      "contexts": [
+        "xnat:imageSessionData"
+      ],
+      "external-inputs": [
+        {
+          "name": "session",
+          "label": null,
+          "description": "Hotel session input",
+          "type": "Session",
+          "matcher": null,
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": null,
+          "provides-files-for-command-mount": "input-mount",
+          "via-setup-command": null,
+          "user-settable": null,
+          "load-children": true
+        }
+      ],
+      "derived-inputs": [
+        {
+          "name": "project-id",
+          "label": null,
+          "description": "XNAT Project ID",
+          "type": "string",
+          "matcher": null,
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": "project_id",
+          "provides-files-for-command-mount": null,
+          "user-settable": null,
+          "load-children": true,
+          "derived-from-wrapper-input": "session",
+          "derived-from-xnat-object-property": "project-id",
+          "via-setup-command": null,
+          "multiple": false,
+          "parser": null
+        },
+        {
+          "name": "hotel-session-label",
+          "label": null,
+          "description": "The hotel session's label",
+          "type": "string",
+          "matcher": null,
+          "default-value": null,
+          "required": true,
+          "replacement-key": null,
+          "sensitive": null,
+          "provides-value-for-command-input": "hotel_session_label",
+          "provides-files-for-command-mount": null,
+          "user-settable": null,
+          "load-children": true,
+          "derived-from-wrapper-input": "session",
+          "derived-from-xnat-object-property": "label",
+          "via-setup-command": null,
+          "multiple": false,
+          "parser": null
+        }
+      ],
+      "output-handlers": [
+      ]
+    },
     {
       "name": "scan-record-splitter",
       "label": "Scan Record Splitter",
