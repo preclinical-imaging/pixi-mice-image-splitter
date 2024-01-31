@@ -2,7 +2,7 @@
   "name": "pixi-mice-image-splitter",
   "label": "pixi-mice-image-splitter",
   "description": "Split hotel image sessions into single subject image sessions",
-  "version": "0.1.1",
+  "version": "0.1.2-SNAPSHOT",
   "schema-version": "1.0",
   "info-url": "https://github.com/preclinical-imaging/pixi-mice-image-splitter",
   "container-name": "",
