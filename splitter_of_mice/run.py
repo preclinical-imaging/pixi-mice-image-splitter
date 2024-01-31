@@ -88,7 +88,7 @@ def run(username: str, password: str, server: str,
         update_scan_record(username, password, server, experiment, hotel_scan_record)
 
         # update hotel scan record status
-        update_scan_record_status(username, password, server, project, experiment, status="Splitting Complete")
+        update_scan_record_status(username, password, server, project, experiment, status="Split Complete")
 
     except Exception as e:
         logging.exception("Fatal error while splitting hotel scan: " + str(e))
