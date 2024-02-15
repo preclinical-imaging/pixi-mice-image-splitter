@@ -840,9 +840,9 @@ class DicomImage(BaseImage):
                     split_ds.PatientComments = metadata['PatientComments']
 
             if 'SeriesDescription' in split_ds and split_ds.SeriesDescription:
-                split_ds.SeriesDescription += ' split ' + patient_id
+                split_ds.SeriesDescription += f' split {patient_id}'
             else:
-                split_ds.SeriesDescription = 'split ' + patient_id
+                split_ds.SeriesDescription = f'split {patient_id}'
 
             if split_ds.Modality == 'PT' and 'RadiopharmaceuticalInformationSequence' in split_ds:
                 if 'RadiopharmaceuticalStartTime' in metadata:

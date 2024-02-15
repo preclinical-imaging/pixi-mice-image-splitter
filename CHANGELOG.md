@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [PIXI-126] - Fix string concatenation TypeError in the `splitter_of_mice` package.
+
 ## [0.1.1] - 2024-01-31
 
 ### Fixed
@@ -23,3 +27,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release of the PIXI Mice Image Splitter and Docker image.
 
 
+[PIXI-126]: https://radiologics.atlassian.net/browse/PIXI-126
