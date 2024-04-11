@@ -255,9 +255,10 @@ def send_split_images(username: str, password: str, server: str,
                 logging.info(f'Upload successful for {zip_file}')
                 break
             elif r.status_code == 504:
-                logging.warning(f'Gateway timeout for {zip_file}. '
-                                f'Typically due to large file size. {r.text} {r.reason}')
-                time.sleep(10)
+                logging.warning(f'Gateway timeout for {zip_file}. Typically due to large file size but the upload is '
+                                f'usually successful. Will not retry. Status code: {r.status_code} - {r.text}')
+                time.sleep(3)
+                break
             else:
                 logging.error(f'Upload failed for {zip_file}: '
                               f'status code {r.status_code}, text: {r.text}, reason: {r.reason}')
