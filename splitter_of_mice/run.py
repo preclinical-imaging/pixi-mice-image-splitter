@@ -52,7 +52,7 @@ def run(username: str, password: str, server: str,
 
         # Get hotel scan record
         hotel_scan_record = get_hotel_scan_record(username, password, server, project, experiment)
-        num_anim = len(hotel_scan_record['hotelSubjects'])
+        num_anim = sum(1 for subj in hotel_scan_record['hotelSubjects'] if subj.get('subjectId'))
 
         # Convert hotel scan record to metadata dictionary format expected by splitter of mice
         metadata = convert_hotel_scan_record(hotel_scan_record)
