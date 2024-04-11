@@ -7,7 +7,8 @@ import os
 import requests
 import sys
 import uuid
-import zipfile
+import time
+from pathlib import Path
 
 from collections import defaultdict
 from requests.auth import HTTPBasicAuth
@@ -78,11 +79,20 @@ def run(username: str, password: str, server: str,
                 raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
 
         # Upload each cut to XNAT
+        # Send all scans for a subject together so the prearchive doesn't accidentally
+        # archive one scan before the other.
+        subject_zip_files = defaultdict(list)
         for splitter in splitters:
             for zip_outputs in splitter.pi.zip_outputs:
                 subject, zip_file_path = zip_outputs
+                zip_file_path = Path(zip_file_path)
+                subject_zip_files[subject].append(zip_file_path)
+
+        for subject, zip_files in subject_zip_files.items():
+            for zip_file_path in zip_files:
                 send_split_images(username, password, server, project, subject, experiment, zip_file_path)
 
+        for splitter in splitters:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             send_qc_image(username, password, server, project, experiment,
                           splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
@@ -170,12 +180,52 @@ def convert_hotel_scan_record(hotel_scan_record: dict):
 
     return metadata
 
+
 def x667_uuid():
     return '2.25.%d' % uuid.uuid4()
 
+
+def delete_existing_session(username: str, password: str, server: str, project: str, experiment: str):
+    # First check if the session exists
+    url = f'{server}/data/projects/{project}/experiments/{experiment}'
+    parameters = {'removeFiles': 'TRUE'}
+
+    logging.info(f'Checking if session {experiment} exists in project {project}')
+    logging.debug(f'URL: {url}')
+    logging.debug(f'Parameters: {parameters}')
+
+    r = requests.get(url, auth=HTTPBasicAuth(username, password))
+
+    if r.ok:
+        logging.info(f'Session {experiment} exists in project {project}')
+    else:
+        logging.info(f'Session {experiment} does not exist in project {project}')
+        return
+
+    # Then delete the session
+    logging.info(f'Deleting session {experiment} from project {project}')
+
+    r = requests.delete(url,
+                        auth=HTTPBasicAuth(username, password),
+                        params=parameters)
+
+    if r.ok:
+        logging.info(f'Session {experiment} deleted from project {project}')
+    else:
+        logging.error(f'Failed to delete session {experiment} from project {project}. '
+                      f'Status code: {r.status_code}, text: {r.text}, reason: {r.reason}')
+        raise Exception(f'Failed to delete session {experiment} from project {project}')
+
+
 def send_split_images(username: str, password: str, server: str,
                       project: str, subject: str, experiment: str,
-                      dcm_zip: zipfile):
+                      zip_file: Path):
+
+    # Delete existing session
+    experiment = experiment + "_split_" + subject
+    delete_existing_session(username, password, server, project, experiment)
+
+    time.sleep(5)
 
     dest_url = f'{server}/data/services/import'
     parameters = {
@@ -184,28 +234,41 @@ def send_split_images(username: str, password: str, server: str,
         'overwrite': 'append',
         'PROJECT_ID': project,
         'SUBJECT_ID': subject,
-        'EXPT_LABEL': experiment + "_split_" + subject
+        'EXPT_LABEL': experiment
     }
 
-    logging.info(f'Uploading splitter output for '
-                 f'project: {project}, session: {experiment} , '
-                 f'subject: {subject} to {dest_url}')
+    logging.info(f'Uploading {zip_file} to XNAT')
+    logging.debug(f'URL: {dest_url}')
+    logging.debug(f'Parameters: {parameters}')
 
-    r = requests.post(dest_url,
-                      auth=HTTPBasicAuth(username, password),
-                      params=parameters,
-                      files={'file': open(dcm_zip, 'rb')})
+    max_attempts = 3
+    attempts = 0
 
-    if r.status_code == 200:
-        logging.info(f'Splitter output for project: {project} , session: {experiment} , '
-                     f'subject: {subject} successfully uploaded to XNAT')
-    elif r.status_code == 504:
-        logging.warning(
-            f'Splitter output for project: {project} , session: {experiment} , subject: {subject} uploaded to'
-            f' XNAT with unknown success. Server response 504 usually indicates a long upload not a failure.')
-    else:
-        raise Exception(f'Failed to upload splitter output for '
-                        f'project: {project} , session: {experiment} , subject: {subject}')
+    while attempts < max_attempts:
+        try:
+            r = requests.post(dest_url,
+                              auth=HTTPBasicAuth(username, password),
+                              params=parameters,
+                              files={'file': open(zip_file, 'rb')})
+
+            if r.ok:
+                logging.info(f'Upload successful for {zip_file}')
+                break
+            elif r.status_code == 504:
+                logging.warning(f'Gateway timeout for {zip_file}. '
+                                f'Typically due to large file size. {r.text} {r.reason}')
+                time.sleep(10)
+            else:
+                logging.error(f'Upload failed for {zip_file}: '
+                              f'status code {r.status_code}, text: {r.text}, reason: {r.reason}')
+        except Exception as err:
+            logging.error(f'Upload failed for {zip_file}: {err}')
+
+        attempts += 1
+        logging.warning(f'Retrying upload for {zip_file}')
+
+        if attempts == max_attempts:
+            raise Exception(f'Upload failed for {zip_file}')
 
     return
 
