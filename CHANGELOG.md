@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - [PIXI-126] - Fix string concatenation TypeError in the `splitter_of_mice` package.
+- [PIXI-129] - Fix issue with empty subject id's in the hotel record being counted as a valid subject.
+- [PIXI-129] - Fix issue with error not being raised when PET splitting failed.
+
+### Changed
+
+- [PIXI-129] - When re-splitting a hotel scan, the existing image sessions will now be deleted before uploading the new 
+               split images.
 
 ## [0.1.1] - 2024-01-31
 
@@ -28,3 +35,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 
 
 [PIXI-126]: https://radiologics.atlassian.net/browse/PIXI-126
+[PIXI-129]: https://radiologics.atlassian.net/browse/PIXI-129
