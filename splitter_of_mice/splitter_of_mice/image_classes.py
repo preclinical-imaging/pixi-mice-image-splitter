@@ -69,6 +69,7 @@ class BaseImage:
         self.data_lim = 10 ** 7  # 10 MB
         self.rotation_history = []
         self.image_format = '.img'
+        self.zip_outputs = []
 
         # color map for distinguishing cuts
         self.all_colors = [
@@ -372,8 +373,12 @@ class BaseImage:
         return
 
     def save_cut(self, index, path, zip=False):
-        if zip:
-            logging.warning('Zip option not implemented yet.')
+        def zip_cut(img_file, hdr_file, zip_file):
+            with zipfile.ZipFile(zip_file, 'w') as zfile:
+                zfile.write(img_file, os.path.basename(img_file))
+                zfile.write(hdr_file, os.path.basename(hdr_file))
+
+            return
 
         def add_animal_number(hdr_lines, animal_number):
             for i, line in enumerate(hdr_lines):
@@ -487,6 +492,20 @@ class BaseImage:
         with open(os.path.join(path, cut_filename), 'wb') as dfile:
             write_chunks(out_data, dfile)
         print('File saved.')
+
+        # Zip the cut if requested
+        if zip:
+            logger.debug(f'Zipping cut {index} to {path}...')
+            zip_cut(os.path.join(path, cut_filename),
+                    os.path.join(path, cut_hdr_name),
+                    os.path.join(path, cut_filename + '.zip'))
+
+            try:
+                patient_id = self.cuts[index].metadata['PatientID']
+                self.zip_outputs.append((patient_id, os.path.join(path, cut_filename + '.zip')))
+            except AttributeError:
+                logger.error('PatientID not found in metadata. Unable to add to zip_outputs.')
+                raise Exception('PatientID not found in metadata. Unable to add to zip_outputs.')
 
         # clean up after myself.
         cut_img.rotate_on_axis('x')
@@ -745,7 +764,6 @@ class DicomImage(BaseImage):
         self.params = None
         self.plane_range = None
         self.frame_range = None
-        self.zip_outputs = []
         self.qc_outputs = None
 
         if os.path.isdir(filepath):

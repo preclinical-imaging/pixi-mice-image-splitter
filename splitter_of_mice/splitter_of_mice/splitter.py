@@ -487,8 +487,8 @@ class SoM:
             thresh = filters.threshold_li(imz)
             logger.info(f"Automatic thresholding for dicom images: {thresh}")
         else:
-            thresh = 0.1
-            logger.info(f"Manual thresholding for microPET images: {thresh}")
+            thresh = filters.threshold_otsu(imz)
+            logger.info(f"OTSU thresholding for microPET images: {thresh}")
 
         if bed_removal:
             imz = SoM.remove_bed(imz)

@@ -9,6 +9,7 @@ import sys
 import uuid
 import time
 from pathlib import Path
+import zipfile
 
 from collections import defaultdict
 from requests.auth import HTTPBasicAuth
@@ -30,19 +31,35 @@ def run(username: str, password: str, server: str,
 
         logging.debug(f"Find subdirectories with DICOM files in {input_dir}")
 
-        dicom_files = defaultdict(list)
+        files = defaultdict(list)
 
+        # First look for DICOM files
+        dicom = True
         for dicom_file in glob.glob(f'{input_dir}/**/*.dcm', recursive=True):
-            dicom_files[os.path.dirname(dicom_file)].append(os.path.basename(dicom_file))
+            files[os.path.dirname(dicom_file)].append(os.path.basename(dicom_file))
 
-        logging.info(f'Found {len(dicom_files)} subdirectories containing DICOM files: {dicom_files.keys()}')
+        logging.info(f'Found {len(files)} subdirectories containing DICOM files: {files.keys()}')
+
+        if len(files) == 0:
+            dicom = False
+            logging.info(f'No DICOM files found in {input_dir}. Searching for Inveon .img files instead.')
+
+            for img_file in glob.glob(f'{input_dir}/**/*.img', recursive=True):
+                files[img_file].append(os.path.basename(img_file))
+
+            logging.info(f'Found {len(files)} Inveon .img files: {files.keys()}')
+
+        if len(files) == 0:
+            logging.error(f'No DICOM or Inveon .img files found in {input_dir}. Exiting.')
+            update_scan_record_status(username, password, server, project, experiment, "Error: No DICOM or Inveon images files found")
+            sys.exit(f'No DICOM or Inveon images files found in {input_dir}')
 
         logging.debug(f"Create splitter and output directory for each subdirectory")
 
-        splitters = [SoM(dicom_dir, dicom=True) for dicom_dir in dicom_files.keys()]
+        splitters = [SoM(dicom_dir, dicom=dicom) for dicom_dir in files.keys()]
 
         # Create output directory for each subdirectory
-        output_dirs = [os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir)) for dicom_dir in dicom_files.keys()]
+        output_dirs = [os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir)) for dicom_dir in files.keys()]
 
         for output_dir in output_dirs:
             os.makedirs(output_dir, exist_ok=True)
@@ -88,9 +105,30 @@ def run(username: str, password: str, server: str,
                 zip_file_path = Path(zip_file_path)
                 subject_zip_files[subject].append(zip_file_path)
 
+        if not dicom:
+            # Merge the zip files for each subject into a single zip file
+            # The DICOM zip importer can handle multiple zip files for a single session but not the Inveon importer
+            for subject, zip_files in subject_zip_files.items():
+                if len(zip_files) > 1:
+                    # Create a new zip file for the subject
+                    merged_zip_file_path = os.path.join(output_dir, f'{subject}_merged.zip')
+                    with zipfile.ZipFile(merged_zip_file_path, 'w') as merged_zip_file:
+                        for zip_file_path in zip_files:
+                            # Open each zip file and extract all files into the new zip file
+                            with zipfile.ZipFile(zip_file_path, 'r') as zip_file:
+                                for file in zip_file.namelist():
+                                    merged_zip_file.writestr(file, zip_file.read(file))
+
+                    # Delete the old zip files
+                    for zip_file_path in zip_files:
+                        os.remove(zip_file_path)
+
+                    # Replace the list of zip files for the subject with the new merged zip file
+                    subject_zip_files[subject] = [Path(merged_zip_file_path)]
+
         for subject, zip_files in subject_zip_files.items():
             for zip_file_path in zip_files:
-                send_split_images(username, password, server, project, subject, experiment, zip_file_path)
+                send_split_images(username, password, server, project, subject, experiment, zip_file_path, dicom)
 
         for splitter in splitters:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -217,9 +255,8 @@ def delete_existing_session(username: str, password: str, server: str, project: 
         raise Exception(f'Failed to delete session {experiment} from project {project}')
 
 
-def send_split_images(username: str, password: str, server: str,
-                      project: str, subject: str, experiment: str,
-                      zip_file: Path):
+def send_split_images(username: str, password: str, server: str, project: str, subject: str, experiment: str,
+                      zip_file: Path, dicom: bool):
 
     # Delete existing session
     experiment = experiment + "_split_" + subject
@@ -229,7 +266,7 @@ def send_split_images(username: str, password: str, server: str,
 
     dest_url = f'{server}/data/services/import'
     parameters = {
-        'import-handler': 'DICOM-zip',
+        'import-handler': 'DICOM-zip' if dicom else 'INVEON',
         'Direct-Archive': 'true',
         'overwrite': 'append',
         'PROJECT_ID': project,
@@ -387,8 +424,9 @@ def update_scan_record_status(username: str, password: str, server: str,
 if __name__ == "__main__":
 
     # parse arguments
-    p = argparse.ArgumentParser(description='Split a DICOM image into individual animal images and upload to XNAT')
-    p.add_argument('input_dir', type=str, help='full path to DICOM folder(s)')
+    p = argparse.ArgumentParser(description='Split DICOM or Inveon PET/CT image into individual '
+                                            'animal images and upload to XNAT')
+    p.add_argument('input_dir', type=str, help='full path to DICOM/Inveon folder(s)')
     p.add_argument('output_dir', type=str, help='output directory')
     p.add_argument('-l', '--log-level', metavar='<str>', type=str, default='INFO', help='logging level')
     p.add_argument('-u', '--username', metavar='<str>', type=str, help='XNAT username')
