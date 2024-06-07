@@ -128,7 +128,8 @@ def run(username: str, password: str, server: str,
 
         for subject, zip_files in subject_zip_files.items():
             for zip_file_path in zip_files:
-                send_split_images(username, password, server, project, subject, experiment, zip_file_path, dicom)
+                if subject:  # skip empty subjects
+                    send_split_images(username, password, server, project, subject, experiment, zip_file_path, dicom)
 
         for splitter in splitters:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")

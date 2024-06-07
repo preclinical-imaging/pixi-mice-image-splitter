@@ -857,16 +857,16 @@ class DicomImage(BaseImage):
                 if 'PatientComments' in metadata:
                     split_ds.PatientComments = metadata['PatientComments']
 
+                if split_ds.Modality == 'PT' and 'RadiopharmaceuticalInformationSequence' in split_ds:
+                    if 'RadiopharmaceuticalStartTime' in metadata:
+                        split_ds.RadiopharmaceuticalInformationSequence[0].RadiopharmaceuticalStartTime = metadata['RadiopharmaceuticalStartTime']
+                    if 'RadionuclideTotalDose' in metadata:
+                        split_ds.RadiopharmaceuticalInformationSequence[0].RadionuclideTotalDose = metadata['RadionuclideTotalDose']
+
             if 'SeriesDescription' in split_ds and split_ds.SeriesDescription:
                 split_ds.SeriesDescription += f' split {patient_id}'
             else:
                 split_ds.SeriesDescription = f'split {patient_id}'
-
-            if split_ds.Modality == 'PT' and 'RadiopharmaceuticalInformationSequence' in split_ds:
-                if 'RadiopharmaceuticalStartTime' in metadata:
-                    split_ds.RadiopharmaceuticalInformationSequence[0].RadiopharmaceuticalStartTime = metadata['RadiopharmaceuticalStartTime']
-                if 'RadionuclideTotalDose' in metadata:
-                    split_ds.RadiopharmaceuticalInformationSequence[0].RadionuclideTotalDose = metadata['RadionuclideTotalDose']
 
             # Update PixelData
             split_ds.PixelData = self.cuts[index].img_data[idx, :, :, 0].tobytes()
