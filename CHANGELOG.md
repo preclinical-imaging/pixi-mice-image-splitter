@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- [PIXI-136]: Update hotel splitter wrapper to support native Inveon images.
+
 ## [0.1.2] - 2024-04-12
 
 ### Fixed
@@ -38,3 +42,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 
 [PIXI-126]: https://radiologics.atlassian.net/browse/PIXI-126
 [PIXI-129]: https://radiologics.atlassian.net/browse/PIXI-129
+[PIXI-136]: https://radiologics.atlassian.net/browse/PIXI-136
