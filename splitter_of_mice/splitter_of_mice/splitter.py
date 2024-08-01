@@ -84,7 +84,7 @@ class SoM:
             # _,data=im.submemmap(ix=ix,data=im.img_data[:,ymin:ymax,xmin:xmax,:])
             # print(data.shape)
 
-            metadata = dicom_metadata[desc] if desc in dicom_metadata else None
+            metadata = dicom_metadata[desc] if (dicom_metadata and desc in dicom_metadata) else None
             new_img = SubImage(parent_image=im, img_data=data, filename=fname + '.img',
                                cut_coords=[(xmin, xmax), (ymin, ymax)], desc=desc, metadata=metadata)
 
@@ -200,6 +200,8 @@ class SoM:
         logger.debug('bboxes' + str([p.bbox for p in props]))
         valid_reg = [p for p in props if p.area >= min_pts]
         logger.info('valid regions detected: ' + str(len(valid_reg)))
+        logger.info('{ctr,area}:' + str([(p.centroid, p.area) for p in valid_reg]))
+
         return valid_reg
 
     @staticmethod
@@ -271,6 +273,42 @@ class SoM:
             lr = [{'desc': big_box.quadrant(r.ctr()), 'rect': r} for r in rs]
             SoM.harmonize_rects(lr)
             out_boxes = lr
+
+        else:
+            logger.error(f"Too many regions detected: {len(valid_reg)}. "
+                         f"Attempting to merge regions within the same quadrant.")
+
+            rs = [Rect(bb=valid_reg[i].bbox, label=valid_reg[i].label) for i in range(len(valid_reg))]
+            big_box = Rect.union_list(rs)
+            lr = [{'desc': big_box.quadrant(r.ctr()), 'rect': r} for r in rs]
+            merged: list[dict] = []
+            for r in lr:
+                if r['desc'] in [m['desc'] for m in merged]:
+                    # if the quadrant already exists in merged, union the rects
+                    for m in merged:
+                        if m['desc'] == r['desc']:
+                            m['rect'] = m['rect'].union(r['rect'])
+                else:
+                    # if the quadrant does not exist in merged, add it
+                    merged.append(r)
+
+            # update rect labels
+            for i, r in enumerate(merged):
+                if r['desc'] == 'lt':
+                    r['rect'].label = 1
+                elif r['desc'] == 'rt':
+                    r['rect'].label = 2
+                elif r['desc'] == 'lb':
+                    r['rect'].label = 3
+                elif r['desc'] == 'rb':
+                    r['rect'].label = 4
+
+            SoM.harmonize_rects(merged)
+            out_boxes = merged
+
+        for box in out_boxes:
+            logger.info(f"Box: {box['desc']}, Area: {box['rect'].area()}, Center: {box['rect'].ctr()}")
+
         return out_boxes
 
     @staticmethod
@@ -500,8 +538,10 @@ class SoM:
         # adjust the size of the cuts if img_size is specified.
         # helpful for keeping the same image size across multiple scans.
         if img_size is not None:
+            logger.info(f"Adjusting cuts to size: {img_size}")
             for cut in cuts:
                 cut['rect'].adjust_to_size(img_size)
+                logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
 
         save_analyze_dir = outdir if save_analyze else None
         # save_analyze_dir=None #debug

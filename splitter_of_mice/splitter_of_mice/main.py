@@ -66,4 +66,6 @@ if __name__ == "__main__":
     sys.exit(SoM(a.file_path, modality=a.mod, dicom=a.dicom).split_mice(a.out_dir, save_analyze=a.a,
                                                                         num_anim=a.n, sep_thresh=a.t, margin=a.m,
                                                                         minpix=a.p, output_qc=a.q, suffix_map=a.sm,
-                                                                        zip=a.z, remove_bed=a.remove_bed))
+                                                                        zip=a.z, remove_bed=a.remove_bed,
+                                                                        pet_img_size=a.pet_img_size,
+                                                                        ct_img_size=a.ct_img_size))
