@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [PIXI-146]: Fix issue with handling more than 4 detected regions. Will attempt to merge regions in the same quadrant
+              if more than 4 regions are detected.
+
 ## [0.2.0] - 2024-06-24
 
 ### Added
@@ -45,3 +50,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 [PIXI-126]: https://radiologics.atlassian.net/browse/PIXI-126
 [PIXI-129]: https://radiologics.atlassian.net/browse/PIXI-129
 [PIXI-136]: https://radiologics.atlassian.net/browse/PIXI-136
+[PIXI-146]: https://radiologics.atlassian.net/browse/PIXI-146
