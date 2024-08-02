@@ -35,6 +35,9 @@ class Rect:
     def ctr(self):
         return self.xlt + self.wid() * .5, self.ylt + self.ht() * .5
 
+    def area(self):
+        return self.wid() * self.ht()
+
     def expand(self, m):
         self.xlt -= m[0]
         self.xrb += m[0]

@@ -1,5 +1,14 @@
 FROM python:3.11-slim
 
+# Update the package list and upgrade installed packages
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Update pip and setuptools to the latest version
+RUN pip install --no-cache-dir --upgrade pip setuptools
+
 # Create a non-root user and group
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
