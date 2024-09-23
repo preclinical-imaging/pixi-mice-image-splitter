@@ -523,7 +523,7 @@ class SoM:
 
         if self.pi.image_format == 'dicom':
             thresh = filters.threshold_li(imz)
-            logger.info(f"Automatic thresholding for dicom images: {thresh}")
+            logger.info(f"Li thresholding for dicom images: {thresh}")
         else:
             thresh = filters.threshold_otsu(imz)
             logger.info(f"OTSU thresholding for microPET images: {thresh}")
@@ -533,6 +533,28 @@ class SoM:
 
         blobs_labels, num = SoM.detect_animals_ct(imz, thresh)
         rects = SoM.get_valid_regs(blobs_labels)
+
+        if num_anim is not None and len(rects) != num_anim:
+            logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
+
+            attempts = 0
+            while len(rects) < num_anim and attempts < 4:
+                # if you have greater than num_anim, then split_coords will merge rects within the same quadrant
+                # only need to adjust the threshold if you have less than num_anim
+                attempts += 1
+                logger.info(f"Compensation attempt {attempts}")
+                logger.info(f"Current threshold: {thresh}")
+                thresh += thresh * 0.1
+                logger.info(f"New threshold: {thresh}")
+                blobs_labels, num = SoM.detect_animals_ct(imz, thresh)
+                rects = SoM.get_valid_regs(blobs_labels)
+
+            if len(rects) != num_anim:
+                logger.error('Compensation failed. Unable to detect the expected number of regions.')
+                pi.clean_cuts()
+                pi.unload_image()
+                return 1
+
         cuts = SoM.split_coords(imz, rects)
 
         # adjust the size of the cuts if img_size is specified.
