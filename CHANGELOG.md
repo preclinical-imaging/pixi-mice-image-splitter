@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [PIXI-148] - Fix issue with Inveon CT sessions splitting not detecting enough regions. Will now adjust the threshold
                for region detection and try again until enough regions are detected.
+- [PIXI-149] - Fix issues with Inveon hdr metadata not being written correctly for the split images.
 
 ## [0.2.1] - 2024-07-02
 
@@ -59,3 +60,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 [PIXI-136]: https://radiologics.atlassian.net/browse/PIXI-136
 [PIXI-146]: https://radiologics.atlassian.net/browse/PIXI-146
 [PIXI-148]: https://radiologics.atlassian.net/browse/PIXI-148
+[PIXI-149]: https://radiologics.atlassian.net/browse/PIXI-149

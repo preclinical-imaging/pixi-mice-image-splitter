@@ -34,14 +34,14 @@ def run(username: str, password: str, server: str,
         files = defaultdict(list)
 
         # First look for DICOM files
-        dicom = True
+        isDicomSession = True
         for dicom_file in glob.glob(f'{input_dir}/**/*.dcm', recursive=True):
             files[os.path.dirname(dicom_file)].append(os.path.basename(dicom_file))
 
         logging.info(f'Found {len(files)} subdirectories containing DICOM files: {files.keys()}')
 
         if len(files) == 0:
-            dicom = False
+            isDicomSession = False
             logging.info(f'No DICOM files found in {input_dir}. Searching for Inveon .img files instead.')
 
             for img_file in glob.glob(f'{input_dir}/**/*.img', recursive=True):
@@ -56,7 +56,7 @@ def run(username: str, password: str, server: str,
 
         logging.debug(f"Create splitter and output directory for each subdirectory")
 
-        splitters = [SoM(dicom_dir, dicom=dicom) for dicom_dir in files.keys()]
+        splitters = [SoM(dicom_dir, dicom=isDicomSession) for dicom_dir in files.keys()]
 
         # Create output directory for each subdirectory
         output_dirs = [os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir)) for dicom_dir in files.keys()]
@@ -73,7 +73,7 @@ def run(username: str, password: str, server: str,
         num_anim = sum(1 for subj in hotel_scan_record['hotelSubjects'] if subj.get('subjectId'))
 
         # Convert hotel scan record to metadata dictionary format expected by splitter of mice
-        metadata = convert_hotel_scan_record(hotel_scan_record)
+        metadata = convert_hotel_scan_record(hotel_scan_record, dicom=isDicomSession, mpet=not isDicomSession)
 
         for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
             # custom code to handle wustl scanners
@@ -105,7 +105,7 @@ def run(username: str, password: str, server: str,
                 zip_file_path = Path(zip_file_path)
                 subject_zip_files[subject].append(zip_file_path)
 
-        if not dicom:
+        if not isDicomSession:
             # Merge the zip files for each subject into a single zip file
             # The DICOM zip importer can handle multiple zip files for a single session but not the Inveon importer
             for subject, zip_files in subject_zip_files.items():
@@ -129,7 +129,7 @@ def run(username: str, password: str, server: str,
         for subject, zip_files in subject_zip_files.items():
             for zip_file_path in zip_files:
                 if subject:  # skip empty subjects
-                    send_split_images(username, password, server, project, subject, experiment, zip_file_path, dicom)
+                    send_split_images(username, password, server, project, subject, experiment, zip_file_path, isDicomSession)
 
         for splitter in splitters:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -150,7 +150,7 @@ def run(username: str, password: str, server: str,
     return
 
 
-def convert_hotel_scan_record(hotel_scan_record: dict):
+def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):
     """
     Convert hotel scan record to metadata dictionary format expected by splitter of mice
     """
@@ -208,10 +208,16 @@ def convert_hotel_scan_record(hotel_scan_record: dict):
             hotel_subject['PatientID'] = hotel_subject['subjectLabel'] if 'subjectLabel' in hotel_subject else 'blank'
             hotel_subject['PatientName'] = hotel_subject['subjectLabel'] if 'subjectLabel' in hotel_subject else 'blank'
             hotel_subject['PatientOrientation'] = hotel_subject['orientation'] if 'orientation' in hotel_subject else ''
-            hotel_subject['PatientWeight'] = hotel_subject['weight'] * pow(10, -3) if 'weight' in hotel_subject else 0
+            if dicom:  # Convert weight from g to kg
+                hotel_subject['PatientWeight'] = hotel_subject['weight'] * pow(10, -3) if 'weight' in hotel_subject else 0
+            elif mpet:
+                hotel_subject['PatientWeight'] = hotel_subject['weight'] if 'weight' in hotel_subject else 0
             hotel_subject['PatientComments'] = hotel_subject['notes'] if 'notes' in hotel_subject else ''
             hotel_subject['RadiopharmaceuticalStartTime'] = hotel_subject['injectionTime'] if 'injectionTime' in hotel_subject else ''
-            hotel_subject['RadiopharmaceuticalTotalDose'] = hotel_subject['activity'] * 37 * pow(10, 6) if 'activity' in hotel_subject else 0
+            if dicom:  # Convert activity from mCi to MBq
+                hotel_subject['RadionuclideTotalDose'] = hotel_subject['activity'] * 37 * pow(10, 6) if 'activity' in hotel_subject else 0
+            elif mpet:
+                hotel_subject['RadionuclideTotalDose'] = hotel_subject['activity'] if 'activity' in hotel_subject else 0
 
             metadata[position] = hotel_subject
 

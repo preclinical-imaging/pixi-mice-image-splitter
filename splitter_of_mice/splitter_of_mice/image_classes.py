@@ -393,10 +393,19 @@ class BaseImage:
             Update line to match value in parameters (user input)
             '''
             for j, line in enumerate(hdr_lines):
-                if line.strip().startswith(hdr_var + ' '):
+                if line.strip().startswith(hdr_var + ' ') or line.strip() == hdr_var:
                     hdr_lines[j] = ' '.join([hdr_var, value])
                     break
             return hdr_lines
+
+        def get_line_value(hdr_lines, hdr_var):
+            '''
+            Get value from line in header file
+            '''
+            for line in hdr_lines:
+                if line.strip().startswith(hdr_var + ' ') or line.strip() == hdr_var:
+                    return line.strip(hdr_var).strip()
+            return None
 
         def write_chunks(data, dfile):
             '''
@@ -444,6 +453,7 @@ class BaseImage:
         '''
 
         cut_img = self.cuts[index]
+        metadata = cut_img.metadata
 
         # did this when reading image data, flip it back now
         cut_img.rotate_on_axis('x')
@@ -454,13 +464,47 @@ class BaseImage:
         if self.type == 'pet':
             vars_to_update += ['dose', 'injection_time']
 
+        if metadata:  # Metadata from hotel scan record
+            if 'PatientID' in metadata:
+                setattr(cut_img.params, 'subject_identifier', metadata['PatientID'])
+                vars_to_update += ['subject_identifier']
+            if 'PatientWeight' in metadata:
+                setattr(cut_img.params, 'subject_weight', metadata['PatientWeight'])
+                # already in vars_to_update
+            if 'PatientOrientation' in metadata:
+                orientations = {  # 0 is unknown
+                    'FFP': 1,
+                    'HFP': 2,
+                    'FFS': 3,
+                    'HFS': 4,
+                    'FFDR': 5,
+                    'HFDR': 6,
+                    'FFDL': 7,
+                    'HFDL': 8,
+                }
+
+                if metadata['PatientOrientation'] in orientations:
+                    setattr(cut_img.params, 'subject_orientation', orientations[metadata['PatientOrientation']])
+                else:
+                    setattr(cut_img.params, 'subject_orientation', 0)
+
+                vars_to_update += ['subject_orientation']
+            if 'PatientComments' in metadata:
+                setattr(cut_img.params, 'acquisition_notes', metadata['PatientComments'])
+                vars_to_update += ['acquisition_notes']
+            if 'RadiopharmaceuticalStartTime' in metadata:
+                injection_date_time = get_line_value(cut_hdr_lines, 'scan_time')
+                injection_date_time_split = injection_date_time.split(' ')
+                injection_date_time_split[3] = f"{metadata['RadiopharmaceuticalStartTime'][:2]}:{metadata['RadiopharmaceuticalStartTime'][2:4]}:{metadata['RadiopharmaceuticalStartTime'][4:]}"  # HH:MM:SS
+                injection_date_time = ' '.join(injection_date_time_split)
+                setattr(cut_img.params, 'injection_time', injection_date_time)
+                # already in vars_to_update if PET
+            if 'RadionuclideTotalDose' in metadata:
+                setattr(cut_img.params, 'dose', metadata['RadionuclideTotalDose'])
+                # already in vars_to_update if PET
+
         for v in vars_to_update:
             cut_hdr_lines = change_line(cut_hdr_lines, v, str(getattr(cut_img.params, v)))
-
-        # add animal_number to header information if it has been set
-        animal_number = cut_img.params.animal_number
-        if animal_number.strip():
-            cut_hdr_lines = add_animal_number(cut_hdr_lines, animal_number)
 
         cut_filename = cut_img.out_filename
         # print('cut_filename ', cut_filename)
