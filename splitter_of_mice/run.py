@@ -88,8 +88,6 @@ def run(username: str, password: str, server: str,
                 pet_img_size = (43, 43)
                 ct_img_size = (172, 172)
 
-                splitter.pi.rotate_on_axis('z')
-
             exit_code = splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
                                           zip=True, dicom_metadata=metadata, output_qc=True,
                                           pet_img_size=pet_img_size, ct_img_size=ct_img_size)
