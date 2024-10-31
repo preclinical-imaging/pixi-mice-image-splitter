@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3]
+
+- [PIXI-152] - Enable single mouse hotels. Keeps a consistent workflow for single and multiple mouse hotels and 
+               will crop the single mouse hotel to the same size as the multiple mouse hotel split images.
+
 ## [0.2.2]
 
 ### Fixed

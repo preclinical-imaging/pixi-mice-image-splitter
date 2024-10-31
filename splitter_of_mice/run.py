@@ -167,7 +167,10 @@ def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet
     if num_rows == 1:
         hotel_subjects = sorted(hotel_scan_record['hotelSubjects'], key=lambda x: x['position']['x'])
 
-        if num_subjects == 2:
+        if num_subjects == 1:
+            metadata['ctr'] = hotel_subjects[0]
+
+        elif num_subjects == 2:
             metadata['l'] = hotel_subjects[0]
             metadata['r'] = hotel_subjects[1]
 
