@@ -369,7 +369,6 @@ class BaseImage:
             self.img_data = imgmat.reshape(nplanes, ps.y_dimension, ps.x_dimension, nframes)
             self.scaled = True
 
-        self.rotate_on_axis('x')
         return
 
     def save_cut(self, index, path, zip=False):
@@ -454,9 +453,6 @@ class BaseImage:
 
         cut_img = self.cuts[index]
         metadata = cut_img.metadata
-
-        # did this when reading image data, flip it back now
-        cut_img.rotate_on_axis('x')
 
         # update header variables
         cut_hdr_lines = hdr_lines
@@ -551,8 +547,6 @@ class BaseImage:
                 logger.error('PatientID not found in metadata. Unable to add to zip_outputs.')
                 raise Exception('PatientID not found in metadata. Unable to add to zip_outputs.')
 
-        # clean up after myself.
-        cut_img.rotate_on_axis('x')
         out_data = None
         gc.collect()
 

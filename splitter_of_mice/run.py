@@ -75,6 +75,10 @@ def run(username: str, password: str, server: str,
         # Convert hotel scan record to metadata dictionary format expected by splitter of mice
         metadata = convert_hotel_scan_record(hotel_scan_record, dicom=isDicomSession, mpet=not isDicomSession)
 
+        # Get Technicians Perspective and rotate image if needed
+        technicians_perspective = hotel_scan_record.get('technicianPerspective', 'Front')
+        technicians_perspective = technicians_perspective.lower()
+
         for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
             # custom code to handle wustl scanners
             pet_img_size = None
@@ -87,6 +91,9 @@ def run(username: str, password: str, server: str,
                 # if experiment contains the word 'mpet'
                 pet_img_size = (43, 43)
                 ct_img_size = (172, 172)
+
+            if technicians_perspective == 'back':
+                splitter.pi.rotate_on_axis('y')
 
             exit_code = splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
                                           zip=True, dicom_metadata=metadata, output_qc=True,

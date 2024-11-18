@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- [PIXI-155] - Technician perspective field added to the hotel scan record form. The front/back perspectives can be
+               selected for the hotel scan record. The image will be rotated accordingly during the splitting process
+               if the perspective is set to back.
+
 ### Fixed
 
 - [PIXI-148] - Fix issue with Inveon CT sessions splitting not detecting enough regions. Will now adjust the threshold
@@ -61,3 +67,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 [PIXI-146]: https://radiologics.atlassian.net/browse/PIXI-146
 [PIXI-148]: https://radiologics.atlassian.net/browse/PIXI-148
 [PIXI-149]: https://radiologics.atlassian.net/browse/PIXI-149
+[PIXI-155]: https://radiologics.atlassian.net/browse/PIXI-155
