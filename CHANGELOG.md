@@ -13,12 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                selected for the hotel scan record. The image will be rotated accordingly during the splitting process
                if the perspective is set to back.
 
-## [0.2.3]
+## [0.2.3] - 2024-10-31
 
 - [PIXI-152] - Enable single mouse hotels. Keeps a consistent workflow for single and multiple mouse hotels and 
                will crop the single mouse hotel to the same size as the multiple mouse hotel split images.
 
-## [0.2.2]
+## [0.2.2] - 2024-09-24
 
 ### Fixed
 
