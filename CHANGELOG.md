@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                selected for the hotel scan record. The image will be rotated accordingly during the splitting process
                if the perspective is set to back.
 
+## [0.2.3]
+
+- [PIXI-152] - Enable single mouse hotels. Keeps a consistent workflow for single and multiple mouse hotels and 
+               will crop the single mouse hotel to the same size as the multiple mouse hotel split images.
+
+## [0.2.2]
+
 ### Fixed
 
 - [PIXI-148] - Fix issue with Inveon CT sessions splitting not detecting enough regions. Will now adjust the threshold
