@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2024-12-09
 
+- [PIXI-156] - Add injection date to the hotel scan record form. Sometimes animals are injected on a different day than
+               the scan is performed.
 - [PIXI-158] - Update hotel splitter to reuse a single session when calling XNAT instead of creating a new session for
                each request. This will reduce the number of user sessions created in XNAT.
 
@@ -81,4 +83,5 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 [PIXI-148]: https://radiologics.atlassian.net/browse/PIXI-148
 [PIXI-149]: https://radiologics.atlassian.net/browse/PIXI-149
 [PIXI-155]: https://radiologics.atlassian.net/browse/PIXI-155
+[PIXI-156]: https://radiologics.atlassian.net/browse/PIXI-156
 [PIXI-158]: https://radiologics.atlassian.net/browse/PIXI-158

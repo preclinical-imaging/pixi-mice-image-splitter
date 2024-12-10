@@ -19,6 +19,7 @@ import numpy as np
 import pydicom
 from pydicom.dataset import Dataset
 from pydicom.sequence import Sequence
+from datetime import datetime
 
 # logging
 logger = logging.getLogger(__name__)
@@ -495,6 +496,18 @@ class BaseImage:
                 injection_date_time = ' '.join(injection_date_time_split)
                 setattr(cut_img.params, 'injection_time', injection_date_time)
                 # already in vars_to_update if PET
+            if 'RadiopharmaceuticalStartDate' in metadata and 'RadiopharmaceuticalStartTime' in metadata:
+                # This will overwrite the injection time if it is already set above
+                # Convert date and time from YYYYMMDD and HH:MM:SS to %a %b %-d %H:%M:%S %Y
+                year = metadata['RadiopharmaceuticalStartDate'][:4]
+                month = metadata['RadiopharmaceuticalStartDate'][4:6]
+                day = metadata['RadiopharmaceuticalStartDate'][6:]
+                hour = metadata['RadiopharmaceuticalStartTime'][:2]
+                minute = metadata['RadiopharmaceuticalStartTime'][2:4]
+                second = metadata['RadiopharmaceuticalStartTime'][4:]
+                injection_date_time = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second)).strftime('%a %b %-d %H:%M:%S %Y')
+                setattr(cut_img.params, 'injection_time', injection_date_time)
+                # already in vars_to_update if PET
             if 'RadionuclideTotalDose' in metadata:
                 setattr(cut_img.params, 'dose', metadata['RadionuclideTotalDose'])
                 # already in vars_to_update if PET
@@ -898,6 +911,8 @@ class DicomImage(BaseImage):
                 if split_ds.Modality == 'PT' and 'RadiopharmaceuticalInformationSequence' in split_ds:
                     if 'RadiopharmaceuticalStartTime' in metadata:
                         split_ds.RadiopharmaceuticalInformationSequence[0].RadiopharmaceuticalStartTime = metadata['RadiopharmaceuticalStartTime']
+                    if 'RadiopharmaceuticalStartDate' in metadata and 'RadiopharmaceuticalStartTime' in metadata:
+                        split_ds.RadiopharmaceuticalInformationSequence[0].RadiopharmaceuticalStartDateTime = f'{metadata["RadiopharmaceuticalStartDate"]}{metadata["RadiopharmaceuticalStartTime"]}'
                     if 'RadionuclideTotalDose' in metadata:
                         split_ds.RadiopharmaceuticalInformationSequence[0].RadionuclideTotalDose = metadata['RadionuclideTotalDose']
 

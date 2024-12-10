@@ -228,6 +228,7 @@ def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet
             elif mpet:
                 hotel_subject['PatientWeight'] = hotel_subject['weight'] if 'weight' in hotel_subject else 0
             hotel_subject['PatientComments'] = hotel_subject['notes'] if 'notes' in hotel_subject else ''
+            hotel_subject['RadiopharmaceuticalStartDate'] = hotel_subject['injectionDate'] if 'injectionDate' in hotel_subject else ''
             hotel_subject['RadiopharmaceuticalStartTime'] = hotel_subject['injectionTime'] if 'injectionTime' in hotel_subject else ''
             if dicom:  # Convert activity from mCi to MBq
                 hotel_subject['RadionuclideTotalDose'] = hotel_subject['activity'] * 37 * pow(10, 6) if 'activity' in hotel_subject else 0
