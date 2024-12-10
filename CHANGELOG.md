@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2024-12-09
+
+- [PIXI-158] - Update hotel splitter to reuse a single session when calling XNAT instead of creating a new session for
+               each request. This will reduce the number of user sessions created in XNAT.
+
+
 ## [0.2.4] - 2024-11-19
 
 ### Added
@@ -75,3 +81,4 @@ Initial release of the PIXI Mice Image Splitter and Docker image.
 [PIXI-148]: https://radiologics.atlassian.net/browse/PIXI-148
 [PIXI-149]: https://radiologics.atlassian.net/browse/PIXI-149
 [PIXI-155]: https://radiologics.atlassian.net/browse/PIXI-155
+[PIXI-158]: https://radiologics.atlassian.net/browse/PIXI-158

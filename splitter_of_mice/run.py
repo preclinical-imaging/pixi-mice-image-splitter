@@ -12,7 +12,7 @@ from pathlib import Path
 import zipfile
 
 from collections import defaultdict
-from requests.auth import HTTPBasicAuth
+from requests import Session
 from splitter_of_mice.splitter import SoM
 
 # Setup splitter of mice descriptor map
@@ -22,12 +22,17 @@ SoM.desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 
 def run(username: str, password: str, server: str,
         project: str, experiment: str,
         input_dir: str, output_dir: str, **kwargs):
+
+    # Create a session
+    session = requests.Session()
+    session.auth = (username, password)
+
     try:
         logging.debug(f'''run(username={username}, password=*****, server={server}, 
                        project={project}, experiment={experiment}, 
                        input_dir={input_dir}, output_dir={output_dir})''')
 
-        update_scan_record_status(username, password, server, project, experiment, status="Splitting In Progress")
+        update_scan_record_status(session, server, project, experiment, status="Splitting In Progress")
 
         logging.debug(f"Find subdirectories with DICOM files in {input_dir}")
 
@@ -51,7 +56,7 @@ def run(username: str, password: str, server: str,
 
         if len(files) == 0:
             logging.error(f'No DICOM or Inveon .img files found in {input_dir}. Exiting.')
-            update_scan_record_status(username, password, server, project, experiment, "Error: No DICOM or Inveon images files found")
+            update_scan_record_status(session, server, project, experiment, "Error: No DICOM or Inveon images files found")
             sys.exit(f'No DICOM or Inveon images files found in {input_dir}')
 
         logging.debug(f"Create splitter and output directory for each subdirectory")
@@ -69,7 +74,7 @@ def run(username: str, password: str, server: str,
         logging.debug(f"Split each subdirectory")
 
         # Get hotel scan record
-        hotel_scan_record = get_hotel_scan_record(username, password, server, project, experiment)
+        hotel_scan_record = get_hotel_scan_record(session, server, project, experiment)
         num_anim = sum(1 for subj in hotel_scan_record['hotelSubjects'] if subj.get('subjectId'))
 
         # Convert hotel scan record to metadata dictionary format expected by splitter of mice
@@ -136,22 +141,22 @@ def run(username: str, password: str, server: str,
         for subject, zip_files in subject_zip_files.items():
             for zip_file_path in zip_files:
                 if subject:  # skip empty subjects
-                    send_split_images(username, password, server, project, subject, experiment, zip_file_path, isDicomSession)
+                    send_split_images(session, server, project, subject, experiment, zip_file_path, isDicomSession)
 
         for splitter in splitters:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            send_qc_image(username, password, server, project, experiment,
+            send_qc_image(session, server, project, experiment,
                           splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
 
         # update hotel scan record
-        update_scan_record(username, password, server, experiment, hotel_scan_record)
+        update_scan_record(session, server, experiment, hotel_scan_record)
 
         # update hotel scan record status
-        update_scan_record_status(username, password, server, project, experiment, status="Split Complete")
+        update_scan_record_status(session, server, project, experiment, status="Split Complete")
 
     except Exception as e:
         logging.exception("Fatal error while splitting hotel scan: " + str(e))
-        update_scan_record_status(username, password, server, project, experiment, "Error: Not Split")
+        update_scan_record_status(session, server, project, experiment, "Error: Not Split")
         sys.exit("Fatal error while splitting hotel scan " + str(e))
 
     return
@@ -240,7 +245,7 @@ def x667_uuid():
     return '2.25.%d' % uuid.uuid4()
 
 
-def delete_existing_session(username: str, password: str, server: str, project: str, experiment: str):
+def delete_existing_session(session: Session, server: str, project: str, experiment: str):
     # First check if the session exists
     url = f'{server}/data/projects/{project}/experiments/{experiment}'
     parameters = {'removeFiles': 'TRUE'}
@@ -249,7 +254,7 @@ def delete_existing_session(username: str, password: str, server: str, project: 
     logging.debug(f'URL: {url}')
     logging.debug(f'Parameters: {parameters}')
 
-    r = requests.get(url, auth=HTTPBasicAuth(username, password))
+    r = session.get(url)
 
     if r.ok:
         logging.info(f'Session {experiment} exists in project {project}')
@@ -260,9 +265,7 @@ def delete_existing_session(username: str, password: str, server: str, project: 
     # Then delete the session
     logging.info(f'Deleting session {experiment} from project {project}')
 
-    r = requests.delete(url,
-                        auth=HTTPBasicAuth(username, password),
-                        params=parameters)
+    r = session.delete(url, params=parameters)
 
     if r.ok:
         logging.info(f'Session {experiment} deleted from project {project}')
@@ -272,12 +275,12 @@ def delete_existing_session(username: str, password: str, server: str, project: 
         raise Exception(f'Failed to delete session {experiment} from project {project}')
 
 
-def send_split_images(username: str, password: str, server: str, project: str, subject: str, experiment: str,
+def send_split_images(session: Session, server: str, project: str, subject: str, experiment: str,
                       zip_file: Path, dicom: bool):
 
     # Delete existing session
     experiment = experiment + "_split_" + subject
-    delete_existing_session(username, password, server, project, experiment)
+    delete_existing_session(session, server, project, experiment)
 
     time.sleep(5)
 
@@ -300,10 +303,7 @@ def send_split_images(username: str, password: str, server: str, project: str, s
 
     while attempts < max_attempts:
         try:
-            r = requests.post(dest_url,
-                              auth=HTTPBasicAuth(username, password),
-                              params=parameters,
-                              files={'file': open(zip_file, 'rb')})
+            r = session.post(dest_url, params=parameters, files={'file': open(zip_file, 'rb')})
 
             if r.ok:
                 logging.info(f'Upload successful for {zip_file}')
@@ -328,13 +328,13 @@ def send_split_images(username: str, password: str, server: str, project: str, s
     return
 
 
-def send_qc_image(username: str, password: str, server: str, project: str, experiment: str, qc_image_path: str, **kwargs):
+def send_qc_image(session: Session, server: str, project: str, experiment: str, qc_image_path: str, **kwargs):
     # create a resource on the scan record with the name QC_SNAPSHOTS_DATETIME or get from kwargs
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     resource_name = f"QC_SNAPSHOTS_{timestamp}" if 'resource_name' not in kwargs else kwargs['resource_name']
     url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_name}?format=IMG&content=RAW"
 
-    r = requests.put(url, auth=HTTPBasicAuth(username, password))
+    r = session.put(url)
 
     if r.ok:
         logging.info(f'QC image resource created for project: {project} , session: {experiment}')
@@ -356,7 +356,7 @@ def send_qc_image(username: str, password: str, server: str, project: str, exper
                f"/resources/{resource_name}/files/{qc_image_name}?inbody=true")
 
         with open(qc_image, 'rb') as f:
-            r = requests.put(url, auth=HTTPBasicAuth(username, password), data=f)
+            r = session.put(url, data=f)
 
             if r.ok:
                 logging.info(f'QC image {qc_image_name} uploaded to project: {project} , session: {experiment}')
@@ -366,13 +366,12 @@ def send_qc_image(username: str, password: str, server: str, project: str, exper
                 return False
 
 
-def get_hotel_scan_record(username: str, password: str, server: str,
-                          project: str, experiment: str):
+def get_hotel_scan_record(session: Session, server: str, project: str, experiment: str):
     url = f"{server}/xapi/pixi/hotelscanrecords/{experiment}_scan_record/project/{project}"
 
     logging.info("Retrieving hotel scan record from " + url)
 
-    r = requests.get(url, auth=HTTPBasicAuth(username, password))
+    r = session.get(url)
 
     if r.status_code == 200:
         logging.info("Hotel scan record successfully retrieved")
@@ -382,11 +381,9 @@ def get_hotel_scan_record(username: str, password: str, server: str,
         raise Exception("Unable to fetch Hotel Scan Record from XNAT")
 
 
-def update_scan_record(username: str, password: str, server: str,
-                       experiment: str, hotel_scan_record: dict):
+def update_scan_record(session: Session, server: str, experiment: str, hotel_scan_record: dict):
 
-    logging.debug(f'update_scan_record(username={username}, password=*****, server={server}, '
-                  f'hotel_scan_record={hotel_scan_record})')
+    logging.debug(f'update_scan_record(server={server}, hotel_scan_record={hotel_scan_record})')
 
     project = hotel_scan_record['projectID']
 
@@ -401,10 +398,7 @@ def update_scan_record(username: str, password: str, server: str,
 
     url = f"{server}/xapi/pixi/hotelscanrecords/{experiment}_scan_record/project/{project}/subjects"
 
-    r = requests.put(url,
-                     auth=HTTPBasicAuth(username, password),
-                     headers={'Content-type': 'application/json'},
-                     data=json.dumps(subjects))
+    r = session.put(url, headers={'Content-type': 'application/json'}, data=json.dumps(subjects))
     if r.ok:
         logging.info('Hotel scan record updated')
     else:
@@ -413,22 +407,15 @@ def update_scan_record(username: str, password: str, server: str,
     return
 
 
-def update_scan_record_status(username: str, password: str, server: str,
-                              project: str, experiment: str,
-                              status: str):
+def update_scan_record_status(session: Session, server: str, project: str, experiment: str, status: str):
 
-    logging.debug(f'update_status(username={username}, password=*****, server={server}, '
-                  f'project={project}, experiment={experiment}, '
-                  f'status={status})')
+    logging.debug(f'update_status(server={server}, project={project}, experiment={experiment}, status={status})')
 
     url = f"{server}/xapi/pixi/hotelscanrecords/{experiment}_scan_record/project/{project}/status"
 
     logging.info(f'Updating hotel scan record status at {url} to {status}')
 
-    r = requests.put(url,
-                     auth=HTTPBasicAuth(username, password),
-                     headers={'Content-type': 'text/plain'},
-                     data=status)
+    r = session.put(url, headers={'Content-type': 'text/plain'}, data=status)
 
     if r.ok:
         logging.debug(f'update_status to {status} successful')
