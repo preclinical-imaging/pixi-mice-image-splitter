@@ -4,8 +4,6 @@
 import logging
 from io import BytesIO
 
-import ipywidgets as ipw
-import nibabel
 import numpy as np
 import skimage
 import os
@@ -42,7 +40,6 @@ class SoM:
     """
 
     margin = 30
-    ipw_on = False
 
     def __init__(self, file, modality=None, dicom=False):
         self.blob_labels = None
@@ -51,7 +48,7 @@ class SoM:
         self.pi, self.modality = SoM.load_image(file, modality, dicom)
 
     @staticmethod
-    def add_cuts_to_image(im, boxes, desc_map, save_analyze_dir=None, dicom_metadata=None):
+    def add_cuts_to_image(im, boxes, desc_map, dicom_metadata=None):
 
         ims = []
 
@@ -70,7 +67,6 @@ class SoM:
             if ymax < ymin:
                 ymax, ymin = ymin, ymax
 
-            # print('xmax={},xmin={},ymax={},ymin={}'.format(xmax,xmin,ymax,ymin))
             fname = im.filename[:-4] + '_' + desc
             data = im.img_data[:, xmin:xmax, ymin:ymax, :]
             d, h, w = data.shape[0], data.shape[1], data.shape[2]
@@ -82,34 +78,12 @@ class SoM:
                 ims += [SoM.a2im(im, np.squeeze(data[:, :, int(round(w * .5)), t2]), mag, False)]
 
             # _,data=im.submemmap(ix=ix,data=im.img_data[:,ymin:ymax,xmin:xmax,:])
-            # print(data.shape)
 
             metadata = dicom_metadata[desc] if (dicom_metadata and desc in dicom_metadata) else None
             new_img = SubImage(parent_image=im, img_data=data, filename=fname + '.img',
                                cut_coords=[(xmin, xmax), (ymin, ymax)], desc=desc, metadata=metadata)
-
-            # print('adding '+fname+'.img')
-            # print('saving '+fname)
-            if save_analyze_dir is not None:
-                SoM.write_analyze(new_img, save_analyze_dir + '/' + fname + '_analyze.img')
             im.cuts.append(new_img)
-        if SoM.ipw_on:
-            print('split images(midsagittal slice)')
-            box = ipw.HBox(ims)
-            # display(box)
         return ims
-
-    @staticmethod
-    def write_analyze(im, filepath):
-        id1 = np.swapaxes(im.img_data, 0, 2)
-        ps = im.params.pixel_size
-        hdr = nibabel.AnalyzeHeader()
-        hdr.set_data_shape(id1.shape)
-        hdr.set_data_dtype(id1.dtype)
-        hdr.set_zooms([ps, ps, ps, im.params.frame_duration[0]])
-        analyze_img = nibabel.AnalyzeImage(id1, None, hdr)
-        print('writing Analyze 7.5 image: ' + filepath)
-        analyze_img.to_filename(filepath)
 
     @staticmethod
     def a2im(pi, a, r, return_array=False):
@@ -134,29 +108,7 @@ class SoM:
         im = filters.gaussian(imgz, sigma=1 / (4. * n))
         return im
 
-    @staticmethod
-    def merge_im_arrays(im0, im1, orientation='horizontal', bg=0):
-        a = im0
-        ash = np.array(a.shape)
-        b = im1
-        bsh = np.array(b.shape)
-        msh = np.maximum(np.array(a.shape), np.array(b.shape))
-        da = msh - a.shape
-        db = msh - b.shape
-        if orientation == 'horizontal':
-            ap = np.pad(a, [(0, da[0]), (0, 0)], constant_values=bg)
-            bp = np.pad(b, [(0, db[0]), (0, 0)], constant_values=bg)
-            # print(ap.shape,bp.shape)
-            # print(a.dtype,b.dtype)
-            im = np.concatenate((ap, bp), 1)
-        else:
-            ap = np.pad(a, [(0, da[1]), (0, 0)], constant_values=bg)
-            bp = np.pad(b, [(0, db[1]), (0, 0)], constant_values=bg)
-            # print(ap.shape,bp.shape)
-            im = np.concatenate((ap, bp), 0)
-        return im
-
-    def split_mice(self, outdir, save_analyze=False, num_anim=None,
+    def split_mice(self, outdir, num_anim=None,
                    sep_thresh=None, margin=None, minpix=None, output_qc=False,
                    suffix_map=None, zip=False, remove_bed=False, dicom_metadata=None,
                    pet_img_size=None, ct_img_size=None):
@@ -171,12 +123,12 @@ class SoM:
         if self.modality == 'PET' or self.modality == 'PT':
             margin = 4 if margin is None else margin
             minpix = 200 if minpix is None else minpix
-            return self.split_mice_pet(outdir, d, save_analyze, num_anim, sep_thresh, margin, minpix,
+            return self.split_mice_pet(outdir, d, num_anim, sep_thresh, margin, minpix,
                                        output_qc, zip, dicom_metadata, pet_img_size)
         if self.modality == 'CT':
             margin = 20 if margin is None else margin
             minpix = 3300 if minpix is None else minpix
-            return self.split_mice_ct(outdir, d, save_analyze, num_anim, sep_thresh,
+            return self.split_mice_ct(outdir, d, num_anim, sep_thresh,
                                       margin, minpix, output_qc, remove_bed, zip, dicom_metadata, ct_img_size)
         else:
             logger.error(f"Unknown modality: {self.modality}. Cannot split mice.")
@@ -185,7 +137,6 @@ class SoM:
     @staticmethod
     def detect_animals(im):
         blobs = im > SoM.sep_thresh * np.mean(im)
-        # all_labels = measure.label(blobs)
         (blobs_labels, num) = measure.label(blobs, return_num=True, background=0)
         return blobs_labels, num
 
@@ -312,21 +263,6 @@ class SoM:
         return out_boxes
 
     @staticmethod
-    def refine_cuts_ct(cuts, imz):
-        sz = imz.shape
-        for box in cuts:
-            r = box['rect']
-            cx, cy, n = 0., 0., 0.
-            for y in range(max(0, r.ylt), min(r.yrb, sz[0])):
-                for x in range(max(0, r.xlt), min(r.xrb, sz[1])):
-                    if imz[y, x] == 0: continue
-                    cx += x
-                    cy += y
-                    n += 1
-            r.adjust_to_center(cx / n, cy / n)
-        return cuts
-
-    @staticmethod
     def z_compress_ct(pi, thresh, binary=True):
         img = pi.img_data
         sh = img.shape
@@ -353,19 +289,14 @@ class SoM:
 
     @staticmethod
     def a2im_pet(a, r, return_array=False):
-        if not SoM.ipw_on and not return_array: return None
+        if not return_array: return None
         f = BytesIO()
         b = 0.3
         im0 = (a / (np.max(a) * b))
         im0[im0 > 1] = 1
         arr = np.uint8(im0 * 255)
         if return_array: return arr
-        if not SoM.ipw_on: return None
-        img = Image.fromarray(arr)
-        img.save(f, 'png')
-        layout = {'width': str(r * a.shape[1]) + 'px', 'height': str(r * a.shape[0]) + 'px'}
-        # print(layout)
-        return ipw.Image(value=f.getvalue(), layout=layout)
+        return None
 
     @staticmethod
     def a2im_ct(a, r, return_array=False):
@@ -373,19 +304,11 @@ class SoM:
         im0[im0 < 0] = 0
         im0[im0 > 200.] = 200.
         arr = np.uint8((im0 / np.max(im0)) * 255.)
-
         if return_array: return arr
-        if not SoM.ipw_on: return None
-
-        f = BytesIO()
-        img = Image.fromarray(arr)
-        img.save(f, 'png')
-        layout = {'width': str(r * a.shape[1]) + 'px', 'height': str(r * a.shape[0]) + 'px'}
-        return ipw.Image(value=f.getvalue(), layout=layout)
+        return None
 
     @staticmethod
     def get_sag_image(img_data):
-        # print('get_sag_image shape:',img_data.shape)
         sh = img_data.shape
         if len(sh) < 4:
             return np.squeeze(img_data[:, np.int32(sh[1] / 2), :])
@@ -414,13 +337,6 @@ class SoM:
             return new_im
 
     @staticmethod
-    def display_pil_image(im):
-        if SoM.ipw_on:
-            f = BytesIO()
-            im.save(f, 'png')
-            # display(ipw.HBox([ipw.Image(value=f.getvalue())]))
-
-    @staticmethod
     def load_image_ex(file, modality):
         pi = None
         if modality == 'PET':
@@ -429,7 +345,7 @@ class SoM:
                 pi.load_header()
                 pi.load_image()
             except Exception as e:
-                print(str(e))
+                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
                 return None, None
             return pi, modality
         elif modality == 'CT':
@@ -438,11 +354,11 @@ class SoM:
                 pi.load_header()
                 pi.load_image()
             except Exception as e:
-                print(str(e))
+                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
                 return None, None
             return pi, modality
         else:
-            print('error: unknown modality')
+            logger.error('error: unknown modality')
             return None, None
 
     @staticmethod
@@ -461,32 +377,29 @@ class SoM:
 
         detect_mod = None
         try:
-            print('checking if PET modality')
             pi = PETImage(file)
             pi.load_header()
             detect_mod = 'PET'
         except Exception as e:
-            print(str(e))
+            logger.error(f"Failed to load PET image: {file}. Error: {e}")
             pi = None
 
         if pi == None:
             try:
-                print('checking if CT modality')
                 pi = CTImage(file)
                 pi.load_header()
                 detect_mod = 'CT'
             except Exception as e:
-                print(str(e))
+                logger.error(f"Failed to load CT image: {file}. Error: {e}")
                 pi = None
 
         if pi is None:
-            print('Could not load image as PET or CT modality')
+            logger.debug(f"Could not load image as PET or CT modality")
             return None, None
 
         if modality is not None and detect_mod != modality:
-            print(modality, ' modality expected, but ', detect_mod, 'detected, exiting')
+            logger.debug(f"{modality}, ' modality expected, but ', {detect_mod}, 'detected, exiting")
             return None, None
-        print(detect_mod, ' modality detected')
         pi.load_image()
         return pi, detect_mod
 
@@ -503,7 +416,7 @@ class SoM:
         for ind in range(len(pi.cuts)):
             pi.save_cut(ind, f"{outdir}/", zip=zip)
 
-    def split_mice_ct(self, outdir, desc_map, save_analyze=False, num_anim=None,
+    def split_mice_ct(self, outdir, desc_map, num_anim=None,
                       sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
                       bed_removal=True, zip=False, dicom_metadata=None, img_size=None):
         logger.info('Splitting CT image ' + self.pi.filename)
@@ -565,9 +478,7 @@ class SoM:
                 cut['rect'].adjust_to_size(img_size)
                 logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
 
-        save_analyze_dir = outdir if save_analyze else None
-        # save_analyze_dir=None #debug
-        SoM.add_cuts_to_image(pi, cuts, desc_map, save_analyze_dir, dicom_metadata)
+        SoM.add_cuts_to_image(pi, cuts, desc_map, dicom_metadata)
 
         # write the images.
         if outdir is not None:
@@ -575,13 +486,12 @@ class SoM:
 
         if output_qc:
             im = SoM.qc_image(pi, blobs_labels, cuts, outdir, desc_map)
-            SoM.display_pil_image(im)
 
         # pi.clean_cuts()
         # pi.unload_image()
         return 0
 
-    def split_mice_pet(self, outdir, desc_map, save_analyze=False, num_anim=None,
+    def split_mice_pet(self, outdir, desc_map, num_anim=None,
                        sep_thresh=None, margin=20, minpix=200, output_qc=False,
                        zip=False, dicom_metadata=None, img_size=None):
         logger.info('Splitting PET image ' + self.pi.filename)
@@ -624,14 +534,21 @@ class SoM:
                     rects = SoM.get_valid_regs(blobs_labels)
         self.cuts = SoM.split_coords(imz, rects)
 
+        for cut in self.cuts:
+            rectang = str(cut['rect'])
+            logger.info(f'Cut: {rectang}')
+
         # adjust the size of the cuts if img_size is specified.
         # helpful for keeping the same image size across multiple scans.
         if img_size is not None:
             for cut in self.cuts:
                 cut['rect'].adjust_to_size(img_size)
 
-        save_analyze_dir = outdir if save_analyze else None
-        SoM.add_cuts_to_image(pi, self.cuts, desc_map, save_analyze_dir, dicom_metadata)
+        for cut in self.cuts:
+            rectang = str(cut['rect'])
+            logger.info(f'Cut: {rectang}')
+
+        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
 
         # write the images.
         if outdir is not None:
@@ -639,8 +556,6 @@ class SoM:
 
         if output_qc:
             im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
-            # debug
-            # SoM.display_pil_image(im)
 
         # pi.clean_cuts()
         # pi.unload_image()
@@ -679,7 +594,6 @@ class SoM:
             imz /= np.max(imz)
             linwid = 3
             alpha = 0.3
-            # SoM.display_pil_image(Image.fromarray(imz).convert('RGB'))
 
         elif isinstance(pi, DicomImage):
             if pi.modality == 'CT':
@@ -690,7 +604,6 @@ class SoM:
                 imz /= np.max(imz)
                 linwid = 3
                 alpha = 0.3
-                # SoM.display_pil_image(Image.fromarray(imz).convert('RGB'))
             elif pi.modality == 'PT' or pi.modality == 'PET':
                 imz = SoM.z_compress_pet(pi)
                 img_type = 'PET'
@@ -763,10 +676,8 @@ class SoM:
             # create the file if it doesn't exist
             open(fnamei, 'a').close()
             individual_qc_im.save(fnamei, 'png')
-            # SoM.display_pil_image(imp)
 
         # sag_ims_pil= [ Image.fromarray(im).convert('RGB') for im in sag_ims ]
-        # SoM.display_pil_image(sag_ims_pil[0])
 
         si_dims = [sag_ims[0].shape]
         sag_im = SoM.combine_images(sag_ims_pil)
