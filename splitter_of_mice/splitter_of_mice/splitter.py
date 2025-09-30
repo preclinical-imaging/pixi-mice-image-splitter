@@ -71,28 +71,11 @@ class SoM:
             data = im.img_data[:, xmin:xmax, ymin:ymax, :]
             d, h, w = data.shape[0], data.shape[1], data.shape[2]
 
-            if data.shape[3] == 1:
-                ims += [SoM.a2im(im, np.squeeze(data[:, :, int(round(w * .5)), 0]), mag, False)]
-            else:
-                t2 = int(data.shape[3] / 2)
-                ims += [SoM.a2im(im, np.squeeze(data[:, :, int(round(w * .5)), t2]), mag, False)]
-
-            # _,data=im.submemmap(ix=ix,data=im.img_data[:,ymin:ymax,xmin:xmax,:])
-
             metadata = dicom_metadata[desc] if (dicom_metadata and desc in dicom_metadata) else None
             new_img = SubImage(parent_image=im, img_data=data, filename=fname + '.img',
                                cut_coords=[(xmin, xmax), (ymin, ymax)], desc=desc, metadata=metadata)
             im.cuts.append(new_img)
         return ims
-
-    @staticmethod
-    def a2im(pi, a, r, return_array=False):
-        if isinstance(pi, PETImage):
-            return SoM.a2im_pet(a, r, return_array)
-        elif isinstance(pi, CTImage):
-            return SoM.a2im_ct(a, r, return_array)
-        else:
-            return None
 
     @staticmethod
     def z_compress_pet(pi):
@@ -287,25 +270,6 @@ class SoM:
         (blobs_labels, num) = measure.label(blobs, return_num=True, background=0)
         return blobs_labels, num
 
-    @staticmethod
-    def a2im_pet(a, r, return_array=False):
-        if not return_array: return None
-        f = BytesIO()
-        b = 0.3
-        im0 = (a / (np.max(a) * b))
-        im0[im0 > 1] = 1
-        arr = np.uint8(im0 * 255)
-        if return_array: return arr
-        return None
-
-    @staticmethod
-    def a2im_ct(a, r, return_array=False):
-        im0 = np.float64(a)
-        im0[im0 < 0] = 0
-        im0[im0 > 200.] = 200.
-        arr = np.uint8((im0 / np.max(im0)) * 255.)
-        if return_array: return arr
-        return None
 
     @staticmethod
     def get_sag_image(img_data):
