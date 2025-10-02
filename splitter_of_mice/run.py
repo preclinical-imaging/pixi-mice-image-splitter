@@ -14,6 +14,7 @@ import zipfile
 from collections import defaultdict
 from requests import Session
 from splitter_of_mice.splitter import SoM
+from splitter_of_mice.rectangle import Rect
 
 # Setup splitter of mice descriptor map
 SoM.desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
@@ -84,7 +85,15 @@ def run(username: str, password: str, server: str,
         technicians_perspective = hotel_scan_record.get('technicianPerspective', 'Front')
         technicians_perspective = technicians_perspective.lower()
 
-        for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
+        splitters_to_dirs = list(zip(splitters, output_dirs))
+        splitters_to_dirs.sort(key=lambda x: x[0].modality, reverse=True)
+
+        pet_cuts_for_coregister = None
+        pet_img_shape_for_coregister = None
+
+        for splitter_to_dir in splitters_to_dirs:
+            splitter = splitter_to_dir[0]
+            output_dir = splitter_to_dir[1]
             # custom code to handle wustl scanners
             pet_img_size = None
             ct_img_size = None
@@ -100,9 +109,22 @@ def run(username: str, password: str, server: str,
             if technicians_perspective == 'back':
                 splitter.pi.rotate_on_axis('y')
 
+            ct_cuts = None
+            if splitter.modality == 'CT' and pet_cuts_for_coregister is not None:
+                ct_cuts = []
+                ct_img_shape = splitter.pi.img_data.shape
+                ct_to_pet_image_shape = [ct_img_shape[1]/pet_img_shape_for_coregister[1], ct_img_shape[2]/pet_img_shape_for_coregister[2]]
+                for cut in pet_cuts_for_coregister:
+                    ct_cuts.append(coregister_cut(cut['rect'], ct_to_pet_image_shape[0], ct_to_pet_image_shape[1], cut['desc']))
+
             exit_code = splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
-                                          zip=True, dicom_metadata=metadata, output_qc=True,
-                                          pet_img_size=pet_img_size, ct_img_size=ct_img_size)
+                                          zip=True, dicom_metadata=metadata, output_qc=False,
+                                          pet_img_size=pet_img_size, ct_img_size=ct_img_size,
+                                          coregister_cuts=ct_cuts)
+            #if we have just finished a PET session, we may want to co-register. so pull the necessary data from the splitter
+            if splitter.modality == 'PET' or splitter.modality == 'PT':
+                pet_cuts_for_coregister = splitter.cuts
+                pet_img_shape_for_coregister = splitter.pi.img_data.shape
 
             if exit_code != 0:
                 raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
@@ -143,10 +165,10 @@ def run(username: str, password: str, server: str,
                 if subject:  # skip empty subjects
                     send_split_images(session, server, project, subject, experiment, zip_file_path, isDicomSession)
 
-        for splitter in splitters:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            send_qc_image(session, server, project, experiment,
-                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
+        # for splitter in splitters:
+        #     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        #     send_qc_image(session, server, project, experiment,
+        #                   splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
 
         # update hotel scan record
         update_scan_record(session, server, experiment, hotel_scan_record)
@@ -160,6 +182,15 @@ def run(username: str, password: str, server: str,
         sys.exit("Fatal error while splitting hotel scan " + str(e))
 
     return
+
+def coregister_cut(cut_for_coregister, x_scale, y_scale, desc):
+    x_min = (cut_for_coregister.xlt*x_scale).astype(int)
+    y_min = (cut_for_coregister.ylt*y_scale).astype(int)
+    x_max = (cut_for_coregister.xrb*x_scale).astype(int)
+    y_max = (cut_for_coregister.yrb*y_scale).astype(int)
+    bb = [x_min, y_min, x_max, y_max]
+    coregistered_cut_rect = Rect(bb=bb, label=cut_for_coregister.label)
+    return {'desc': desc, 'rect': coregistered_cut_rect}
 
 
 def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):

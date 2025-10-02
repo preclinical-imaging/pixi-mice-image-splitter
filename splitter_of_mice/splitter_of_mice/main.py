@@ -31,7 +31,6 @@ if __name__ == "__main__":
     p.add_argument('out_dir', type=str, help='output directory')
     p.add_argument('-n', metavar='<int>', type=int, help='(PET only) expected number of animals [auto-detect]')
     p.add_argument('-t', metavar='<float>', type=float, help='separation threshold between 0..1 [0.9 PET/0.99 CT]')
-    p.add_argument('-a', action='store_true', help='save a copy in Analyze 7.5 format to output directory')
     p.add_argument('-q', action='store_true', help='output a QC .png image')
     p.add_argument('-m', metavar='<int>', type=int, help='maximum margin on axial slice in pixels [20]')
     p.add_argument('-sm', metavar='<str>', type=str,
@@ -59,11 +58,11 @@ if __name__ == "__main__":
                         format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 
     logging.debug(
-        'modality: {}, split_mice({},{},save_analyze={},num_anim={}, sep_thresh={},margin={},minpix={},out_qc={})'.
-          format(a.mod, a.file_path, a.out_dir, a.a, a.n, a.t, a.m, a.p, a.q)
+        'modality: {}, split_mice({},{},num_anim={}, sep_thresh={},margin={},minpix={},out_qc={})'.
+          format(a.mod, a.file_path, a.out_dir, a.n, a.t, a.m, a.p, a.q)
     )
 
-    sys.exit(SoM(a.file_path, modality=a.mod, dicom=a.dicom).split_mice(a.out_dir, save_analyze=a.a,
+    sys.exit(SoM(a.file_path, modality=a.mod, dicom=a.dicom).split_mice(a.out_dir,
                                                                         num_anim=a.n, sep_thresh=a.t, margin=a.m,
                                                                         minpix=a.p, output_qc=a.q, suffix_map=a.sm,
                                                                         zip=a.z, remove_bed=a.remove_bed,

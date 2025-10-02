@@ -48,34 +48,71 @@ class SoM:
         self.pi, self.modality = SoM.load_image(file, modality, dicom)
 
     @staticmethod
-    def add_cuts_to_image(im, boxes, desc_map, dicom_metadata=None):
+    def load_image_ex(file, modality):
+        pi = None
+        if modality == 'PET':
+            try:
+                pi = PETImage(file)
+                pi.load_header()
+                pi.load_image()
+            except Exception as e:
+                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
+                return None, None
+            return pi, modality
+        elif modality == 'CT':
+            try:
+                pi = CTImage(file)
+                pi.load_header()
+                pi.load_image()
+            except Exception as e:
+                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
+                return None, None
+            return pi, modality
+        else:
+            logger.error('error: unknown modality')
+            return None, None
 
-        ims = []
+    @staticmethod
+    def load_image(file, modality=None, dicom=False, **kwargs):
+        if dicom:
+            try:
+                pi = DicomImage(file)
+                pi.load_image()
+                return pi, pi.modality
+            except Exception as e:
+                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
+                return None, None
 
-        mag = 2 if isinstance(im, PETImage) else 0.5
-        for b in boxes:
-            r, desc = b['rect'], desc_map[b['desc']]
-            ix = len(im.cuts) + 1
-            xmax, xmin = int(round(r.xrb)), int(round(r.xlt))
-            ymax, ymin = int(round(r.yrb)), int(round(r.ylt))
+        if modality is not None:
+            return SoM.load_image_ex(file, modality.upper())
 
-            # If xmax is less than xmin, swap them
-            if xmax < xmin:
-                xmax, xmin = xmin, xmax
+        detect_mod = None
+        try:
+            pi = PETImage(file)
+            pi.load_header()
+            detect_mod = 'PET'
+        except Exception as e:
+            logger.error(f"Failed to load PET image: {file}. Error: {e}")
+            pi = None
 
-            # If ymax is less than ymin, swap them
-            if ymax < ymin:
-                ymax, ymin = ymin, ymax
+        if pi == None:
+            try:
+                pi = CTImage(file)
+                pi.load_header()
+                detect_mod = 'CT'
+            except Exception as e:
+                logger.error(f"Failed to load CT image: {file}. Error: {e}")
+                pi = None
 
-            fname = im.filename[:-4] + '_' + desc
-            data = im.img_data[:, xmin:xmax, ymin:ymax, :]
-            d, h, w = data.shape[0], data.shape[1], data.shape[2]
+        if pi is None:
+            logger.debug(f"Could not load image as PET or CT modality")
+            return None, None
 
-            metadata = dicom_metadata[desc] if (dicom_metadata and desc in dicom_metadata) else None
-            new_img = SubImage(parent_image=im, img_data=data, filename=fname + '.img',
-                               cut_coords=[(xmin, xmax), (ymin, ymax)], desc=desc, metadata=metadata)
-            im.cuts.append(new_img)
-        return ims
+        if modality is not None and detect_mod != modality:
+            logger.debug(f"{modality}, ' modality expected, but ', {detect_mod}, 'detected, exiting")
+            return None, None
+        pi.load_image()
+        return pi, detect_mod
 
     @staticmethod
     def z_compress_pet(pi):
@@ -91,10 +128,29 @@ class SoM:
         im = filters.gaussian(imgz, sigma=1 / (4. * n))
         return im
 
+    @staticmethod
+    def z_compress_ct(pi, thresh, binary=True):
+        img = pi.img_data
+        sh = img.shape
+        nsl = sh[0]
+
+        if not binary:
+            return np.squeeze(img[int(nsl / 2), :, :])
+
+        sl = np.zeros((sh[1], sh[2])).astype('float32')
+        for z in range(nsl):
+            slm = np.squeeze(img[z, :, :])
+            if binary:
+                slm = np.where(slm > thresh, 1, 0)
+            sl += slm
+
+        sl /= float(nsl)
+        return sl / float(nsl)
+
     def split_mice(self, outdir, num_anim=None,
                    sep_thresh=None, margin=None, minpix=None, output_qc=False,
                    suffix_map=None, zip=False, remove_bed=False, dicom_metadata=None,
-                   pet_img_size=None, ct_img_size=None):
+                   pet_img_size=None, ct_img_size=None, coregister_cuts=None):
 
         d = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
         if suffix_map is not None:
@@ -112,14 +168,15 @@ class SoM:
             margin = 20 if margin is None else margin
             minpix = 3300 if minpix is None else minpix
             return self.split_mice_ct(outdir, d, num_anim, sep_thresh,
-                                      margin, minpix, output_qc, remove_bed, zip, dicom_metadata, ct_img_size)
+                                      margin, minpix, output_qc, remove_bed, zip,
+                                      dicom_metadata, ct_img_size, coregister_cuts)
         else:
             logger.error(f"Unknown modality: {self.modality}. Cannot split mice.")
             return -1
 
     @staticmethod
-    def detect_animals(im):
-        blobs = im > SoM.sep_thresh * np.mean(im)
+    def detect_animals(im, thresh):
+        blobs = im > thresh
         (blobs_labels, num) = measure.label(blobs, return_num=True, background=0)
         return blobs_labels, num
 
@@ -241,35 +298,192 @@ class SoM:
             out_boxes = merged
 
         for box in out_boxes:
-            logger.info(f"Box: {box['desc']}, Area: {box['rect'].area()}, Center: {box['rect'].ctr()}")
+            logger.info(f"Box: {box['desc']}, Label: {box['rect'].label} Area: {box['rect'].area()}, Center: {box['rect'].ctr()}")
 
         return out_boxes
 
     @staticmethod
-    def z_compress_ct(pi, thresh, binary=True):
-        img = pi.img_data
-        sh = img.shape
-        nsl = sh[0]
+    def remove_bed(img):
+        logger.info('Removing bed')
+        footprint = disk(10)
+        eroded = multi_erosion(img, 2, footprint)
+        dilated = multi_dilation(eroded, 2, footprint)
+        return dilated
 
-        if not binary:
-            return np.squeeze(img[int(nsl / 2), :, :])
+    @staticmethod
+    def add_cuts_to_image(im, boxes, desc_map, dicom_metadata=None):
 
-        sl = np.zeros((sh[1], sh[2])).astype('float32')
-        for z in range(nsl):
-            slm = np.squeeze(img[z, :, :])
-            if binary:
-                slm = np.where(slm > thresh, 1, 0)
-            sl += slm
+        ims = []
 
-        sl /= float(nsl)
-        return sl / float(nsl)
+        for b in boxes:
+            r, desc = b['rect'], desc_map[b['desc']]
+            ix = len(im.cuts) + 1
+            xmax, xmin = int(round(r.xrb)), int(round(r.xlt))
+            ymax, ymin = int(round(r.yrb)), int(round(r.ylt))
 
-    def detect_animals_ct(im, thresh):
-        logger.info(f"Detecting animals with threshold: {thresh}")
-        blobs = im > thresh
-        (blobs_labels, num) = measure.label(blobs, return_num=True, background=0)
-        return blobs_labels, num
+            # If xmax is less than xmin, swap them
+            if xmax < xmin:
+                xmax, xmin = xmin, xmax
 
+            # If ymax is less than ymin, swap them
+            if ymax < ymin:
+                ymax, ymin = ymin, ymax
+
+            fname = im.filename[:-4] + '_' + desc
+            data = im.img_data[:, xmin:xmax, ymin:ymax, :]
+            d, h, w = data.shape[0], data.shape[1], data.shape[2]
+
+            metadata = dicom_metadata[desc] if (dicom_metadata and desc in dicom_metadata) else None
+            new_img = SubImage(parent_image=im, img_data=data, filename=fname + '.img',
+                               cut_coords=[(xmin, xmax), (ymin, ymax)], desc=desc, metadata=metadata)
+            im.cuts.append(new_img)
+        return ims
+
+    @staticmethod
+    def write_images(pi, outdir, zip=False):
+        for ind in range(len(pi.cuts)):
+            pi.save_cut(ind, f"{outdir}/", zip=zip)
+
+    def split_mice_ct(self, outdir, desc_map, num_anim=None,
+                      sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
+                      bed_removal=True, zip=False, dicom_metadata=None,
+                      img_size=None, coregister_cuts=None):
+        logger.info('Splitting CT image ' + self.pi.filename)
+
+        SoM.num_anim = num_anim
+        SoM.sep_thresh = sep_thresh
+        SoM.margin = margin
+        SoM.minpix = minpix
+
+        logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
+
+        pi = self.pi
+        imz = SoM.z_compress_ct(pi, 50, False)
+        if coregister_cuts is None:
+            logger.info('No coregister_cuts ')
+            # Automatic thresholding for dicom images
+            thresh = None
+
+            if self.pi.image_format == 'dicom':
+                thresh = filters.threshold_li(imz)
+                logger.info(f"Li thresholding for dicom images: {thresh}")
+            else:
+                thresh = filters.threshold_otsu(imz)
+                logger.info(f"OTSU thresholding for microPET images: {thresh}")
+
+            if bed_removal:
+                imz = SoM.remove_bed(imz)
+
+            blobs_labels, num = SoM.detect_animals(imz, thresh)
+            rects = SoM.get_valid_regs(blobs_labels)
+
+            if num_anim is not None and len(rects) != num_anim:
+                logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
+
+                attempts = 0
+                while len(rects) < num_anim and attempts < 4:
+                    # if you have greater than num_anim, then split_coords will merge rects within the same quadrant
+                    # only need to adjust the threshold if you have less than num_anim
+                    attempts += 1
+                    logger.info(f"Compensation attempt {attempts}")
+                    logger.info(f"Current threshold: {thresh}")
+                    thresh += thresh * 0.1
+                    logger.info(f"New threshold: {thresh}")
+                    blobs_labels, num = SoM.detect_animals(imz, thresh)
+                    rects = SoM.get_valid_regs(blobs_labels)
+
+                if len(rects) != num_anim:
+                    logger.error('Compensation failed. Unable to detect the expected number of regions.')
+                    pi.clean_cuts()
+                    pi.unload_image()
+                    return 1
+
+            self.cuts = SoM.split_coords(imz, rects)
+
+            # adjust the size of the cuts if img_size is specified.
+            # helpful for keeping the same image size across multiple scans.
+            if img_size is not None:
+                logger.info(f"Adjusting cuts to size: {img_size}")
+                for cut in self.cuts:
+                    cut['rect'].adjust_to_size(img_size)
+                    logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
+        else:
+            logger.info('Coregister_cuts ')
+            self.cuts = coregister_cuts
+        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
+
+        # write the images.
+        if outdir is not None:
+            SoM.write_images(pi, outdir, zip=zip)
+
+        if output_qc:
+            im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
+
+        # pi.clean_cuts()
+        # pi.unload_image()
+        return 0
+
+    def split_mice_pet(self, outdir, desc_map, num_anim=None,
+                       sep_thresh=None, margin=20, minpix=200, output_qc=False,
+                       zip=False, dicom_metadata=None, img_size=None):
+        logger.info('Splitting PET image ' + self.pi.filename)
+
+        SoM.num_anim = num_anim
+        SoM.sep_thresh = 0.9 if sep_thresh is None else sep_thresh
+        SoM.margin = margin
+        SoM.minpix = minpix
+
+        logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
+
+        pi = self.pi
+        imz = SoM.z_compress_pet(pi)
+        blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
+        self.blob_labels = blobs_labels
+
+        if num_anim is not None:
+            if num < num_anim:
+                logger.info('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
+                      format(num, num_anim))
+                while num < num_anim and self.sep_thresh < 1:
+                    self.sep_thresh += 0.01
+                    blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(im))
+                if num < num_anim:
+                    logger.info('compensation failed')
+                    pi.clean_cuts()
+                    pi.unload_image()
+                    return 1
+            rects = measure.regionprops(blobs_labels)
+            if num > num_anim:
+                rects.sort(key=lambda p: p.area, reverse=True)
+                rects = rects[:num_anim]
+        else:
+            rects = SoM.get_valid_regs(blobs_labels)
+            if len(rects) > 4:
+                logger.info('detected {}>4 regions, attempting to compensate'.format(len(rects)))
+                inc = self.minpix * 0.1
+                while len(rects) > 4:
+                    self.minpix += inc
+                    rects = SoM.get_valid_regs(blobs_labels)
+        self.cuts = SoM.split_coords(imz, rects)
+
+        # adjust the size of the cuts if img_size is specified.
+        # helpful for keeping the same image size across multiple scans.
+        if img_size is not None:
+            for cut in self.cuts:
+                cut['rect'].adjust_to_size(img_size)
+
+        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
+
+        # write the images.
+        if outdir is not None:
+            SoM.write_images(pi, outdir, zip=zip)
+
+        if output_qc:
+            im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
+
+        # pi.clean_cuts()
+        # pi.unload_image()
+        return 0
 
     @staticmethod
     def get_sag_image(img_data):
@@ -278,6 +492,19 @@ class SoM:
             return np.squeeze(img_data[:, np.int32(sh[1] / 2), :])
         else:
             return np.squeeze(img_data[:, np.int32(sh[1] / 2), :, np.int32(sh[3] / 2)])
+
+    @staticmethod
+    def standardize_range(im, ignore_min=False, pct=5):
+        mx = np.percentile(im, 100 - pct)
+        mn = 0 if ignore_min else np.percentile(im, pct)
+        im1 = im
+        im1[im > mx] = mx
+        im1[im < mn] = mn
+        rng = mx - mn
+        logger.debug(f'min,max,rng: {mn}, {mx}, {rng}')
+        im1 = ((im1 - mn) / rng) * 255
+        logger.debug(f'min_new,max_new: {np.min(im1)}, {np.max(im1)}')
+        return im1
 
     @staticmethod
     def combine_images(images, mode='horizontal'):
@@ -299,244 +526,6 @@ class SoM:
                 new_im.paste(im, (0, y_offset))
                 y_offset += im.size[1]
             return new_im
-
-    @staticmethod
-    def load_image_ex(file, modality):
-        pi = None
-        if modality == 'PET':
-            try:
-                pi = PETImage(file)
-                pi.load_header()
-                pi.load_image()
-            except Exception as e:
-                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
-                return None, None
-            return pi, modality
-        elif modality == 'CT':
-            try:
-                pi = CTImage(file)
-                pi.load_header()
-                pi.load_image()
-            except Exception as e:
-                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
-                return None, None
-            return pi, modality
-        else:
-            logger.error('error: unknown modality')
-            return None, None
-
-    @staticmethod
-    def load_image(file, modality=None, dicom=False, **kwargs):
-        if dicom:
-            try:
-                pi = DicomImage(file)
-                pi.load_image()
-                return pi, pi.modality
-            except Exception as e:
-                logger.error(f"Failed to load dicom image: {file}. Error: {e}")
-                return None, None
-
-        if modality is not None:
-            return SoM.load_image_ex(file, modality.upper())
-
-        detect_mod = None
-        try:
-            pi = PETImage(file)
-            pi.load_header()
-            detect_mod = 'PET'
-        except Exception as e:
-            logger.error(f"Failed to load PET image: {file}. Error: {e}")
-            pi = None
-
-        if pi == None:
-            try:
-                pi = CTImage(file)
-                pi.load_header()
-                detect_mod = 'CT'
-            except Exception as e:
-                logger.error(f"Failed to load CT image: {file}. Error: {e}")
-                pi = None
-
-        if pi is None:
-            logger.debug(f"Could not load image as PET or CT modality")
-            return None, None
-
-        if modality is not None and detect_mod != modality:
-            logger.debug(f"{modality}, ' modality expected, but ', {detect_mod}, 'detected, exiting")
-            return None, None
-        pi.load_image()
-        return pi, detect_mod
-
-    @staticmethod
-    def remove_bed(img):
-        logger.info('Removing bed')
-        footprint = disk(10)
-        eroded = multi_erosion(img, 2, footprint)
-        dilated = multi_dilation(eroded, 2, footprint)
-        return dilated
-
-    @staticmethod
-    def write_images(pi, outdir, zip=False):
-        for ind in range(len(pi.cuts)):
-            pi.save_cut(ind, f"{outdir}/", zip=zip)
-
-    def split_mice_ct(self, outdir, desc_map, num_anim=None,
-                      sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
-                      bed_removal=True, zip=False, dicom_metadata=None, img_size=None):
-        logger.info('Splitting CT image ' + self.pi.filename)
-
-        SoM.num_anim = num_anim
-        SoM.sep_thresh = sep_thresh
-        SoM.margin = margin
-        SoM.minpix = minpix
-
-        logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
-
-        pi = self.pi
-        imz = SoM.z_compress_ct(pi, 50, False)
-
-        # Automatic thresholding for dicom images
-        thresh = None
-
-        if self.pi.image_format == 'dicom':
-            thresh = filters.threshold_li(imz)
-            logger.info(f"Li thresholding for dicom images: {thresh}")
-        else:
-            thresh = filters.threshold_otsu(imz)
-            logger.info(f"OTSU thresholding for microPET images: {thresh}")
-
-        if bed_removal:
-            imz = SoM.remove_bed(imz)
-
-        blobs_labels, num = SoM.detect_animals_ct(imz, thresh)
-        rects = SoM.get_valid_regs(blobs_labels)
-
-        if num_anim is not None and len(rects) != num_anim:
-            logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
-
-            attempts = 0
-            while len(rects) < num_anim and attempts < 4:
-                # if you have greater than num_anim, then split_coords will merge rects within the same quadrant
-                # only need to adjust the threshold if you have less than num_anim
-                attempts += 1
-                logger.info(f"Compensation attempt {attempts}")
-                logger.info(f"Current threshold: {thresh}")
-                thresh += thresh * 0.1
-                logger.info(f"New threshold: {thresh}")
-                blobs_labels, num = SoM.detect_animals_ct(imz, thresh)
-                rects = SoM.get_valid_regs(blobs_labels)
-
-            if len(rects) != num_anim:
-                logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                pi.clean_cuts()
-                pi.unload_image()
-                return 1
-
-        cuts = SoM.split_coords(imz, rects)
-
-        # adjust the size of the cuts if img_size is specified.
-        # helpful for keeping the same image size across multiple scans.
-        if img_size is not None:
-            logger.info(f"Adjusting cuts to size: {img_size}")
-            for cut in cuts:
-                cut['rect'].adjust_to_size(img_size)
-                logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
-
-        SoM.add_cuts_to_image(pi, cuts, desc_map, dicom_metadata)
-
-        # write the images.
-        if outdir is not None:
-            SoM.write_images(pi, outdir, zip=zip)
-
-        if output_qc:
-            im = SoM.qc_image(pi, blobs_labels, cuts, outdir, desc_map)
-
-        # pi.clean_cuts()
-        # pi.unload_image()
-        return 0
-
-    def split_mice_pet(self, outdir, desc_map, num_anim=None,
-                       sep_thresh=None, margin=20, minpix=200, output_qc=False,
-                       zip=False, dicom_metadata=None, img_size=None):
-        logger.info('Splitting PET image ' + self.pi.filename)
-
-        SoM.num_anim = num_anim
-        SoM.sep_thresh = 0.9 if sep_thresh is None else sep_thresh
-        SoM.margin = margin
-        SoM.minpix = minpix
-
-        logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
-
-        pi = self.pi
-        imz = SoM.z_compress_pet(pi)
-        blobs_labels, num = SoM.detect_animals(imz)
-        self.blob_labels = blobs_labels
-
-        if num_anim is not None:
-            if num < num_anim:
-                logger.info('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
-                      format(num, num_anim))
-                while num < num_anim and self.sep_thresh < 1:
-                    self.sep_thresh += 0.01
-                    blobs_labels, num = SoM.detect_animals(imz)
-                if num < num_anim:
-                    logger.info('compensation failed')
-                    pi.clean_cuts()
-                    pi.unload_image()
-                    return 1
-            rects = measure.regionprops(blobs_labels)
-            if num > num_anim:
-                rects.sort(key=lambda p: p.area, reverse=True)
-                rects = rects[:num_anim]
-        else:
-            rects = SoM.get_valid_regs(blobs_labels)
-            if len(rects) > 4:
-                logger.info('detected {}>4 regions, attempting to compensate'.format(len(rects)))
-                inc = self.minpix * 0.1
-                while len(rects) > 4:
-                    self.minpix += inc
-                    rects = SoM.get_valid_regs(blobs_labels)
-        self.cuts = SoM.split_coords(imz, rects)
-
-        for cut in self.cuts:
-            rectang = str(cut['rect'])
-            logger.info(f'Cut: {rectang}')
-
-        # adjust the size of the cuts if img_size is specified.
-        # helpful for keeping the same image size across multiple scans.
-        if img_size is not None:
-            for cut in self.cuts:
-                cut['rect'].adjust_to_size(img_size)
-
-        for cut in self.cuts:
-            rectang = str(cut['rect'])
-            logger.info(f'Cut: {rectang}')
-
-        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
-
-        # write the images.
-        if outdir is not None:
-            SoM.write_images(pi, outdir, zip=zip)
-
-        if output_qc:
-            im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
-
-        # pi.clean_cuts()
-        # pi.unload_image()
-        return 0
-
-    @staticmethod
-    def standardize_range(im, ignore_min=False, pct=5):
-        mx = np.percentile(im, 100 - pct)
-        mn = 0 if ignore_min else np.percentile(im, pct)
-        im1 = im
-        im1[im > mx] = mx
-        im1[im < mn] = mn
-        rng = mx - mn
-        logger.debug(f'min,max,rng: {mn}, {mx}, {rng}')
-        im1 = ((im1 - mn) / rng) * 255
-        logger.debug(f'min_new,max_new: {np.min(im1)}, {np.max(im1)}')
-        return im1
 
     @staticmethod
     def qc_image(pi, labels, rects_dict, outdir, desc_map):
