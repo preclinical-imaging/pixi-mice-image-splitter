@@ -42,10 +42,12 @@ class SoM:
     margin = 30
 
     def __init__(self, file, modality=None, dicom=False):
-        self.blob_labels = None
+        self.blobs_labels = None
         self.cuts = None
         self.filename = file
         self.pi, self.modality = SoM.load_image(file, modality, dicom)
+        self.scan_time = None
+        self.outdir = None
 
     @staticmethod
     def load_image_ex(file, modality):
@@ -147,7 +149,7 @@ class SoM:
         sl /= float(nsl)
         return sl / float(nsl)
 
-    def split_mice(self, outdir, num_anim=None,
+    def split_mice(self, num_anim=None,
                    sep_thresh=None, margin=None, minpix=None, output_qc=False,
                    suffix_map=None, zip=False, remove_bed=False, dicom_metadata=None,
                    pet_img_size=None, ct_img_size=None, coregister_cuts=None):
@@ -162,12 +164,12 @@ class SoM:
         if self.modality == 'PET' or self.modality == 'PT':
             margin = 4 if margin is None else margin
             minpix = 200 if minpix is None else minpix
-            return self.split_mice_pet(outdir, d, num_anim, sep_thresh, margin, minpix,
-                                       output_qc, zip, dicom_metadata, pet_img_size)
+            return self.split_mice_pet(self.outdir, d, num_anim, sep_thresh, margin, minpix,
+                                       output_qc, zip, dicom_metadata, pet_img_size, coregister_cuts)
         if self.modality == 'CT':
             margin = 20 if margin is None else margin
             minpix = 3300 if minpix is None else minpix
-            return self.split_mice_ct(outdir, d, num_anim, sep_thresh,
+            return self.split_mice_ct(self.outdir, d, num_anim, sep_thresh,
                                       margin, minpix, output_qc, remove_bed, zip,
                                       dicom_metadata, ct_img_size, coregister_cuts)
         else:
@@ -347,7 +349,7 @@ class SoM:
     def split_mice_ct(self, outdir, desc_map, num_anim=None,
                       sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
                       bed_removal=True, zip=False, dicom_metadata=None,
-                      img_size=None, coregister_cuts=None):
+                      img_size=None, coregister_cuts=False):
         logger.info('Splitting CT image ' + self.pi.filename)
 
         SoM.num_anim = num_anim
@@ -359,73 +361,61 @@ class SoM:
 
         pi = self.pi
         imz = SoM.z_compress_ct(pi, 50, False)
-        if coregister_cuts is None:
-            logger.info('No coregister_cuts ')
-            # Automatic thresholding for dicom images
-            thresh = None
+        # Automatic thresholding for dicom images
+        thresh = None
 
-            if self.pi.image_format == 'dicom':
-                thresh = filters.threshold_li(imz)
-                logger.info(f"Li thresholding for dicom images: {thresh}")
-            else:
-                thresh = filters.threshold_otsu(imz)
-                logger.info(f"OTSU thresholding for microPET images: {thresh}")
-
-            if bed_removal:
-                imz = SoM.remove_bed(imz)
-
-            blobs_labels, num = SoM.detect_animals(imz, thresh)
-            rects = SoM.get_valid_regs(blobs_labels)
-
-            if num_anim is not None and len(rects) != num_anim:
-                logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
-
-                attempts = 0
-                while len(rects) < num_anim and attempts < 4:
-                    # if you have greater than num_anim, then split_coords will merge rects within the same quadrant
-                    # only need to adjust the threshold if you have less than num_anim
-                    attempts += 1
-                    logger.info(f"Compensation attempt {attempts}")
-                    logger.info(f"Current threshold: {thresh}")
-                    thresh += thresh * 0.1
-                    logger.info(f"New threshold: {thresh}")
-                    blobs_labels, num = SoM.detect_animals(imz, thresh)
-                    rects = SoM.get_valid_regs(blobs_labels)
-
-                if len(rects) != num_anim:
-                    logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                    pi.clean_cuts()
-                    pi.unload_image()
-                    return 1
-
-            self.cuts = SoM.split_coords(imz, rects)
-
-            # adjust the size of the cuts if img_size is specified.
-            # helpful for keeping the same image size across multiple scans.
-            if img_size is not None:
-                logger.info(f"Adjusting cuts to size: {img_size}")
-                for cut in self.cuts:
-                    cut['rect'].adjust_to_size(img_size)
-                    logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
+        if self.pi.image_format == 'dicom':
+            thresh = filters.threshold_li(imz)
+            logger.info(f"Li thresholding for dicom images: {thresh}")
         else:
-            logger.info('Coregister_cuts ')
-            self.cuts = coregister_cuts
-        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
+            thresh = filters.threshold_otsu(imz)
+            logger.info(f"OTSU thresholding for microPET images: {thresh}")
 
-        # write the images.
-        if outdir is not None:
-            SoM.write_images(pi, outdir, zip=zip)
+        if bed_removal:
+            imz = SoM.remove_bed(imz)
 
-        if output_qc:
-            im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
+        self.blobs_labels, num = SoM.detect_animals(imz, thresh)
+        rects = SoM.get_valid_regs(self.blobs_labels)
 
-        # pi.clean_cuts()
-        # pi.unload_image()
+        if num_anim is not None and len(rects) != num_anim:
+            logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
+
+            attempts = 0
+            while len(rects) < num_anim and attempts < 4:
+                # if you have greater than num_anim, then split_coords will merge rects within the same quadrant
+                # only need to adjust the threshold if you have less than num_anim
+                attempts += 1
+                logger.info(f"Compensation attempt {attempts}")
+                logger.info(f"Current threshold: {thresh}")
+                thresh += thresh * 0.1
+                logger.info(f"New threshold: {thresh}")
+                self.blobs_labels, num = SoM.detect_animals(imz, thresh)
+                rects = SoM.get_valid_regs(self.blobs_labels)
+
+            if len(rects) != num_anim:
+                logger.error('Compensation failed. Unable to detect the expected number of regions.')
+                pi.clean_cuts()
+                pi.unload_image()
+                return 1
+
+        self.cuts = SoM.split_coords(imz, rects)
+
+        # adjust the size of the cuts if img_size is specified.
+        # helpful for keeping the same image size across multiple scans.
+        if img_size is not None:
+            logger.info(f"Adjusting cuts to size: {img_size}")
+            for cut in self.cuts:
+                cut['rect'].adjust_to_size(img_size)
+                logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
+
+        if not coregister_cuts:
+            self.complete_cut_process(pi, desc_map, dicom_metadata, outdir, output_qc)
+
         return 0
 
     def split_mice_pet(self, outdir, desc_map, num_anim=None,
                        sep_thresh=None, margin=20, minpix=200, output_qc=False,
-                       zip=False, dicom_metadata=None, img_size=None):
+                       zip=False, dicom_metadata=None, img_size=None, coregister_cuts=False):
         logger.info('Splitting PET image ' + self.pi.filename)
 
         SoM.num_anim = num_anim
@@ -437,8 +427,7 @@ class SoM:
 
         pi = self.pi
         imz = SoM.z_compress_pet(pi)
-        blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
-        self.blob_labels = blobs_labels
+        self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
 
         if num_anim is not None:
             if num < num_anim:
@@ -446,24 +435,24 @@ class SoM:
                       format(num, num_anim))
                 while num < num_anim and self.sep_thresh < 1:
                     self.sep_thresh += 0.01
-                    blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(im))
+                    self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(im))
                 if num < num_anim:
                     logger.info('compensation failed')
                     pi.clean_cuts()
                     pi.unload_image()
                     return 1
-            rects = measure.regionprops(blobs_labels)
+            rects = measure.regionprops(self.blobs_labels)
             if num > num_anim:
                 rects.sort(key=lambda p: p.area, reverse=True)
                 rects = rects[:num_anim]
         else:
-            rects = SoM.get_valid_regs(blobs_labels)
+            rects = SoM.get_valid_regs(self.blobs_labels)
             if len(rects) > 4:
                 logger.info('detected {}>4 regions, attempting to compensate'.format(len(rects)))
                 inc = self.minpix * 0.1
                 while len(rects) > 4:
                     self.minpix += inc
-                    rects = SoM.get_valid_regs(blobs_labels)
+                    rects = SoM.get_valid_regs(self.blobs_labels)
         self.cuts = SoM.split_coords(imz, rects)
 
         # adjust the size of the cuts if img_size is specified.
@@ -472,6 +461,12 @@ class SoM:
             for cut in self.cuts:
                 cut['rect'].adjust_to_size(img_size)
 
+        if not coregister_cuts:
+            self.complete_cut_process(pi, desc_map, dicom_metadata, outdir, output_qc)
+
+        return 0
+
+    def complete_cut_process(self, pi, desc_map, dicom_metadata, outdir, output_qc):
         SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
 
         # write the images.
@@ -479,11 +474,7 @@ class SoM:
             SoM.write_images(pi, outdir, zip=zip)
 
         if output_qc:
-            im = SoM.qc_image(pi, blobs_labels, self.cuts, outdir, desc_map)
-
-        # pi.clean_cuts()
-        # pi.unload_image()
-        return 0
+            im = SoM.qc_image(pi, self.blobs_labels, self.cuts, outdir, desc_map)
 
     @staticmethod
     def get_sag_image(img_data):

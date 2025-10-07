@@ -1,5 +1,5 @@
 import argparse
-import datetime
+from datetime import datetime
 import glob
 import json
 import logging
@@ -60,19 +60,37 @@ def run(username: str, password: str, server: str,
             update_scan_record_status(session, server, project, experiment, "Error: No DICOM or Inveon images files found")
             sys.exit(f'No DICOM or Inveon images files found in {input_dir}')
 
-        logging.debug(f"Create splitter and output directory for each subdirectory")
+        #if we have more than two scans, we need to pair them up for coregistration. 
+        #we've decided to use scan time for this so we need to get the scan time for each scan
+        start_times_for_scans = {}
+        # if len(files) > 2:
+        start_times_for_scans = get_start_times_for_scans(session, server, project, experiment, files)
+        logging.info(f"{start_times_for_scans}\n\n")
 
-        splitters = [SoM(dicom_dir, dicom=isDicomSession) for dicom_dir in files.keys()]
+        #Create splitter and output directory for each subdirectory and prep them for coregistration if applicable
+        splitters_pet = []
+        splitters_ct = []
+        for dicom_dir in files.keys():
+            spltr = SoM(dicom_dir, dicom=isDicomSession)
+            output_directory = os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir))
+            os.makedirs(output_directory, exist_ok=True)
+            spltr.outdir = os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir))
+            if dicom_dir in start_times_for_scans:
+                spltr.scan_time = start_times_for_scans[dicom_dir]
 
-        # Create output directory for each subdirectory
-        output_dirs = [os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir)) for dicom_dir in files.keys()]
-
-        for output_dir in output_dirs:
-            os.makedirs(output_dir, exist_ok=True)
-
-        logging.info(f"Created {len(output_dirs)} output directories: {output_dirs}")
-
-        logging.debug(f"Split each subdirectory")
+            #connect pet and ct scans for coregistration
+            if spltr.modality == 'CT':
+                splitters_ct.append(spltr)
+            else:
+                splitters_pet.append(spltr)
+        coregister_cuts = False
+        if (len(splitters_pet) == len(splitters_ct)):
+            coregister_cuts = True
+            splitters_pet = sorted(splitters_pet, key=lambda x: x.scan_time)
+            splitters_ct = sorted(splitters_ct, key=lambda x: x.scan_time)
+            splitters = list(zip(splitters_pet, splitters_ct))
+        else:
+            splitters = splitters_pet + splitters_ct
 
         # Get hotel scan record
         hotel_scan_record = get_hotel_scan_record(session, server, project, experiment)
@@ -85,15 +103,10 @@ def run(username: str, password: str, server: str,
         technicians_perspective = hotel_scan_record.get('technicianPerspective', 'Front')
         technicians_perspective = technicians_perspective.lower()
 
-        splitters_to_dirs = list(zip(splitters, output_dirs))
-        splitters_to_dirs.sort(key=lambda x: x[0].modality, reverse=True)
-
         pet_cuts_for_coregister = None
         pet_img_shape_for_coregister = None
 
-        for splitter_to_dir in splitters_to_dirs:
-            splitter = splitter_to_dir[0]
-            output_dir = splitter_to_dir[1]
+        for splitter in splitters:
             # custom code to handle wustl scanners
             pet_img_size = None
             ct_img_size = None
@@ -106,28 +119,23 @@ def run(username: str, password: str, server: str,
                 pet_img_size = (43, 43)
                 ct_img_size = (172, 172)
 
-            if technicians_perspective == 'back':
-                splitter.pi.rotate_on_axis('y')
+            if coregister_cuts:
+                splitter_pet = splitter[0]
+                splitter_ct = splitter[1]
+                if technicians_perspective == 'back':
+                    splitter_pet.pi.rotate_on_axis('y')
+                    splitter_ct.pi.rotate_on_axis('y')
+                run_splitter(splitter_pet, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True)
+                run_splitter(splitter_ct, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True)
+            else:
+                if technicians_perspective == 'back':
+                    splitter.pi.rotate_on_axis('y')
+                run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size)
 
-            ct_cuts = None
-            if splitter.modality == 'CT' and pet_cuts_for_coregister is not None:
-                ct_cuts = []
-                ct_img_shape = splitter.pi.img_data.shape
-                ct_to_pet_image_shape = [ct_img_shape[1]/pet_img_shape_for_coregister[1], ct_img_shape[2]/pet_img_shape_for_coregister[2]]
-                for cut in pet_cuts_for_coregister:
-                    ct_cuts.append(coregister_cut(cut['rect'], ct_to_pet_image_shape[0], ct_to_pet_image_shape[1], cut['desc']))
-
-            exit_code = splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
-                                          zip=True, dicom_metadata=metadata, output_qc=False,
-                                          pet_img_size=pet_img_size, ct_img_size=ct_img_size,
-                                          coregister_cuts=ct_cuts)
-            #if we have just finished a PET session, we may want to co-register. so pull the necessary data from the splitter
-            if splitter.modality == 'PET' or splitter.modality == 'PT':
-                pet_cuts_for_coregister = splitter.cuts
-                pet_img_shape_for_coregister = splitter.pi.img_data.shape
-
-            if exit_code != 0:
-                raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
+        #flatten out lists now that we're done with coregistration
+        if coregister_cuts:
+            splitters_flattened = [item for sublist in splitters for item in sublist]
+            splitters = splitters_flattened
 
         # Upload each cut to XNAT
         # Send all scans for a subject together so the prearchive doesn't accidentally
@@ -165,10 +173,10 @@ def run(username: str, password: str, server: str,
                 if subject:  # skip empty subjects
                     send_split_images(session, server, project, subject, experiment, zip_file_path, isDicomSession)
 
-        # for splitter in splitters:
-        #     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        #     send_qc_image(session, server, project, experiment,
-        #                   splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
+        for splitter in splitters:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            send_qc_image(session, server, project, experiment,
+                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
 
         # update hotel scan record
         update_scan_record(session, server, experiment, hotel_scan_record)
@@ -182,6 +190,19 @@ def run(username: str, password: str, server: str,
         sys.exit("Fatal error while splitting hotel scan " + str(e))
 
     return
+
+def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size):
+    exit_code = splitter.split_mice(num_anim=num_anim, remove_bed=True,
+        zip=True, dicom_metadata=metadata, output_qc=True,
+        pet_img_size=pet_img_size, ct_img_size=ct_img_size)
+    if exit_code != 0:
+        raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
+
+def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct):
+    pet_cuts = splitter_pet.cuts
+    ct_cuts = splitter_ct.cuts
+    pet_shape = pet_cuts.pi.img_data.shape
+    ct_shape = ct_cuts.pi.img_data.shape
 
 def coregister_cut(cut_for_coregister, x_scale, y_scale, desc):
     x_min = (cut_for_coregister.xlt*x_scale).astype(int)
@@ -362,7 +383,7 @@ def send_split_images(session: Session, server: str, project: str, subject: str,
 
 def send_qc_image(session: Session, server: str, project: str, experiment: str, qc_image_path: str, **kwargs):
     # create a resource on the scan record with the name QC_SNAPSHOTS_DATETIME or get from kwargs
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     resource_name = f"QC_SNAPSHOTS_{timestamp}" if 'resource_name' not in kwargs else kwargs['resource_name']
     url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_name}?format=IMG&content=RAW"
 
@@ -440,21 +461,60 @@ def update_scan_record(session: Session, server: str, experiment: str, hotel_sca
 
 
 def update_scan_record_status(session: Session, server: str, project: str, experiment: str, status: str):
-
-    logging.debug(f'update_status(server={server}, project={project}, experiment={experiment}, status={status})')
-
     url = f"{server}/xapi/pixi/hotelscanrecords/{experiment}_scan_record/project/{project}/status"
-
-    logging.info(f'Updating hotel scan record status at {url} to {status}')
 
     r = session.put(url, headers={'Content-type': 'text/plain'}, data=status)
 
     if r.ok:
-        logging.debug(f'update_status to {status} successful')
+        logging.debug(f'Updating hotel scan record status to {status}')
     else:
         logging.error(f'update_status failed: {r.status_code} - {r.text}')
 
     return
+
+def get_start_times_for_scans(session: Session, server: str, project: str, experiment: str, files):
+    experiment_id = get_experiment_id_for_label(session, server, project, experiment)
+
+    file_to_start_time= {}
+
+    for file in files.keys():
+        split_path = file.split(os.sep)
+        position_of_scan_name = split_path.index("SCANS") + 1
+        file_to_start_time[file] = get_scan_time_of_scan(session, server, experiment_id, split_path[position_of_scan_name])
+
+    return file_to_start_time
+
+
+def get_experiment_id_for_label(session: Session, server: str, project: str, experiment_label: str):
+    url = f"{server}/data/projects/{project}/experiments"
+
+    r = session.get(url)
+
+    if r.status_code == 200:
+        project_experiments_information = r.json()['ResultSet']["Result"]
+
+        for experiment in project_experiments_information:
+            if experiment['label'] == experiment_label:
+                return experiment['ID']
+        raise Exception("Could not obtain necessary experiment ID")
+    else:
+        logging.error("Unable to obtain experiment data for project")
+        raise Exception("Unable to obtain experiment data for project")
+
+#extract the start date/time field for the scan 
+def get_scan_time_of_scan(session: Session, server: str, experiment: str, scan: str):
+    payload = {'format': 'json'}
+    url = f"{server}/data/experiments/{experiment}/scans/{scan}"
+
+    r = session.get(url, params=payload)
+
+    if r.status_code == 200:
+        start_datetime = r.json()['items'][0]['meta']['start_date']
+        start_datetime_in_python = datetime.strptime(start_datetime, '%a %b %d %H:%M:%S %Z %Y')
+        return start_datetime_in_python
+    else:
+        logging.error("Unable to obtain scan time to pair CT and PET sessions")
+        raise Exception("Unable to obtain scan time to pair CT and PET sessions")
 
 
 if __name__ == "__main__":
