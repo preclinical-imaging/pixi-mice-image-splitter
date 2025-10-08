@@ -40,6 +40,7 @@ class SoM:
     """
 
     margin = 30
+    desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
 
     def __init__(self, file, modality=None, dicom=False):
         self.blobs_labels = None
@@ -154,7 +155,6 @@ class SoM:
                    suffix_map=None, zip=False, remove_bed=False, dicom_metadata=None,
                    pet_img_size=None, ct_img_size=None, coregister_cuts=None):
 
-        d = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
         if suffix_map is not None:
             for s in suffix_map.split(','):
                 mp = s.split(':')
@@ -164,12 +164,12 @@ class SoM:
         if self.modality == 'PET' or self.modality == 'PT':
             margin = 4 if margin is None else margin
             minpix = 200 if minpix is None else minpix
-            return self.split_mice_pet(self.outdir, d, num_anim, sep_thresh, margin, minpix,
+            return self.split_mice_pet(self.outdir, num_anim, sep_thresh, margin, minpix,
                                        output_qc, zip, dicom_metadata, pet_img_size, coregister_cuts)
         if self.modality == 'CT':
             margin = 20 if margin is None else margin
             minpix = 3300 if minpix is None else minpix
-            return self.split_mice_ct(self.outdir, d, num_anim, sep_thresh,
+            return self.split_mice_ct(self.outdir, num_anim, sep_thresh,
                                       margin, minpix, output_qc, remove_bed, zip,
                                       dicom_metadata, ct_img_size, coregister_cuts)
         else:
@@ -313,12 +313,12 @@ class SoM:
         return dilated
 
     @staticmethod
-    def add_cuts_to_image(im, boxes, desc_map, dicom_metadata=None):
+    def add_cuts_to_image(im, boxes, dicom_metadata=None):
 
         ims = []
 
         for b in boxes:
-            r, desc = b['rect'], desc_map[b['desc']]
+            r, desc = b['rect'], SoM.desc_map[b['desc']]
             ix = len(im.cuts) + 1
             xmax, xmin = int(round(r.xrb)), int(round(r.xlt))
             ymax, ymin = int(round(r.yrb)), int(round(r.ylt))
@@ -346,7 +346,7 @@ class SoM:
         for ind in range(len(pi.cuts)):
             pi.save_cut(ind, f"{outdir}/", zip=zip)
 
-    def split_mice_ct(self, outdir, desc_map, num_anim=None,
+    def split_mice_ct(self, outdir, num_anim=None,
                       sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
                       bed_removal=True, zip=False, dicom_metadata=None,
                       img_size=None, coregister_cuts=False):
@@ -359,8 +359,7 @@ class SoM:
 
         logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
 
-        pi = self.pi
-        imz = SoM.z_compress_ct(pi, 50, False)
+        imz = SoM.z_compress_ct(self.pi, 50, False)
         # Automatic thresholding for dicom images
         thresh = None
 
@@ -394,8 +393,8 @@ class SoM:
 
             if len(rects) != num_anim:
                 logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                pi.clean_cuts()
-                pi.unload_image()
+                self.pi.clean_cuts()
+                self.pi.unload_image()
                 return 1
 
         self.cuts = SoM.split_coords(imz, rects)
@@ -409,11 +408,11 @@ class SoM:
                 logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
 
         if not coregister_cuts:
-            self.complete_cut_process(pi, desc_map, dicom_metadata, outdir, output_qc)
+            self.complete_cut_process(dicom_metadata, output_qc)
 
         return 0
 
-    def split_mice_pet(self, outdir, desc_map, num_anim=None,
+    def split_mice_pet(self, outdir, num_anim=None,
                        sep_thresh=None, margin=20, minpix=200, output_qc=False,
                        zip=False, dicom_metadata=None, img_size=None, coregister_cuts=False):
         logger.info('Splitting PET image ' + self.pi.filename)
@@ -425,8 +424,7 @@ class SoM:
 
         logger.debug(f"num_anim={num_anim}, sep_thresh={sep_thresh}, margin={margin}, minpix={minpix}")
 
-        pi = self.pi
-        imz = SoM.z_compress_pet(pi)
+        imz = SoM.z_compress_pet(self.pi)
         self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
 
         if num_anim is not None:
@@ -438,8 +436,8 @@ class SoM:
                     self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(im))
                 if num < num_anim:
                     logger.info('compensation failed')
-                    pi.clean_cuts()
-                    pi.unload_image()
+                    self.pi.clean_cuts()
+                    self.pi.unload_image()
                     return 1
             rects = measure.regionprops(self.blobs_labels)
             if num > num_anim:
@@ -462,19 +460,19 @@ class SoM:
                 cut['rect'].adjust_to_size(img_size)
 
         if not coregister_cuts:
-            self.complete_cut_process(pi, desc_map, dicom_metadata, outdir, output_qc)
+            self.complete_cut_process(dicom_metadata, output_qc)
 
         return 0
 
-    def complete_cut_process(self, pi, desc_map, dicom_metadata, outdir, output_qc):
-        SoM.add_cuts_to_image(pi, self.cuts, desc_map, dicom_metadata)
+    def complete_cut_process(self, dicom_metadata, output_qc):
+        SoM.add_cuts_to_image(self.pi, self.cuts, dicom_metadata)
 
         # write the images.
-        if outdir is not None:
-            SoM.write_images(pi, outdir, zip=zip)
+        if self.outdir is not None:
+            SoM.write_images(self.pi, self.outdir, zip=zip)
 
         if output_qc:
-            im = SoM.qc_image(pi, self.blobs_labels, self.cuts, outdir, desc_map)
+            im = SoM.qc_image(self.pi, self.blobs_labels, self.cuts, self.outdir)
 
     @staticmethod
     def get_sag_image(img_data):
@@ -519,7 +517,7 @@ class SoM:
             return new_im
 
     @staticmethod
-    def qc_image(pi, labels, rects_dict, outdir, desc_map):
+    def qc_image(pi, labels, rects_dict, outdir):
         imz, img_type, alpha = None, None, None
 
         if isinstance(pi, PETImage):
@@ -611,7 +609,7 @@ class SoM:
             if img_type == 'PET':
                 w, h = individual_qc_im.size
                 individual_qc_im = individual_qc_im.resize((w * 3, h * 3), resample=Image.BILINEAR)
-            fnamei = outdir + '/qc/' + 'qc_' + desc_map[ax_ims_lbl[i]] + '.png'
+            fnamei = outdir + '/qc/' + 'qc_' + SoM.desc_map[ax_ims_lbl[i]] + '.png'
 
             if not os.path.exists(f"{outdir}/qc"):
                 os.makedirs(f"{outdir}/qc")
