@@ -550,7 +550,7 @@ class BaseImage:
 
         # Zip the cut if requested
         if zip:
-            # logger.debug(f'Zipping cut {index} to {path}...')
+            logger.debug(f'Zipping cut {index} to {path}...')
             zip_cut(os.path.join(path, cut_filename),
                     os.path.join(path, cut_hdr_name),
                     os.path.join(path, cut_filename + '.zip'))
@@ -826,14 +826,14 @@ class DicomImage(BaseImage):
         logger.info('Skipping header load for DicomImage.')
 
     def load_image(self, **kwargs):
-        # logger.debug('Loading dicom image(s)')
+        logger.debug('Loading dicom image(s)')
         if os.path.isdir(self.filepath):
             self.load_image_from_dir()
         else:
             self.load_image_from_file()
 
     def load_image_from_dir(self, **kwargs):
-        # logger.debug(f'Loading dicom images from directory {self.filepath}')
+        logger.debug(f'Loading dicom images from directory {self.filepath}')
         # Get all the .dcm files in the filepath
         self.dicom_files = glob.glob(os.path.join(self.filepath, '*.dcm'))
 
@@ -843,7 +843,7 @@ class DicomImage(BaseImage):
             modalities.add(pydicom.dcmread(dicom_file).Modality)
 
         # Log the modalities found
-        # logger.info(f'Modalities found: {modalities}')
+        logger.info(f'Modalities found: {modalities}')
 
         # Join the modalities into a string, sorted alphabetically
         self.modality = '-'.join(sorted(modalities, key=str.lower))
@@ -857,13 +857,13 @@ class DicomImage(BaseImage):
         self.img_data = img_data
 
     def load_image_from_file(self):
-        # logger.debug(f'Loading dicom image from file {self.filepath}')
+        logger.debug(f'Loading dicom image from file {self.filepath}')
         ds = pydicom.dcmread(self.filepath)
         self.modality = ds.Modality
         self.img_data = ds.pixel_array
 
     def save_cut(self, index, path, zip=False):
-        # logger.debug(f'Saving dicom cut {index} to {path}...')
+        logger.debug(f'Saving dicom cut {index} to {path}...')
 
         patient_id = None
 
@@ -935,12 +935,11 @@ class DicomImage(BaseImage):
                 os.makedirs(os.path.join(path, f'{index}'))
 
             # Save the file
-            # logger.debug(f'Saving dicom file {split_ds.SOPInstanceUID} to {path}')
             filename = f'{split_ds.SOPInstanceUID}.dcm'
             split_ds.save_as(os.path.join(path, f'{index}', filename))
 
         if zip:
-            # logger.debug(f'Zipping dicom cut {index} to {path}...')
+            logger.debug(f'Zipping dicom cut {index} to {path}...')
 
             zip_filepath = os.path.join(path, f'{index}.zip')
 
@@ -950,7 +949,7 @@ class DicomImage(BaseImage):
 
             self.zip_outputs.append((patient_id, zip_filepath))
 
-            # logger.debug(f'Zip file saved to {zip_filepath}')
+            logger.debug(f'Zip file saved to {zip_filepath}')
 
     def reset_zip_outputs(self):
         self.zip_outputs = []

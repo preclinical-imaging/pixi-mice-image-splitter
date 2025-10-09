@@ -474,6 +474,9 @@ class SoM:
         if output_qc:
             im = SoM.qc_image(self.pi, self.blobs_labels, self.cuts, self.outdir)
 
+    # def convert_blobs_for_coregistered_qc_output(self):
+
+
     @staticmethod
     def get_sag_image(img_data):
         sh = img_data.shape
@@ -518,17 +521,14 @@ class SoM:
 
     @staticmethod
     def qc_image(pi, labels, rects_dict, outdir):
-        imz, img_type, alpha = None, None, None
-
-        if isinstance(pi, PETImage):
+        if isinstance(pi, PETImage) or (isinstance(pi, DicomImage) and (pi.modality == 'PT' or pi.modality == 'PET')):
             imz = SoM.z_compress_pet(pi)
             img_type = 'PET'
             imz /= np.max(imz)
             linwid = 1
             alpha = 0.1
             pct = 5
-
-        elif isinstance(pi, CTImage):
+        elif isinstance(pi, CTImage) or (isinstance(pi, DicomImage) and pi.modality == 'CT'):
             imz = SoM.z_compress_ct(pi, SoM.sep_thresh, binary=False)
             img_type = 'CT'
             pct = 2
@@ -536,26 +536,9 @@ class SoM:
             imz /= np.max(imz)
             linwid = 3
             alpha = 0.3
-
         elif isinstance(pi, DicomImage):
-            if pi.modality == 'CT':
-                imz = SoM.z_compress_ct(pi, SoM.sep_thresh, binary=False)
-                img_type = 'CT'
-                pct = 2
-                imz = SoM.standardize_range(imz, pct=pct)
-                imz /= np.max(imz)
-                linwid = 3
-                alpha = 0.3
-            elif pi.modality == 'PT' or pi.modality == 'PET':
-                imz = SoM.z_compress_pet(pi)
-                img_type = 'PET'
-                imz /= np.max(imz)
-                linwid = 1
-                alpha = 0.1
-                pct = 5
-            else:
-                logger.error(f"QC not supported for dicom modality: {pi.modality}")
-                return
+            logger.error(f"QC not supported for dicom modality: {pi.modality}")
+            return
         else:
             logger.error(f"Unknown image type: {type(pi)}. Cannot perform qc.")
             return

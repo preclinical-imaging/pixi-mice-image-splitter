@@ -255,16 +255,6 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
     logging.info(f"\n\n\n")
 
 
-def coregister_cut(cut_for_coregister, x_scale, y_scale, desc):
-    x_min = (cut_for_coregister.xlt*x_scale).astype(int)
-    y_min = (cut_for_coregister.ylt*y_scale).astype(int)
-    x_max = (cut_for_coregister.xrb*x_scale).astype(int)
-    y_max = (cut_for_coregister.yrb*y_scale).astype(int)
-    bb = [x_min, y_min, x_max, y_max]
-    coregistered_cut_rect = Rect(bb=bb, label=cut_for_coregister.label)
-    return {'desc': desc, 'rect': coregistered_cut_rect}
-
-
 def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):
     """
     Convert hotel scan record to metadata dictionary format expected by splitter of mice
