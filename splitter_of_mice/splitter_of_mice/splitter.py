@@ -49,6 +49,7 @@ class SoM:
         self.pi, self.modality = SoM.load_image(file, modality, dicom)
         self.scan_time = None
         self.outdir = None
+        self.coregister_transform = None
 
     @staticmethod
     def load_image_ex(file, modality):
@@ -470,6 +471,9 @@ class SoM:
         # write the images.
         if self.outdir is not None:
             SoM.write_images(self.pi, self.outdir, zip=zip)
+
+        for cut in self.cuts:
+            logging.info(f"Cut Transform: {cut['transform']}")
 
         if output_qc:
             im = SoM.qc_image(self.pi, self.blobs_labels, self.cuts, self.outdir)

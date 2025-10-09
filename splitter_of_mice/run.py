@@ -209,17 +209,16 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
     x_scale = ct_shape[1]/pet_shape[1]
     y_scale = ct_shape[2]/pet_shape[2]
 
-    logging.info(f"\n\n\nScale Converter: {x_scale}  {y_scale}")
-
     coregistered_cuts_ct = []
     coregistered_cuts_pet = []
     remaining_pet_cuts_scaled = []
+
     for cut in pet_cuts:
         cut_rect = cut['rect']
-        x_min = (cut_rect.xlt*x_scale).astype(int)
-        y_min = (cut_rect.ylt*y_scale).astype(int)
-        x_max = (cut_rect.xrb*x_scale).astype(int)
-        y_max = (cut_rect.yrb*y_scale).astype(int)
+        x_min = cut_rect.xlt*x_scale
+        y_min = cut_rect.ylt*y_scale
+        x_max = cut_rect.xrb*x_scale
+        y_max = cut_rect.yrb*y_scale
         bb = [x_min, y_min, x_max, y_max]
         scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
 
@@ -229,19 +228,23 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
             connected_ct_cut = filtered_cuts[0]
             ct_cuts.remove(connected_ct_cut)
             connected_ct_cut_rect = connected_ct_cut['rect']
-            new_x_min = ((connected_ct_cut_rect.xlt+scaled_pet_rect.xlt)/2).astype(int)
-            new_x_max = ((connected_ct_cut_rect.xrb+scaled_pet_rect.xrb)/2).astype(int)
-            new_y_min = ((connected_ct_cut_rect.ylt+scaled_pet_rect.ylt)/2).astype(int)
-            new_y_max = ((connected_ct_cut_rect.yrb+scaled_pet_rect.yrb)/2).astype(int)
-            new_ct_bb = [new_x_min, new_y_min, new_x_max, new_y_max]
+
+            new_x_min = (connected_ct_cut_rect.xlt+scaled_pet_rect.xlt)/2
+            new_x_max = (connected_ct_cut_rect.xrb+scaled_pet_rect.xrb)/2
+            new_y_min = (connected_ct_cut_rect.ylt+scaled_pet_rect.ylt)/2
+            new_y_max = (connected_ct_cut_rect.yrb+scaled_pet_rect.yrb)/2
+
+            new_ct_bb = [(new_x_min).astype(int), (new_y_min).astype(int), (new_x_max).astype(int), (new_y_max).astype(int)]
             new_ct_cut = Rect(bb=new_ct_bb, label=connected_ct_cut_rect.label)
-            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut}]
             new_pet_bb = [(new_x_min/x_scale).astype(int), (new_y_min/y_scale).astype(int), (new_x_max/x_scale).astype(int), (new_y_max/y_scale).astype(int)]
             new_pet_cut = Rect(bb=new_pet_bb, label=cut_rect.label)
-            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut}]
-            logging.info(f"PET Cut {cut['desc']}  {new_pet_cut}")
-            logging.info(f"CT Cut: {connected_ct_cut['desc']}  {new_ct_cut}")
 
+            x_tranform_ct = new_ct_cut.xlt - connected_ct_cut_rect.xlt
+            y_transform_ct = new_ct_cut.ylt - connected_ct_cut_rect.ylt
+            x_tranform_pet = new_pet_cut.xlt - cut_rect.xlt
+            y_transform_pet = new_pet_cut.ylt - cut_rect.ylt
+            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
+            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
         else: 
             logging.info(f"Could not find matching ct cut")
             remaining_pet_cuts_scaled += {'desc': cut['desc'], 'rect': scaled_pet_rect}
