@@ -394,9 +394,10 @@ class SoM:
 
             if len(rects) != num_anim:
                 logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                self.pi.clean_cuts()
-                self.pi.unload_image()
-                return 1
+                #we're going to keep going and hope that  it gets fixed during coregistration
+                # self.pi.clean_cuts()
+                # self.pi.unload_image()
+                # return 1
 
         self.cuts = SoM.split_coords(imz, rects)
 
@@ -471,9 +472,6 @@ class SoM:
         # write the images.
         if self.outdir is not None:
             SoM.write_images(self.pi, self.outdir, zip=zip)
-
-        for cut in self.cuts:
-            logging.info(f"Cut Transform: {cut['transform']}")
 
         if output_qc:
             im = SoM.qc_image(self.pi, self.blobs_labels, self.cuts, self.outdir)

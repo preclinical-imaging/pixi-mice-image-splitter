@@ -10,6 +10,8 @@ import uuid
 import time
 from pathlib import Path
 import zipfile
+import math
+import numpy as np
 
 from collections import defaultdict
 from requests import Session
@@ -223,38 +225,55 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
         scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
 
         filtered_cuts = list(filter(lambda x: x['desc'] == cut['desc'], ct_cuts))
+        connected_ct_cut = filtered_cuts[0]
 
-        if len(filtered_cuts) == 1:
-            connected_ct_cut = filtered_cuts[0]
-            ct_cuts.remove(connected_ct_cut)
-            connected_ct_cut_rect = connected_ct_cut['rect']
+        if len(filtered_cuts) > 1:
+            min_distance = None
+            origin_cut_centre = cut_rect.ctr()
+            logging.info(f"Cut Centre: {origin_cut_centre}")
+            origin_cut_centre_scaled = np.multiply(origin_cut_centre, [x_scale, y_scale]).tolist()
+            logging.info(f"Cut Centre Scaled: {origin_cut_centre_scaled}")
+            for filtered_cut in filtered_cuts:
+                filtered_cut_centre = filtered_cut['rect'].ctr()
+                distance = math.dist(origin_cut_centre_scaled, filtered_cut_centre)
+                if min_distance is None or distance > min_distance:
+                    min_distance = distance
+                    connected_ct_cut = filtered_cut
 
-            new_x_min = (connected_ct_cut_rect.xlt+scaled_pet_rect.xlt)/2
-            new_x_max = (connected_ct_cut_rect.xrb+scaled_pet_rect.xrb)/2
-            new_y_min = (connected_ct_cut_rect.ylt+scaled_pet_rect.ylt)/2
-            new_y_max = (connected_ct_cut_rect.yrb+scaled_pet_rect.yrb)/2
+        ct_cuts.remove(connected_ct_cut)
+        connected_ct_cut_rect = connected_ct_cut['rect']
 
-            new_ct_bb = [(new_x_min).astype(int), (new_y_min).astype(int), (new_x_max).astype(int), (new_y_max).astype(int)]
-            new_ct_cut = Rect(bb=new_ct_bb, label=connected_ct_cut_rect.label)
-            new_pet_bb = [(new_x_min/x_scale).astype(int), (new_y_min/y_scale).astype(int), (new_x_max/x_scale).astype(int), (new_y_max/y_scale).astype(int)]
-            new_pet_cut = Rect(bb=new_pet_bb, label=cut_rect.label)
+        new_x_min = (connected_ct_cut_rect.xlt+scaled_pet_rect.xlt)/2
+        new_x_max = (connected_ct_cut_rect.xrb+scaled_pet_rect.xrb)/2
+        new_y_min = (connected_ct_cut_rect.ylt+scaled_pet_rect.ylt)/2
+        new_y_max = (connected_ct_cut_rect.yrb+scaled_pet_rect.yrb)/2
 
-            x_tranform_ct = new_ct_cut.xlt - connected_ct_cut_rect.xlt
-            y_transform_ct = new_ct_cut.ylt - connected_ct_cut_rect.ylt
-            x_tranform_pet = new_pet_cut.xlt - cut_rect.xlt
-            y_transform_pet = new_pet_cut.ylt - cut_rect.ylt
-            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
-            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
-        else: 
-            logging.info(f"Could not find matching ct cut")
-            remaining_pet_cuts_scaled += {'desc': cut['desc'], 'rect': scaled_pet_rect}
+        new_ct_bb = [(new_x_min).astype(int), (new_y_min).astype(int), (new_x_max).astype(int), (new_y_max).astype(int)]
+        new_ct_cut = Rect(bb=new_ct_bb, label=connected_ct_cut_rect.label)
+        new_pet_bb = [(new_x_min/x_scale).astype(int), (new_y_min/y_scale).astype(int), (new_x_max/x_scale).astype(int), (new_y_max/y_scale).astype(int)]
+        new_pet_cut = Rect(bb=new_pet_bb, label=cut_rect.label)
 
-    #we have successfully coregistered all cuts
-    if len(ct_cuts) == 0:
+        x_tranform_ct = new_ct_cut.xlt - connected_ct_cut_rect.xlt
+        y_transform_ct = new_ct_cut.ylt - connected_ct_cut_rect.ylt
+        x_tranform_pet = new_pet_cut.xlt - cut_rect.xlt
+        y_transform_pet = new_pet_cut.ylt - cut_rect.ylt
+        coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
+        coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
+
+    if len(ct_cuts) == 0 and len (remaining_pet_cuts_scaled) == 0:
+        #we have successfully coregistered all cuts
         splitter_ct.cuts = coregistered_cuts_ct
         splitter_ct.complete_cut_process(metadata, True)
         splitter_pet.cuts = coregistered_cuts_pet
         splitter_pet.complete_cut_process(metadata, True)
+    elif len(ct_cuts) == 0 or len (remaining_pet_cuts_scaled) == 0:
+        #we have one rouge cut. discard it
+        logging.debug(f"Discarding disconnected cut")
+        splitter_ct.cuts = coregistered_cuts_ct
+        splitter_ct.complete_cut_process(metadata, True)
+        splitter_pet.cuts = coregistered_cuts_pet
+        splitter_pet.complete_cut_process(metadata, True)
+
     logging.info(f"\n\n\n")
 
 
