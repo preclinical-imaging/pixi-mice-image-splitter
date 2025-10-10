@@ -204,12 +204,9 @@ def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregi
         raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
 
 def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
-    pet_cuts = splitter_pet.cuts
-    ct_cuts = splitter_ct.cuts
-    pet_shape = splitter_pet.pi.img_data.shape
-    ct_shape = splitter_ct.pi.img_data.shape
-    x_scale = ct_shape[1]/pet_shape[1]
-    y_scale = ct_shape[2]/pet_shape[2]
+    pet_cuts, ct_cuts = splitter_pet.cuts, splitter_ct.cuts
+    pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
+    x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
 
     coregistered_cuts_ct = []
     coregistered_cuts_pet = []
@@ -232,17 +229,15 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
             ct_cuts.remove(filtered_cuts[1])
         else:
             #if we have more than 2 cuts in a given region we have a real problem. probably should fail the splitter
-            logging.error(f'Too many sessions within the region {cut['desc']}. Could not combine them.')
-            raise Exception(f'Too many sessions within the region {cut['desc']}')
+            logging.error(f"Too many sessions within the region {cut['desc']}. Could not combine them.")
+            raise Exception(f"Too many sessions within the region {cut['desc']}")
         
         connected_ct_cut_rect = connected_ct_cut['rect']
 
         new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
 
-        x_tranform_ct = new_ct_cut.xlt - connected_ct_cut_rect.xlt
-        y_transform_ct = new_ct_cut.ylt - connected_ct_cut_rect.ylt
-        x_tranform_pet = new_pet_cut.xlt - cut_rect.xlt
-        y_transform_pet = new_pet_cut.ylt - cut_rect.ylt
+        x_tranform_ct, y_transform_ct = (new_ct_cut.xlt - connected_ct_cut_rect.xlt), (new_ct_cut.ylt - connected_ct_cut_rect.ylt)
+        x_tranform_pet, y_transform_pet = (new_pet_cut.xlt - cut_rect.xlt), (new_pet_cut.ylt - cut_rect.ylt)
         coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
         coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
 
@@ -256,13 +251,10 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
     logging.info(f"\n\n\n")
 
 def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two):
-    new_x_min = (rect_one.xlt+rect_two.xlt)/2
-    new_x_max = (rect_one.xrb+rect_two.xrb)/2
-    new_y_min = (rect_one.ylt+rect_two.ylt)/2
-    new_y_max = (rect_one.yrb+rect_two.yrb)/2
-    new_rect_one_bb = [(new_x_min/scale_for_rect_one[0]).astype(int), (new_y_min/scale_for_rect_one[1]).astype(int), (new_x_max/scale_for_rect_one[0]).astype(int), (new_y_max/scale_for_rect_one[1]).astype(int)]
+    new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
+    new_rect_one_bb = [(new_rect_params[0]/scale_for_rect_one[0]).astype(int), (new_rect_params[1]/scale_for_rect_one[1]).astype(int), (new_rect_params[2]/scale_for_rect_one[0]).astype(int), (new_rect_params[3]/scale_for_rect_one[1]).astype(int)]
     new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)
-    new_rect_two_bb = [(new_x_min/scale_for_rect_two[0]).astype(int), (new_y_min/scale_for_rect_two[1]).astype(int), (new_x_max/scale_for_rect_two[0]).astype(int), (new_y_max/scale_for_rect_two[1]).astype(int)]
+    new_rect_two_bb = [(new_rect_params[0]/scale_for_rect_two[0]).astype(int), (new_rect_params[1]/scale_for_rect_two[1]).astype(int), (new_rect_params[2]/scale_for_rect_two[0]).astype(int), (new_rect_params[3]/scale_for_rect_two[1]).astype(int)]
     new_rect_two = Rect(bb=new_rect_two_bb, label=rect_two.label)
     return new_rect_one, new_rect_two
 
