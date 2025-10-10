@@ -393,11 +393,14 @@ class SoM:
                 rects = SoM.get_valid_regs(self.blobs_labels)
 
             if len(rects) != num_anim:
-                logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                #we're going to keep going and hope that  it gets fixed during coregistration
-                # self.pi.clean_cuts()
-                # self.pi.unload_image()
-                # return 1
+                if not coregister_cuts:
+                    logger.error('Compensation failed. Unable to detect the expected number of regions.')
+                    # self.pi.clean_cuts()
+                    # self.pi.unload_image()
+                    # return 1
+                else:
+                    #we're going to keep going and hope that it gets fixed during coregistration
+                    logger.debug('Compensation failed. Unable to detect the expected number of regions. Waiting for coregistration to fix.')
 
         self.cuts = SoM.split_coords(imz, rects)
 

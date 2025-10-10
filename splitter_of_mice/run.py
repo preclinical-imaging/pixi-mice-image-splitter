@@ -217,41 +217,27 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
 
     for cut in pet_cuts:
         cut_rect = cut['rect']
-        x_min = cut_rect.xlt*x_scale
-        y_min = cut_rect.ylt*y_scale
-        x_max = cut_rect.xrb*x_scale
-        y_max = cut_rect.yrb*y_scale
-        bb = [x_min, y_min, x_max, y_max]
+        bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
         scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
 
         filtered_cuts = list(filter(lambda x: x['desc'] == cut['desc'], ct_cuts))
         connected_ct_cut = filtered_cuts[0]
 
-        if len(filtered_cuts) > 1:
-            min_distance = None
-            origin_cut_centre = cut_rect.ctr()
-            logging.info(f"Cut Centre: {origin_cut_centre}")
-            origin_cut_centre_scaled = np.multiply(origin_cut_centre, [x_scale, y_scale]).tolist()
-            logging.info(f"Cut Centre Scaled: {origin_cut_centre_scaled}")
-            for filtered_cut in filtered_cuts:
-                filtered_cut_centre = filtered_cut['rect'].ctr()
-                distance = math.dist(origin_cut_centre_scaled, filtered_cut_centre)
-                if min_distance is None or distance > min_distance:
-                    min_distance = distance
-                    connected_ct_cut = filtered_cut
-
-        ct_cuts.remove(connected_ct_cut)
+        if len(filtered_cuts) == 1:
+            ct_cuts.remove(connected_ct_cut)
+        elif len(filtered_cuts) == 2:
+            combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0])
+            connected_ct_cut = {'desc': filtered_cuts[0]['desc'], 'rect': combined_ct_rect}
+            ct_cuts.remove(filtered_cuts[0])
+            ct_cuts.remove(filtered_cuts[1])
+        else:
+            #if we have more than 2 cuts in a given region we have a real problem. probably should fail the splitter
+            logging.error(f'Too many sessions within the region {cut['desc']}. Could not combine them.')
+            raise Exception(f'Too many sessions within the region {cut['desc']}')
+        
         connected_ct_cut_rect = connected_ct_cut['rect']
 
-        new_x_min = (connected_ct_cut_rect.xlt+scaled_pet_rect.xlt)/2
-        new_x_max = (connected_ct_cut_rect.xrb+scaled_pet_rect.xrb)/2
-        new_y_min = (connected_ct_cut_rect.ylt+scaled_pet_rect.ylt)/2
-        new_y_max = (connected_ct_cut_rect.yrb+scaled_pet_rect.yrb)/2
-
-        new_ct_bb = [(new_x_min).astype(int), (new_y_min).astype(int), (new_x_max).astype(int), (new_y_max).astype(int)]
-        new_ct_cut = Rect(bb=new_ct_bb, label=connected_ct_cut_rect.label)
-        new_pet_bb = [(new_x_min/x_scale).astype(int), (new_y_min/y_scale).astype(int), (new_x_max/x_scale).astype(int), (new_y_max/y_scale).astype(int)]
-        new_pet_cut = Rect(bb=new_pet_bb, label=cut_rect.label)
+        new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
 
         x_tranform_ct = new_ct_cut.xlt - connected_ct_cut_rect.xlt
         y_transform_ct = new_ct_cut.ylt - connected_ct_cut_rect.ylt
@@ -260,15 +246,8 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
         coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
         coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
 
-    if len(ct_cuts) == 0 and len (remaining_pet_cuts_scaled) == 0:
-        #we have successfully coregistered all cuts
-        splitter_ct.cuts = coregistered_cuts_ct
-        splitter_ct.complete_cut_process(metadata, True)
-        splitter_pet.cuts = coregistered_cuts_pet
-        splitter_pet.complete_cut_process(metadata, True)
-    elif len(ct_cuts) == 0 or len (remaining_pet_cuts_scaled) == 0:
-        #we have one rouge cut. discard it
-        logging.debug(f"Discarding disconnected cut")
+    if len(ct_cuts) == 0 or len (remaining_pet_cuts_scaled) == 0:
+        #we either coregistered everything or there was a rouge cut that doesn't connect to anything which we'll remove
         splitter_ct.cuts = coregistered_cuts_ct
         splitter_ct.complete_cut_process(metadata, True)
         splitter_pet.cuts = coregistered_cuts_pet
@@ -276,6 +255,16 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
 
     logging.info(f"\n\n\n")
 
+def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two):
+    new_x_min = (rect_one.xlt+rect_two.xlt)/2
+    new_x_max = (rect_one.xrb+rect_two.xrb)/2
+    new_y_min = (rect_one.ylt+rect_two.ylt)/2
+    new_y_max = (rect_one.yrb+rect_two.yrb)/2
+    new_rect_one_bb = [(new_x_min/scale_for_rect_one[0]).astype(int), (new_y_min/scale_for_rect_one[1]).astype(int), (new_x_max/scale_for_rect_one[0]).astype(int), (new_y_max/scale_for_rect_one[1]).astype(int)]
+    new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)
+    new_rect_two_bb = [(new_x_min/scale_for_rect_two[0]).astype(int), (new_y_min/scale_for_rect_two[1]).astype(int), (new_x_max/scale_for_rect_two[0]).astype(int), (new_y_max/scale_for_rect_two[1]).astype(int)]
+    new_rect_two = Rect(bb=new_rect_two_bb, label=rect_two.label)
+    return new_rect_one, new_rect_two
 
 def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):
     """
