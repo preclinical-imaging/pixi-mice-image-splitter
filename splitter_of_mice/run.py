@@ -65,9 +65,9 @@ def run(username: str, password: str, server: str,
         #if we have more than two scans, we need to pair them up for coregistration. 
         #we've decided to use scan time for this so we need to get the scan time for each scan
         start_times_for_scans = {}
-        # if len(files) > 2:
-        start_times_for_scans = get_start_times_for_scans(session, server, project, experiment, files)
-        logging.info(f"{start_times_for_scans}\n\n")
+        if len(files) > 2:
+            start_times_for_scans = get_start_times_for_scans(session, server, project, experiment, files)
+            logging.info(f"{start_times_for_scans}\n\n")
 
         #Create splitter and output directory for each subdirectory and prep them for coregistration if applicable
         splitters_pet = []
@@ -80,7 +80,7 @@ def run(username: str, password: str, server: str,
             if dicom_dir in start_times_for_scans:
                 spltr.scan_time = start_times_for_scans[dicom_dir]
 
-            #connect pet and ct scans for coregistration
+            #connect corresponding pet and ct scans for coregistration
             if spltr.modality == 'CT':
                 splitters_ct.append(spltr)
             else:
@@ -136,14 +136,13 @@ def run(username: str, password: str, server: str,
 
         if coregister_cuts:
             for splitter in splitters:
-                harmonize_pet_and_ct_cuts(splitter[0], splitter[1], metadata)
+                harmonize_pet_and_ct_cuts(splitter[0], splitter[1], metadata, num_anim)
             #flatten out lists now that we're done with coregistration
             splitters_flattened = [item for sublist in splitters for item in sublist]
             splitters = splitters_flattened
 
         # Upload each cut to XNAT
-        # Send all scans for a subject together so the prearchive doesn't accidentally
-        # archive one scan before the other.
+        # Send all scans for a subject together so the prearchive doesn't accidentally archive one scan before the other.
         subject_zip_files = defaultdict(list)
         for splitter in splitters:
             for zip_outputs in splitter.pi.zip_outputs:
@@ -179,8 +178,9 @@ def run(username: str, password: str, server: str,
 
         for splitter in splitters:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            modality = splitter.modality if splitter.modality else ""
             send_qc_image(session, server, project, experiment,
-                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
+                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}_{splitter.modality}")
 
         # update hotel scan record
         update_scan_record(session, server, experiment, hotel_scan_record)
@@ -195,6 +195,7 @@ def run(username: str, password: str, server: str,
 
     return
 
+
 def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=False):
     exit_code = splitter.split_mice(num_anim=num_anim, remove_bed=True,
         zip=True, dicom_metadata=metadata, output_qc=True,
@@ -203,52 +204,66 @@ def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregi
     if exit_code != 0:
         raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
 
-def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata):
+
+def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
     pet_cuts, ct_cuts = splitter_pet.cuts, splitter_ct.cuts
+    logging.info(f"PET CUT LENGTH: {len(pet_cuts)}\n CT CUT LENGTH: {len(ct_cuts)}")
     pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
     x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
 
     coregistered_cuts_ct = []
     coregistered_cuts_pet = []
-    remaining_pet_cuts_scaled = []
 
-    for cut in pet_cuts:
-        cut_rect = cut['rect']
-        bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
-        scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
+    if splitter_pet.original_number_cuts > 2*num_anim:
+        #in this case, we can be reasonably confident that the splitter was not finding it easy to segment the PET image
+        #as such, we're going to default to the CT scan which does splitting in a less naive way
+        replacement_pet_cuts = []
+        for cut in ct_cuts:
+            cut_rect = cut['rect']
+            new_bb = [(cut_rect.xlt/x_scale).astype(int), (cut_rect.ylt/y_scale).astype(int), (cut_rect.xrb/x_scale).astype(int), (cut_rect.yrb/y_scale).astype(int)]
+            new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
+            replacement_pet_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
+        #because we don't trust the pet cuts, we will not be changing the ct data in any way.
+        #simply replace the pet cuts with their new versions which are already coregistered with the ct cuts.
+        splitter_pet.cuts = replacement_pet_cuts
+    else:
+        for cut in pet_cuts:
+            cut_rect = cut['rect']
+            bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
+            scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
 
-        filtered_cuts = list(filter(lambda x: x['desc'] == cut['desc'], ct_cuts))
-        connected_ct_cut = filtered_cuts[0]
+            filtered_cuts = list(filter(lambda x: x['desc'] == cut['desc'], ct_cuts))
+            connected_ct_cut = filtered_cuts[0]
 
-        if len(filtered_cuts) == 1:
-            ct_cuts.remove(connected_ct_cut)
-        elif len(filtered_cuts) == 2:
-            combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0])
-            connected_ct_cut = {'desc': filtered_cuts[0]['desc'], 'rect': combined_ct_rect}
-            ct_cuts.remove(filtered_cuts[0])
-            ct_cuts.remove(filtered_cuts[1])
-        else:
-            #if we have more than 2 cuts in a given region we have a real problem. probably should fail the splitter
-            logging.error(f"Too many sessions within the region {cut['desc']}. Could not combine them.")
-            raise Exception(f"Too many sessions within the region {cut['desc']}")
-        
-        connected_ct_cut_rect = connected_ct_cut['rect']
+            if len(filtered_cuts) == 1:
+                #one to one relationship between pet and ct cuts. we can simply combine them without other processing.
+                ct_cuts.remove(connected_ct_cut)
+            elif len(filtered_cuts) == 2:
+                #two cuts were both mapped to within the same portion of the image. 
+                #combine them into one to try to get all relavent data into the same cut
+                combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0])
+                connected_ct_cut = {'desc': filtered_cuts[0]['desc'], 'rect': combined_ct_rect}
+                ct_cuts.remove(filtered_cuts[0])
+                ct_cuts.remove(filtered_cuts[1])
+            else:
+                #if we have more than 2 cuts in a given region we have a real problem so the splitter should throw an error
+                logging.error(f"Too many sessions within the region {cut['desc']}. Could not combine them.")
+                raise Exception(f"Too many sessions within the region {cut['desc']}")
+            
+            connected_ct_cut_rect = connected_ct_cut['rect']
 
-        new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
+            new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
 
-        x_tranform_ct, y_transform_ct = (new_ct_cut.xlt - connected_ct_cut_rect.xlt), (new_ct_cut.ylt - connected_ct_cut_rect.ylt)
-        x_tranform_pet, y_transform_pet = (new_pet_cut.xlt - cut_rect.xlt), (new_pet_cut.ylt - cut_rect.ylt)
-        coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut, 'transform': [x_tranform_ct, y_transform_ct]}]
-        coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut, 'transform': [x_tranform_pet, y_transform_pet]}]
-
-    if len(ct_cuts) == 0 or len (remaining_pet_cuts_scaled) == 0:
-        #we either coregistered everything or there was a rouge cut that doesn't connect to anything which we'll remove
+            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut}]
+            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut}]
         splitter_ct.cuts = coregistered_cuts_ct
-        splitter_ct.complete_cut_process(metadata, True)
         splitter_pet.cuts = coregistered_cuts_pet
-        splitter_pet.complete_cut_process(metadata, True)
+
+    splitter_ct.complete_cut_process(metadata, True)
+    splitter_pet.complete_cut_process(metadata, True)
 
     logging.info(f"\n\n\n")
+
 
 def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two):
     new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
@@ -257,6 +272,7 @@ def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two
     new_rect_two_bb = [(new_rect_params[0]/scale_for_rect_two[0]).astype(int), (new_rect_params[1]/scale_for_rect_two[1]).astype(int), (new_rect_params[2]/scale_for_rect_two[0]).astype(int), (new_rect_params[3]/scale_for_rect_two[1]).astype(int)]
     new_rect_two = Rect(bb=new_rect_two_bb, label=rect_two.label)
     return new_rect_one, new_rect_two
+
 
 def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):
     """
@@ -516,6 +532,7 @@ def update_scan_record_status(session: Session, server: str, project: str, exper
 
     return
 
+
 def get_start_times_for_scans(session: Session, server: str, project: str, experiment: str, files):
     experiment_id = get_experiment_id_for_label(session, server, project, experiment)
 
@@ -544,6 +561,7 @@ def get_experiment_id_for_label(session: Session, server: str, project: str, exp
     else:
         logging.error("Unable to obtain experiment data for project")
         raise Exception("Unable to obtain experiment data for project")
+
 
 #extract the start date/time field for the scan 
 def get_scan_time_of_scan(session: Session, server: str, experiment: str, scan: str):

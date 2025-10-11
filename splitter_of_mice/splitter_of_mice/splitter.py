@@ -49,7 +49,7 @@ class SoM:
         self.pi, self.modality = SoM.load_image(file, modality, dicom)
         self.scan_time = None
         self.outdir = None
-        self.coregister_transform = None
+        self.original_number_cuts = None
 
     @staticmethod
     def load_image_ex(file, modality):
@@ -395,9 +395,9 @@ class SoM:
             if len(rects) != num_anim:
                 if not coregister_cuts:
                     logger.error('Compensation failed. Unable to detect the expected number of regions.')
-                    # self.pi.clean_cuts()
-                    # self.pi.unload_image()
-                    # return 1
+                    self.pi.clean_cuts()
+                    self.pi.unload_image()
+                    return 1
                 else:
                     #we're going to keep going and hope that it gets fixed during coregistration
                     logger.debug('Compensation failed. Unable to detect the expected number of regions. Waiting for coregistration to fix.')
@@ -417,6 +417,7 @@ class SoM:
 
         return 0
 
+
     def split_mice_pet(self, outdir, num_anim=None,
                        sep_thresh=None, margin=20, minpix=200, output_qc=False,
                        zip=False, dicom_metadata=None, img_size=None, coregister_cuts=False):
@@ -431,6 +432,7 @@ class SoM:
 
         imz = SoM.z_compress_pet(self.pi)
         self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
+        self.original_number_cuts = num
 
         if num_anim is not None:
             if num < num_anim:
@@ -438,7 +440,7 @@ class SoM:
                       format(num, num_anim))
                 while num < num_anim and self.sep_thresh < 1:
                     self.sep_thresh += 0.01
-                    self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(im))
+                    self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
                 if num < num_anim:
                     logger.info('compensation failed')
                     self.pi.clean_cuts()
@@ -478,8 +480,6 @@ class SoM:
 
         if output_qc:
             im = SoM.qc_image(self.pi, self.blobs_labels, self.cuts, self.outdir)
-
-    # def convert_blobs_for_coregistered_qc_output(self):
 
 
     @staticmethod
