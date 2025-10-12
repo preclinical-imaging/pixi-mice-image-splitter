@@ -435,6 +435,7 @@ class SoM:
         self.original_number_cuts = num
 
         if num_anim is not None:
+            logger.info(f"Number of Animals Found: {num}")
             if num < num_anim:
                 logger.info('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
                       format(num, num_anim))
@@ -442,10 +443,14 @@ class SoM:
                     self.sep_thresh += 0.01
                     self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
                 if num < num_anim:
-                    logger.info('compensation failed')
-                    self.pi.clean_cuts()
-                    self.pi.unload_image()
-                    return 1
+                    logger.error('Compensation failed. We cannot find enough regions.')
+                    if not coregister_cuts:
+                        self.pi.clean_cuts()
+                        self.pi.unload_image()
+                        return 1
+                    else:
+                        #we're going to keep going and hope that it gets fixed during coregistration
+                        logger.debug('Compensation failed. We cannot find enough regions. Waiting for coregistration to fix.')
             rects = measure.regionprops(self.blobs_labels)
             if num > num_anim:
                 rects.sort(key=lambda p: p.area, reverse=True)

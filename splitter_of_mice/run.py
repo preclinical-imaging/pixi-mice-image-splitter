@@ -67,7 +67,6 @@ def run(username: str, password: str, server: str,
         start_times_for_scans = {}
         if len(files) > 2:
             start_times_for_scans = get_start_times_for_scans(session, server, project, experiment, files)
-            logging.info(f"{start_times_for_scans}\n\n")
 
         #Create splitter and output directory for each subdirectory and prep them for coregistration if applicable
         splitters_pet = []
@@ -207,14 +206,13 @@ def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregi
 
 def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
     pet_cuts, ct_cuts = splitter_pet.cuts, splitter_ct.cuts
-    logging.info(f"PET CUT LENGTH: {len(pet_cuts)}\n CT CUT LENGTH: {len(ct_cuts)}")
     pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
     x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
 
     coregistered_cuts_ct = []
     coregistered_cuts_pet = []
 
-    if splitter_pet.original_number_cuts > 2*num_anim:
+    if splitter_pet.original_number_cuts > 2*num_anim or splitter_pet.original_number_cuts < num_anim:
         #in this case, we can be reasonably confident that the splitter was not finding it easy to segment the PET image
         #as such, we're going to default to the CT scan which does splitting in a less naive way
         replacement_pet_cuts = []
@@ -253,6 +251,11 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
             connected_ct_cut_rect = connected_ct_cut['rect']
 
             new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
+
+            distance_ct = math.dist(connected_ct_cut_rect.ctr(), new_ct_cut.ctr())
+            logging.info(f"\nDistance For Coreg CT: {distance_ct}")
+            distance_pet = math.dist(cut_rect.ctr(), new_pet_cut.ctr())
+            logging.info(f"\nDistance For Coreg CT: {distance_pet}")
 
             coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut}]
             coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut}]
@@ -542,7 +545,6 @@ def get_start_times_for_scans(session: Session, server: str, project: str, exper
         split_path = file.split(os.sep)
         position_of_scan_name = split_path.index("SCANS") + 1
         file_to_start_time[file] = get_scan_time_of_scan(session, server, experiment_id, split_path[position_of_scan_name])
-
     return file_to_start_time
 
 
@@ -571,8 +573,8 @@ def get_scan_time_of_scan(session: Session, server: str, experiment: str, scan: 
     r = session.get(url, params=payload)
 
     if r.status_code == 200:
-        start_datetime = r.json()['items'][0]['meta']['start_date']
-        start_datetime_in_python = datetime.strptime(start_datetime, '%a %b %d %H:%M:%S %Z %Y')
+        start_datetime = r.json()['items'][0]['data_fields']['startTime']
+        start_datetime_in_python = datetime.strptime(start_datetime, '%H:%M:%S')
         return start_datetime_in_python
     else:
         logging.error("Unable to obtain scan time to pair CT and PET sessions")
