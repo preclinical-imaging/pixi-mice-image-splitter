@@ -269,7 +269,7 @@ class SoM:
             out_boxes = lr
 
         else:
-            logger.error(f"Too many regions detected: {len(valid_reg)}. "
+            logger.debug(f"Too many regions detected: {len(valid_reg)}. "
                          f"Attempting to merge regions within the same quadrant.")
 
             rs = [Rect(bb=valid_reg[i].bbox, label=valid_reg[i].label) for i in range(len(valid_reg))]
