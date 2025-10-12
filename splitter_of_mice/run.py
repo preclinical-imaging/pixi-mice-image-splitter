@@ -225,6 +225,8 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
         #simply replace the pet cuts with their new versions which are already coregistered with the ct cuts.
         splitter_pet.cuts = replacement_pet_cuts
     else:
+        #in this case, we have both PET and CT data that we are happy with. 
+        #thus, we're performing coregistration
         for cut in pet_cuts:
             cut_rect = cut['rect']
             bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
@@ -239,7 +241,7 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
             elif len(filtered_cuts) == 2:
                 #two cuts were both mapped to within the same portion of the image. 
                 #combine them into one to try to get all relavent data into the same cut
-                combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0])
+                combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0], None, False)
                 connected_ct_cut = {'desc': filtered_cuts[0]['desc'], 'rect': combined_ct_rect}
                 ct_cuts.remove(filtered_cuts[0])
                 ct_cuts.remove(filtered_cuts[1])
@@ -250,26 +252,53 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
             
             connected_ct_cut_rect = connected_ct_cut['rect']
 
-            new_ct_cut, new_pet_cut = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale])
+            new_ct_rect, new_pet_rect = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale], ct_shape, True)
 
-            distance_ct = math.dist(connected_ct_cut_rect.ctr(), new_ct_cut.ctr())
-            logging.info(f"\nDistance For Coreg CT: {distance_ct}")
-            distance_pet = math.dist(cut_rect.ctr(), new_pet_cut.ctr())
-            logging.info(f"\nDistance For Coreg CT: {distance_pet}")
-
-            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_cut}]
-            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_cut}]
+            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_rect}]
+            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_rect}]
         splitter_ct.cuts = coregistered_cuts_ct
         splitter_pet.cuts = coregistered_cuts_pet
 
     splitter_ct.complete_cut_process(metadata, True)
     splitter_pet.complete_cut_process(metadata, True)
 
-    logging.info(f"\n\n\n")
 
-
-def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two):
+def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two, image_shape, adjust_size):
     new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
+    if adjust_size:
+        #to avoid the risk of the coregistration losing parts of the mouse, we are going to allow for up to a 5% increase in each direction
+        #this will be added equally to all directions on both the PET and CT side of the cut and thus must be performed before scaling
+            rect_before_adjustment = Rect(bb=new_rect_params, label="pre_adjustment_rect")
+            dist_rect_one_x = (rect_before_adjustment.ctr()[0] - rect_one.ctr()[0])
+            dist_rect_one_y = (rect_before_adjustment.ctr()[1] - rect_one.ctr()[1])
+            dist_rect_two_x = (rect_before_adjustment.ctr()[0] - rect_two.ctr()[0])
+            dist_rect_two_y = (rect_before_adjustment.ctr()[1] - rect_two.ctr()[1])
+            max_distance = max(abs(dist_rect_one_x), abs(dist_rect_one_y), abs(dist_rect_two_x), abs(dist_rect_two_y))
+            max_distance_as_percentage = max(abs(dist_rect_one_x / image_shape[1]), abs(dist_rect_one_y / image_shape[2]), abs(dist_rect_two_x / image_shape[1]), abs(dist_rect_two_y / image_shape[2]))
+
+            #sometimes the cut coordinates are flipped at this point. 
+            #if so, we want to make sure that we're expanding and not contracting
+            x_flip = 1
+            if new_rect_params[0] > new_rect_params[2]:
+                x_flip = -1
+            y_flip = 1
+            if new_rect_params[1] > new_rect_params[3]:
+                y_flip = -1
+
+            if max_distance_as_percentage < .03:
+                #the size of the coregistration changes are small enough that we can expand only by that much
+                new_rect_params[0] -= (max_distance*x_flip)
+                new_rect_params[1] -= (max_distance*y_flip)
+                new_rect_params[2] += (max_distance*x_flip)
+                new_rect_params[3] += (max_distance*y_flip)
+            else:
+                #the distance of the changes has resulted in us hitting the top amount of expansion we want 
+                #so as to avoid expanding into other quadrants of the image
+                new_rect_params[0] -= ((image_shape[1]*.03)*x_flip)
+                new_rect_params[1] -= ((image_shape[2]*.03)*y_flip)
+                new_rect_params[2] += ((image_shape[1]*.03)*x_flip)
+                new_rect_params[3] += ((image_shape[2]*.03)*y_flip)
+
     new_rect_one_bb = [(new_rect_params[0]/scale_for_rect_one[0]).astype(int), (new_rect_params[1]/scale_for_rect_one[1]).astype(int), (new_rect_params[2]/scale_for_rect_one[0]).astype(int), (new_rect_params[3]/scale_for_rect_one[1]).astype(int)]
     new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)
     new_rect_two_bb = [(new_rect_params[0]/scale_for_rect_two[0]).astype(int), (new_rect_params[1]/scale_for_rect_two[1]).astype(int), (new_rect_params[2]/scale_for_rect_two[0]).astype(int), (new_rect_params[3]/scale_for_rect_two[1]).astype(int)]
