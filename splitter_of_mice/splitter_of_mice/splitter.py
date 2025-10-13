@@ -435,7 +435,6 @@ class SoM:
         self.original_number_cuts = num
 
         if num_anim is not None:
-            logger.info(f"Number of Animals Found: {num}")
             if num < num_anim:
                 logger.info('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
                       format(num, num_anim))
@@ -587,7 +586,6 @@ class SoM:
             ax_ims_lbl += [rd['desc']]
             logger.info(ax_ims_lbl)
             d.rectangle(((r.ylt, r.xlt), (r.yrb, r.xrb)), outline=colors[i], width=linwid)
-            # d.text((r.ylt, r.xlt), rd['desc'], fill=colors[i])
 
         sag_ims = [SoM.get_sag_image(pi.cuts[i].img_data) for i in range(len(pi.cuts))]
         sag_ims_pil = []
@@ -595,7 +593,6 @@ class SoM:
             im1 = SoM.standardize_range(im, pct=pct)
             imp = Image.fromarray(im1).convert('RGB')
             sag_ims_pil += [imp]
-            # logger.info('sagittal subimage ',i,', ',np.swapaxes(im1,0,1).shape)
             # code to combine axial and sagittal images, and save subimage.
             individual_qc_im = SoM.combine_images(
                 [ax_ims_pil[i], Image.fromarray(np.swapaxes(im1, 0, 1)).convert('RGB')])
@@ -611,8 +608,6 @@ class SoM:
             # create the file if it doesn't exist
             open(fnamei, 'a').close()
             individual_qc_im.save(fnamei, 'png')
-
-        # sag_ims_pil= [ Image.fromarray(im).convert('RGB') for im in sag_ims ]
 
         si_dims = [sag_ims[0].shape]
         sag_im = SoM.combine_images(sag_ims_pil)
