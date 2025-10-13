@@ -222,7 +222,7 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
             new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
             replacement_pet_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
         #because we don't trust the pet cuts, we will not be changing the ct data in any way.
-        #simply replace the pet cuts with their new versions which are already coregistered with the ct cuts.
+        #simply replace the pet cuts with the scaled versions of the ct cuts
         splitter_pet.cuts = replacement_pet_cuts
     else:
         #in this case, we have both PET and CT data that we are happy with. 
@@ -293,7 +293,7 @@ def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two
             new_rect_params[3] += (max_distance*y_flip)
         else:
             #the distance of the changes has resulted in us hitting the top amount of expansion we want 
-            #so as to avoid expanding into other quadrants of the image we'll cap the expansion
+            #so, as to avoid expanding into other quadrants of the image, we'll cap the expansion
             new_rect_params[0] -= ((image_shape[1]*.01)*x_flip)
             new_rect_params[1] -= ((image_shape[2]*.01)*y_flip)
             new_rect_params[2] += ((image_shape[1]*.01)*x_flip)
