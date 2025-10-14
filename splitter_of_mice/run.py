@@ -175,6 +175,7 @@ def run(username: str, password: str, server: str,
                 if subject:  # skip empty subjects
                     send_split_images(session, server, project, subject, experiment, zip_file_path, isDicomSession)
 
+        delete_old_qc_images(session, server, project, experiment)
         for splitter in splitters:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             modality = splitter.modality if splitter.modality else ""
@@ -509,6 +510,30 @@ def send_qc_image(session: Session, server: str, project: str, experiment: str, 
                 logging.warning(
                     f'Failed to upload QC image {qc_image_name} to project: {project} , session: {experiment}, status code: {r.status_code}')
                 return False
+
+def delete_old_qc_images(session: Session, server: str, project: str, experiment: str):
+    url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/"
+
+    logging.info("Checking for old QC snapshots before uploading.")
+    
+    r = session.get(url)
+
+    if r.status_code == 200:
+        resources_for_experiment = r.json()['ResultSet']["Result"]
+        for resource in resources_for_experiment:
+            if "QC_SNAPSHOTS_" in resource["label"]:
+                resource_id = resource["xnat_abstractresource_id"]
+                delete_url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_id}"
+                r_delete = session.delete(delete_url)
+                if r_delete.status_code == 200:
+                    logging.info(f"Deleted old QC snapshots with label: {resource['label']}")
+                else:
+                    logging.error("Unable to remove out of date resources.")
+                    raise Exception("Unable to remove out of date resources.")
+
+    else:
+        logging.error("Unable to obtain resources for the current experiment.")
+        raise Exception("Unable to obtain resources for the current experiment.")
 
 
 def get_hotel_scan_record(session: Session, server: str, project: str, experiment: str):
