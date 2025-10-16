@@ -213,6 +213,15 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
     coregistered_cuts_ct = []
     coregistered_cuts_pet = []
 
+    #Due to how the split_coords function is encoded in the splitter, 2 pet cuts and more than 2 ct cuts 
+    #is a bit of an edge case and needs to be handled specifically by changing cut descriptions to be in concert with each other.
+    if len(pet_cuts) == 2 and len(ct_cuts) > 2:
+        for ct_cut in ct_cuts:
+            if ct_cut['desc'] == 'lb' or ct_cut['desc'] == 'lt':
+                ct_cut['desc'] = 'l'
+            elif ct_cut['desc'] == 'rb' or ct_cut['desc'] == 'rt':
+                ct_cut['desc'] = 'r'
+
     if splitter_pet.original_number_cuts > 2*num_anim or splitter_pet.original_number_cuts < num_anim:
         #in this case, we can be reasonably confident that the splitter was not finding it easy to segment the PET image
         #as such, we're going to default to the CT scan which does splitting in a less naive way
