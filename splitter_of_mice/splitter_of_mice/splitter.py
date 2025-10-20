@@ -186,36 +186,23 @@ class SoM:
     @staticmethod
     def get_valid_regs(label):
         min_pts = SoM.minpix
-        m = [SoM.margin, SoM.margin]
         props = measure.regionprops(label)
-        areas = [p.area for p in props]
-        logger.info('areas' + str(areas))
-        logger.debug('centers' + str([p.centroid for p in props]))
         logger.debug('bboxes' + str([p.bbox for p in props]))
         valid_reg = [p for p in props if p.area >= min_pts]
         logger.info('valid regions detected: ' + str(len(valid_reg)))
-        logger.info('{ctr,area}:' + str([(p.centroid, p.area) for p in valid_reg]))
-
         return valid_reg
 
     @staticmethod
-    def harmonize_rects(rects):
-        num_rect = len(rects)
-        if num_rect == 1:
-            r = rects['ctr']
-            sz = int(round(max(r.wid(), r.ht())))
-            r.adjust_to_size([sz, sz])
-        elif num_rect == 2:
-            rl, rr = rects['l'], rects['r']
-            max_hw = max(rl.wid(), rr.wid(), rl.ht(), rr.ht())
-            rl.adjust_to_size([max_hw, max_hw])
-            rr.adjust_to_size([max_hw, max_hw])
-        elif num_rect == 3 or num_rect == 4:
-            rs = [l['rect'] for l in rects]
-            sz = int(round(max([max(r.wid(), r.ht()) for r in rs])))
-            s = [sz, sz]
-            for r in rs:
-                r.adjust_to_size(s)
+    def ensure_cut_inside_image(img, rect):
+        # if the rect has expanded beyond the image, adjust it to the image size
+        if rect.xlt < 0:
+            rect.xlt = 0
+        if rect.ylt < 0:
+            rect.ylt = 0
+        if rect.xrb > img.shape[0]:
+            rect.xrb = img.shape[0]
+        if rect.yrb > img.shape[1]:
+            rect.yrb = img.shape[1]
 
     @staticmethod
     def split_coords(img, valid_reg):
@@ -228,7 +215,7 @@ class SoM:
             label = valid_reg[0].label
             r = Rect(bb=bb, label=label)
             r.expand(m)
-            SoM.harmonize_rects({'ctr': r})
+            SoM.ensure_cut_inside_image(img, r)
             out_boxes += [{'desc': 'ctr', 'rect': r}]
 
         elif len(valid_reg) == 2:
@@ -244,17 +231,8 @@ class SoM:
             rl.expand(m)
             rr.expand(m)
 
-            # if the rect has expanded beyond the image, adjust it to the image size
-            if rl.xlt < 0:
-                rl.xlt = 0
-            if rl.ylt < 0:
-                rl.ylt = 0
-            if rr.xrb > img.shape[1]:
-                rr.xrb = img.shape[1]
-            if rr.yrb > img.shape[0]:
-                rr.yrb = img.shape[0]
-
-            SoM.harmonize_rects({'l': rl, 'r': rr})
+            for rect in [rl, rr]:
+                SoM.ensure_cut_inside_image(img, rect)
 
             if bb1[1] < bb2[1]:
                 out_boxes += [{'desc': 'l', 'rect': rl}, {'desc': 'r', 'rect': rr}]
@@ -264,8 +242,14 @@ class SoM:
         elif len(valid_reg) == 3 or len(valid_reg) == 4:
             rs = [Rect(bb=valid_reg[i].bbox, label=valid_reg[i].label) for i in range(len(valid_reg))]
             big_box = Rect.union_list(rs)
+            #expansion may be difficult in the case that we have several animals -- however, we still want some expansion to ensure that we don't cut off the edges of the mouse.
+            #as such, we're only going to expand by a fraction of the initial margin.
+            m = [round(SoM.margin/4), round(SoM.margin/4)]
+            for r in rs:
+                r.expand(m)
+            for rect in rs:
+                SoM.ensure_cut_inside_image(img, rect)
             lr = [{'desc': big_box.quadrant(r.ctr()), 'rect': r} for r in rs]
-            SoM.harmonize_rects(lr)
             out_boxes = lr
 
         else:
@@ -277,14 +261,21 @@ class SoM:
             lr = [{'desc': big_box.quadrant(r.ctr()), 'rect': r} for r in rs]
             merged: list[dict] = []
             for r in lr:
-                if r['desc'] in [m['desc'] for m in merged]:
+                if r['desc'] in [merge['desc'] for merge in merged]:
                     # if the quadrant already exists in merged, union the rects
-                    for m in merged:
-                        if m['desc'] == r['desc']:
-                            m['rect'] = m['rect'].union(r['rect'])
+                    for merge in merged:
+                        if merge['desc'] == r['desc']:
+                            merge['rect'] = merge['rect'].union(r['rect'])
                 else:
                     # if the quadrant does not exist in merged, add it
                     merged.append(r)
+
+            #expansion may be difficult in the case that we have several animals -- however, we still want some expansion to ensure that we don't cut off the edges of the mouse.
+            #as such, we're only going to expand by a fraction of the initial margin.
+            m = [round(SoM.margin/4), round(SoM.margin/4)]
+            for r in merged:
+                r['rect'].expand(m)
+                SoM.ensure_cut_inside_image(img, r['rect'])
 
             # update rect labels
             for i, r in enumerate(merged):
@@ -297,7 +288,6 @@ class SoM:
                 elif r['desc'] == 'rb':
                     r['rect'].label = 4
 
-            SoM.harmonize_rects(merged)
             out_boxes = merged
 
         for box in out_boxes:
@@ -406,12 +396,10 @@ class SoM:
 
         # adjust the size of the cuts if img_size is specified.
         # helpful for keeping the same image size across multiple scans.
-        if img_size is not None:
-            logger.info(f"Adjusting cuts to size: {img_size}")
-            for cut in self.cuts:
-                logger.info(f"CUT BEFORE ADJUSTMENT Cut: {cut['desc']}, Area: {cut['rect'].area()}, Width: {cut['rect'].wid()}, Height: {cut['rect'].ht()}")
-                cut['rect'].adjust_to_size(img_size)
-                logger.info(f"CUT AFTER ADJUSTMENT Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
+        # if img_size is not None:
+        #     logger.info(f"Adjusting cuts to size: {img_size}")
+        #     for cut in self.cuts:
+        #         cut['rect'].adjust_to_size(img_size)
 
         if not coregister_cuts:
             self.complete_cut_process(dicom_metadata, output_qc)
@@ -467,9 +455,9 @@ class SoM:
 
         # adjust the size of the cuts if img_size is specified.
         # helpful for keeping the same image size across multiple scans.
-        if img_size is not None:
-            for cut in self.cuts:
-                cut['rect'].adjust_to_size(img_size)
+        # if img_size is not None:
+        #     for cut in self.cuts:
+        #         cut['rect'].adjust_to_size(img_size)
 
         if not coregister_cuts:
             self.complete_cut_process(dicom_metadata, output_qc)

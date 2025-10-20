@@ -215,7 +215,7 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
 
     #Due to how the split_coords function is encoded in the splitter, 2 pet cuts and more than 2 ct cuts 
     #is a bit of an edge case and needs to be handled specifically by changing cut descriptions to be in concert with each other.
-    if len(pet_cuts) == 2 and len(ct_cuts) > 2:
+    if len(pet_cuts) == 2 and len(ct_cuts) > 2 and num_anim == 2:
         for ct_cut in ct_cuts:
             if ct_cut['desc'] == 'lb' or ct_cut['desc'] == 'lt':
                 ct_cut['desc'] = 'l'
@@ -228,7 +228,7 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
         replacement_pet_cuts = []
         for cut in ct_cuts:
             cut_rect = cut['rect']
-            new_bb = [(cut_rect.xlt/x_scale).astype(int), (cut_rect.ylt/y_scale).astype(int), (cut_rect.xrb/x_scale).astype(int), (cut_rect.yrb/y_scale).astype(int)]
+            new_bb = [round(cut_rect.xlt/x_scale), round(cut_rect.ylt/y_scale), round(cut_rect.xrb/x_scale), round(cut_rect.yrb/y_scale)]
             new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
             replacement_pet_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
         #because we don't trust the pet cuts, we will not be changing the ct data in any way.
@@ -274,6 +274,13 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
 
 
 def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two, image_shape, adjust_size):
+    #first, we want to make sure that the two rectangles are of the same size. 
+    #expand the smaller of the two (in each dimension) so that they are now of equal size.
+    x_dimesion_max_size = max(rect_one.wid(), rect_two.wid())
+    y_dimension_max_size = max(rect_one.ht(), rect_two.ht())
+    rect_one.adjust_to_size([x_dimesion_max_size, y_dimension_max_size])
+    rect_two.adjust_to_size([x_dimesion_max_size, y_dimension_max_size])
+
     new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
     if adjust_size:
         #to avoid the risk of the coregistration losing parts of the mouse, we are going to do a slight adjustment to expand the size of the cuts
@@ -296,31 +303,27 @@ def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two
             y_flip = -1
 
         if (max_distance_x/image_shape[1]) < .02:
-            logging.info(f"Used Max Distance")
             #the size of the adjustment is small enough that we don't need to cap truncate it
             new_rect_params[0] -= (max_distance_x*x_flip)
             new_rect_params[2] += (max_distance_x*x_flip)
         else:
             #the distance of the changes has resulted in us hitting the top amount of expansion we want 
             #so, as to avoid expanding into other quadrants of the image, we'll cap the expansion
-            logging.info(f"Hit Limit")
             new_rect_params[0] -= ((image_shape[1]*.02)*x_flip)
             new_rect_params[2] += ((image_shape[1]*.02)*x_flip)
 
         #repeat for the y dimension
         if (max_distance_y/image_shape[2]) < .02:
-            logging.info(f"Used Max Distance")
             new_rect_params[1] -= (max_distance_y*y_flip)
             new_rect_params[3] += (max_distance_y*y_flip)
         else:
-            logging.info(f"Hit Limit")
             new_rect_params[1] -= ((image_shape[2]*.02)*y_flip)
             new_rect_params[3] += ((image_shape[2]*.02)*y_flip)
 
 
-    new_rect_one_bb = [(new_rect_params[0]/scale_for_rect_one[0]).astype(int), (new_rect_params[1]/scale_for_rect_one[1]).astype(int), (new_rect_params[2]/scale_for_rect_one[0]).astype(int), (new_rect_params[3]/scale_for_rect_one[1]).astype(int)]
+    new_rect_one_bb = [round((new_rect_params[0]/scale_for_rect_one[0])), round((new_rect_params[1]/scale_for_rect_one[1])), round((new_rect_params[2]/scale_for_rect_one[0])), round((new_rect_params[3]/scale_for_rect_one[1]))]
     new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)
-    new_rect_two_bb = [(new_rect_params[0]/scale_for_rect_two[0]).astype(int), (new_rect_params[1]/scale_for_rect_two[1]).astype(int), (new_rect_params[2]/scale_for_rect_two[0]).astype(int), (new_rect_params[3]/scale_for_rect_two[1]).astype(int)]
+    new_rect_two_bb = [round((new_rect_params[0]/scale_for_rect_two[0])), round((new_rect_params[1]/scale_for_rect_two[1])), round((new_rect_params[2]/scale_for_rect_two[0])), round((new_rect_params[3]/scale_for_rect_two[1]))]
     new_rect_two = Rect(bb=new_rect_two_bb, label=rect_two.label)
     return new_rect_one, new_rect_two
 
