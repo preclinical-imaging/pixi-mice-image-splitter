@@ -277,14 +277,14 @@ def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two
     new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
     if adjust_size:
         #to avoid the risk of the coregistration losing parts of the mouse, we are going to do a slight adjustment to expand the size of the cuts
-        #this will be added equally to all directions on both the PET and CT images and thus must be performed before scaling
+        #any adjustment must add an equal amount to both durections (within a single dimension) so as to retain the coregistration of data
         rect_before_adjustment = Rect(bb=new_rect_params, label="pre_adjustment_rect")
         dist_rect_one_x = (rect_before_adjustment.ctr()[0] - rect_one.ctr()[0])
         dist_rect_one_y = (rect_before_adjustment.ctr()[1] - rect_one.ctr()[1])
         dist_rect_two_x = (rect_before_adjustment.ctr()[0] - rect_two.ctr()[0])
         dist_rect_two_y = (rect_before_adjustment.ctr()[1] - rect_two.ctr()[1])
-        max_distance = max(abs(dist_rect_one_x), abs(dist_rect_one_y), abs(dist_rect_two_x), abs(dist_rect_two_y))
-        max_distance_as_percentage = max(abs(dist_rect_one_x / image_shape[1]), abs(dist_rect_one_y / image_shape[2]), abs(dist_rect_two_x / image_shape[1]), abs(dist_rect_two_y / image_shape[2]))
+        max_distance_x = max(abs(dist_rect_one_x), abs(dist_rect_two_x))
+        max_distance_y = max(abs(dist_rect_one_y), abs(dist_rect_two_y))
 
         #sometimes the cut coordinates are flipped at this point. 
         #if so, we want to make sure that we're expanding and not contracting
@@ -295,19 +295,28 @@ def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two
         if new_rect_params[1] > new_rect_params[3]:
             y_flip = -1
 
-        if max_distance_as_percentage < .01:
-            #the size of the coregistration changes are small enough that we can expand only by that much
-            new_rect_params[0] -= (max_distance*x_flip)
-            new_rect_params[1] -= (max_distance*y_flip)
-            new_rect_params[2] += (max_distance*x_flip)
-            new_rect_params[3] += (max_distance*y_flip)
+        if (max_distance_x/image_shape[1]) < .02:
+            logging.info(f"Used Max Distance")
+            #the size of the adjustment is small enough that we don't need to cap truncate it
+            new_rect_params[0] -= (max_distance_x*x_flip)
+            new_rect_params[2] += (max_distance_x*x_flip)
         else:
             #the distance of the changes has resulted in us hitting the top amount of expansion we want 
             #so, as to avoid expanding into other quadrants of the image, we'll cap the expansion
-            new_rect_params[0] -= ((image_shape[1]*.01)*x_flip)
-            new_rect_params[1] -= ((image_shape[2]*.01)*y_flip)
-            new_rect_params[2] += ((image_shape[1]*.01)*x_flip)
-            new_rect_params[3] += ((image_shape[2]*.01)*y_flip)
+            logging.info(f"Hit Limit")
+            new_rect_params[0] -= ((image_shape[1]*.02)*x_flip)
+            new_rect_params[2] += ((image_shape[1]*.02)*x_flip)
+
+        #repeat for the y dimension
+        if (max_distance_y/image_shape[2]) < .02:
+            logging.info(f"Used Max Distance")
+            new_rect_params[1] -= (max_distance_y*y_flip)
+            new_rect_params[3] += (max_distance_y*y_flip)
+        else:
+            logging.info(f"Hit Limit")
+            new_rect_params[1] -= ((image_shape[2]*.02)*y_flip)
+            new_rect_params[3] += ((image_shape[2]*.02)*y_flip)
+
 
     new_rect_one_bb = [(new_rect_params[0]/scale_for_rect_one[0]).astype(int), (new_rect_params[1]/scale_for_rect_one[1]).astype(int), (new_rect_params[2]/scale_for_rect_one[0]).astype(int), (new_rect_params[3]/scale_for_rect_one[1]).astype(int)]
     new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)

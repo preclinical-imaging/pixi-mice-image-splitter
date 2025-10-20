@@ -409,8 +409,9 @@ class SoM:
         if img_size is not None:
             logger.info(f"Adjusting cuts to size: {img_size}")
             for cut in self.cuts:
+                logger.info(f"CUT BEFORE ADJUSTMENT Cut: {cut['desc']}, Area: {cut['rect'].area()}, Width: {cut['rect'].wid()}, Height: {cut['rect'].ht()}")
                 cut['rect'].adjust_to_size(img_size)
-                logger.info(f"Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
+                logger.info(f"CUT AFTER ADJUSTMENT Cut: {cut['desc']}, Area: {cut['rect'].area()}, Center: {cut['rect'].ctr()}")
 
         if not coregister_cuts:
             self.complete_cut_process(dicom_metadata, output_qc)
