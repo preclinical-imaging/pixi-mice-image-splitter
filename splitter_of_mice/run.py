@@ -109,33 +109,21 @@ def run(username: str, password: str, server: str,
         pet_img_shape_for_coregister = None
 
         for splitter in splitters:
-            # custom code to handle wustl scanners
-            pet_img_size = None
-            ct_img_size = None
-            if 'nscan' in experiment:
-                # if experiment contains the word 'nscan'
-                pet_img_size = (65, 65)
-                ct_img_size = (260, 260)
-            elif 'mpet' in experiment:
-                # if experiment contains the word 'mpet'
-                pet_img_size = (43, 43)
-                ct_img_size = (172, 172)
-
             if coregister_cuts:
                 splitter_pet = splitter[0]
                 splitter_ct = splitter[1]
                 if technicians_perspective == 'back':
                     splitter_pet.pi.rotate_on_axis('y')
                     splitter_ct.pi.rotate_on_axis('y')
-                run_splitter(splitter_pet, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True, margin=margin)
-                run_splitter(splitter_ct, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True, margin=margin)
+                run_splitter(splitter_pet, num_anim, metadata, coregister_cuts=True, margin=margin)
+                run_splitter(splitter_ct, num_anim, metadata, coregister_cuts=True, margin=margin)
             else:
                 if technicians_perspective == 'back':
                     splitter.pi.rotate_on_axis('y')
                 if splitter.modality == 'CT':
-                    run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, margin=margin)
+                    run_splitter(splitter, num_anim, metadata, margin=margin)
                 else:
-                    run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, margin=margin)
+                    run_splitter(splitter, num_anim, metadata, margin=margin)
         if coregister_cuts:
             for splitter in splitters:
                 harmonize_pet_and_ct_cuts(splitter[0], splitter[1], metadata, num_anim)
@@ -199,13 +187,12 @@ def run(username: str, password: str, server: str,
     return
 
 
-def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=False, margin=None):
+def run_splitter(splitter, num_anim, metadata, coregister_cuts=False, margin=None):
     #as CT scans are usually bigger, we're going to scale the margin for those cuts
     if margin is not None and splitter.modality == "CT":
         margin = margin*5
     exit_code = splitter.split_mice(num_anim=num_anim, remove_bed=True,
         zip=True, dicom_metadata=metadata, output_qc=True,
-        pet_img_size=pet_img_size, ct_img_size=ct_img_size, 
         coregister_cuts=coregister_cuts, margin=margin)
     if exit_code != 0:
         raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')

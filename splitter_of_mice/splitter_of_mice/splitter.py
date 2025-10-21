@@ -154,7 +154,7 @@ class SoM:
     def split_mice(self, num_anim=None,
                    sep_thresh=None, margin=None, minpix=None, output_qc=False,
                    suffix_map=None, zip=False, remove_bed=False, dicom_metadata=None,
-                   pet_img_size=None, ct_img_size=None, coregister_cuts=None):
+                   coregister_cuts=None):
 
         if suffix_map is not None:
             for s in suffix_map.split(','):
@@ -166,13 +166,13 @@ class SoM:
             margin = 4 if margin is None else margin
             minpix = 200 if minpix is None else minpix
             return self.split_mice_pet(self.outdir, num_anim, sep_thresh, margin, minpix,
-                                       output_qc, zip, dicom_metadata, pet_img_size, coregister_cuts)
+                                       output_qc, zip, dicom_metadata, coregister_cuts)
         if self.modality == 'CT':
             margin = 20 if margin is None else margin
             minpix = 3300 if minpix is None else minpix
             return self.split_mice_ct(self.outdir, num_anim, sep_thresh,
                                       margin, minpix, output_qc, remove_bed, zip,
-                                      dicom_metadata, ct_img_size, coregister_cuts)
+                                      dicom_metadata, coregister_cuts)
         else:
             logger.error(f"Unknown modality: {self.modality}. Cannot split mice.")
             return -1
@@ -341,7 +341,7 @@ class SoM:
     def split_mice_ct(self, outdir, num_anim=None,
                       sep_thresh=0.99, margin=20, minpix=3300, output_qc=False,
                       bed_removal=True, zip=False, dicom_metadata=None,
-                      img_size=None, coregister_cuts=False):
+                      coregister_cuts=False):
         logger.info('Splitting CT image ' + self.pi.filename)
 
         SoM.num_anim = num_anim
@@ -395,13 +395,6 @@ class SoM:
 
         self.cuts = SoM.split_coords(imz, rects)
 
-        # adjust the size of the cuts if img_size is specified.
-        # helpful for keeping the same image size across multiple scans.
-        # if img_size is not None:
-        #     logger.info(f"Adjusting cuts to size: {img_size}")
-        #     for cut in self.cuts:
-        #         cut['rect'].adjust_to_size(img_size)
-
         if not coregister_cuts:
             self.complete_cut_process(dicom_metadata, output_qc)
 
@@ -410,7 +403,7 @@ class SoM:
 
     def split_mice_pet(self, outdir, num_anim=None,
                        sep_thresh=None, margin=20, minpix=200, output_qc=False,
-                       zip=False, dicom_metadata=None, img_size=None, coregister_cuts=False):
+                       zip=False, dicom_metadata=None, coregister_cuts=False):
         logger.info('Splitting PET image ' + self.pi.filename)
 
         SoM.num_anim = num_anim
@@ -453,12 +446,6 @@ class SoM:
                     self.minpix += inc
                     rects = SoM.get_valid_regs(self.blobs_labels)
         self.cuts = SoM.split_coords(imz, rects)
-
-        # adjust the size of the cuts if img_size is specified.
-        # helpful for keeping the same image size across multiple scans.
-        # if img_size is not None:
-        #     for cut in self.cuts:
-        #         cut['rect'].adjust_to_size(img_size)
 
         if not coregister_cuts:
             self.complete_cut_process(dicom_metadata, output_qc)
