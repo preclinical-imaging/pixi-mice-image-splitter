@@ -62,7 +62,7 @@
     },
     {
       "name": "margin",
-      "description": "Optional input margin. Should be used if initial split is unsucessful because of too large/too small cuts.",
+      "description": "Optional input margin. Can be used to adjust cuts if original run is not successful.",
       "type": "number",
       "required": false,
       "default-value": "",
