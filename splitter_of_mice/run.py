@@ -24,7 +24,8 @@ SoM.desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 
 
 def run(username: str, password: str, server: str,
         project: str, experiment: str,
-        input_dir: str, output_dir: str, **kwargs):
+        input_dir: str, output_dir: str, margin: int, 
+        **kwargs):
 
     # Create a session
     session = requests.Session()
@@ -126,13 +127,15 @@ def run(username: str, password: str, server: str,
                 if technicians_perspective == 'back':
                     splitter_pet.pi.rotate_on_axis('y')
                     splitter_ct.pi.rotate_on_axis('y')
-                run_splitter(splitter_pet, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True)
-                run_splitter(splitter_ct, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True)
+                run_splitter(splitter_pet, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True, margin=margin)
+                run_splitter(splitter_ct, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=True, margin=margin)
             else:
                 if technicians_perspective == 'back':
                     splitter.pi.rotate_on_axis('y')
-                run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size)
-
+                if splitter.modality == 'CT':
+                    run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, margin=margin)
+                else:
+                    run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, margin=margin)
         if coregister_cuts:
             for splitter in splitters:
                 harmonize_pet_and_ct_cuts(splitter[0], splitter[1], metadata, num_anim)
@@ -196,11 +199,14 @@ def run(username: str, password: str, server: str,
     return
 
 
-def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=False):
+def run_splitter(splitter, num_anim, metadata, pet_img_size, ct_img_size, coregister_cuts=False, margin=None):
+    #as CT scans are usually bigger, we're going to scale the margin for those cuts
+    if margin is not None and splitter.modality == "CT":
+        margin = margin*5
     exit_code = splitter.split_mice(num_anim=num_anim, remove_bed=True,
         zip=True, dicom_metadata=metadata, output_qc=True,
         pet_img_size=pet_img_size, ct_img_size=ct_img_size, 
-        coregister_cuts=coregister_cuts)
+        coregister_cuts=coregister_cuts, margin=margin)
     if exit_code != 0:
         raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
 
@@ -674,6 +680,7 @@ if __name__ == "__main__":
                                                                             scan record must exist in XNAT for this
                                                                             experiment.
                                                                         """)
+    p.add_argument('-m', '--margin', metavar='<int>', type=int, help="Optional input margin. Should be used if initial split is unsucessful because of too large/too small cuts.")
 
     kwargs = vars(p.parse_args())
 

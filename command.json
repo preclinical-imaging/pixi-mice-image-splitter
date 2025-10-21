@@ -9,7 +9,7 @@
   "type": "docker",
   "index": "",
   "working-directory": "/usr/src/app",
-  "command-line": "python run.py /input/SCANS /output --log-level DEBUG -u $XNAT_USER -p $XNAT_PASS -s $XNAT_HOST #PROJECT_ID# #SESSION_LABEL#",
+  "command-line": "python run.py /input/SCANS /output --log-level DEBUG -u $XNAT_USER -p $XNAT_PASS -s $XNAT_HOST #PROJECT_ID# #SESSION_LABEL# #MARGIN#",
   "override-entrypoint": true,
   "mounts": [
     {
@@ -59,6 +59,15 @@
       "false-value": null,
       "select-values": [],
       "multiple-delimiter": null
+    },
+    {
+      "name": "margin",
+      "description": "Optional input margin. Should be used if initial split is unsucessful because of too large/too small cuts.",
+      "type": "number",
+      "required": false,
+      "default-value": "",
+      "replacement-key": "#MARGIN#",
+      "command-line-flag": "-m"
     }
   ],
   "outputs": [

@@ -208,12 +208,12 @@ class SoM:
     def split_coords(img, valid_reg):
         ims = []
         out_boxes = []
-        m = [SoM.margin, SoM.margin]
         logger.info('split images (axial projection):')
         if len(valid_reg) == 1:
             bb = valid_reg[0].bbox
             label = valid_reg[0].label
             r = Rect(bb=bb, label=label)
+            m = [SoM.margin, SoM.margin]
             r.expand(m)
             SoM.ensure_cut_inside_image(img, r)
             out_boxes += [{'desc': 'ctr', 'rect': r}]
@@ -228,6 +228,7 @@ class SoM:
             else:
                 rl = Rect(bb=bb2, label=label2)
                 rr = Rect(bb=bb1, label=label1)
+            m = [SoM.margin, SoM.margin]
             rl.expand(m)
             rr.expand(m)
 
