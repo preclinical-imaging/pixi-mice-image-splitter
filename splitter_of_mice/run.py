@@ -10,7 +10,6 @@ import uuid
 import time
 from pathlib import Path
 import zipfile
-import math
 import numpy as np
 
 from collections import defaultdict

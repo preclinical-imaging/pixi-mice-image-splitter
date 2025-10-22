@@ -1,8 +1,7 @@
 """
-
+Implementation of splitting of hotel image into individual mouse images.
 """
 import logging
-from io import BytesIO
 
 import numpy as np
 import skimage
@@ -39,7 +38,7 @@ class SoM:
     Splitter of Mice class
     """
 
-    margin = 30
+    margin = 0
     desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
 
     def __init__(self, file, modality=None, dicom=False):
@@ -425,8 +424,8 @@ class SoM:
                     self.sep_thresh += 0.01
                     self.blobs_labels, num = SoM.detect_animals(imz, SoM.sep_thresh * np.mean(imz))
                 if num < num_anim:
-                    logger.error('Compensation failed. We cannot find enough regions.')
                     if not coregister_cuts:
+                        logger.error('Compensation failed. We cannot find enough regions.')
                         self.pi.clean_cuts()
                         self.pi.unload_image()
                         return 1
