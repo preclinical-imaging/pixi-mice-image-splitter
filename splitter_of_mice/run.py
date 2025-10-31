@@ -202,6 +202,11 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
     pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
     x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
 
+    if (len(pet_cuts) == 1 or splitter_pet.original_number_cuts > 2*num_anim) and len(ct_cuts) == 1 and num_anim > 1:
+        #Sometimes users will upload an already cut image and try to split it again. In this case, we should alert them.
+        logging.error(f"Both PET and CT splitters only found 1 mouse region when {num_anim} were expected.")
+        raise Exception(f'Both PET and CT splitters only found 1 mouse region when {num_anim} were expected. Please check to make sure you have not uploaded an already split image in error.')
+
     #Due to how the split_coords function is encoded in the splitter, 2 pet cuts and more than 2 ct cuts 
     #is a bit of an edge case and needs to be handled specifically by changing cut descriptions to be in concert with each other.
     if len(pet_cuts) == 2 and len(ct_cuts) > 2 and num_anim == 2:
