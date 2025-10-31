@@ -202,9 +202,6 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
     pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
     x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
 
-    coregistered_cuts_ct = []
-    coregistered_cuts_pet = []
-
     #Due to how the split_coords function is encoded in the splitter, 2 pet cuts and more than 2 ct cuts 
     #is a bit of an edge case and needs to be handled specifically by changing cut descriptions to be in concert with each other.
     if len(pet_cuts) == 2 and len(ct_cuts) > 2 and num_anim == 2:
@@ -226,9 +223,20 @@ def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
         #because we don't trust the pet cuts, we will not be changing the ct data in any way.
         #simply replace the pet cuts with the scaled versions of the ct cuts
         splitter_pet.cuts = replacement_pet_cuts
+    elif len(splitter_ct.cuts) < num_anim:
+        #the ct splitter wasn't able to find enough cuts. defaulting to the pet cuts.
+        replacement_ct_cuts = []
+        for cut in pet_cuts:
+            cut_rect = cut['rect']
+            new_bb = [round(cut_rect.xlt*x_scale), round(cut_rect.ylt*y_scale), round(cut_rect.xrb*x_scale), round(cut_rect.yrb*y_scale)]
+            new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
+            replacement_ct_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
+        splitter_ct.cuts = replacement_ct_cuts
     else:
         #in this case, we have both PET and CT data that we are happy with. 
         #thus, we're performing coregistration
+        coregistered_cuts_ct = []
+        coregistered_cuts_pet = []
         for cut in pet_cuts:
             cut_rect = cut['rect']
             bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
