@@ -1,5 +1,5 @@
 import argparse
-import datetime
+from datetime import datetime
 import glob
 import json
 import logging
@@ -10,10 +10,12 @@ import uuid
 import time
 from pathlib import Path
 import zipfile
+import numpy as np
 
 from collections import defaultdict
 from requests import Session
 from splitter_of_mice.splitter import SoM
+from splitter_of_mice.rectangle import Rect
 
 # Setup splitter of mice descriptor map
 SoM.desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 'lt', 'rt': 'rt'}
@@ -21,7 +23,8 @@ SoM.desc_map = {'l': 'l', 'r': 'r', 'ctr': 'ctr', 'lb': 'lb', 'rb': 'rb', 'lt': 
 
 def run(username: str, password: str, server: str,
         project: str, experiment: str,
-        input_dir: str, output_dir: str, **kwargs):
+        input_dir: str, output_dir: str, margin: int, 
+        **kwargs):
 
     # Create a session
     session = requests.Session()
@@ -59,19 +62,36 @@ def run(username: str, password: str, server: str,
             update_scan_record_status(session, server, project, experiment, "Error: No DICOM or Inveon images files found")
             sys.exit(f'No DICOM or Inveon images files found in {input_dir}')
 
-        logging.debug(f"Create splitter and output directory for each subdirectory")
+        #if we have more than two scans, we need to pair them up for coregistration. 
+        #we've decided to use scan time for this so we need to get the scan time for each scan
+        start_times_for_scans = {}
+        if len(files) > 2:
+            start_times_for_scans = get_start_times_for_scans(session, server, project, experiment, files)
 
-        splitters = [SoM(dicom_dir, dicom=isDicomSession) for dicom_dir in files.keys()]
+        #Create splitter and output directory for each subdirectory and prep them for coregistration if applicable
+        splitters_pet = []
+        splitters_ct = []
+        for dicom_dir in files.keys():
+            spltr = SoM(dicom_dir, dicom=isDicomSession)
+            output_directory = os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir))
+            os.makedirs(output_directory, exist_ok=True)
+            spltr.outdir = os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir))
+            if dicom_dir in start_times_for_scans:
+                spltr.scan_time = start_times_for_scans[dicom_dir]
 
-        # Create output directory for each subdirectory
-        output_dirs = [os.path.join(output_dir, os.path.relpath(dicom_dir, input_dir)) for dicom_dir in files.keys()]
-
-        for output_dir in output_dirs:
-            os.makedirs(output_dir, exist_ok=True)
-
-        logging.info(f"Created {len(output_dirs)} output directories: {output_dirs}")
-
-        logging.debug(f"Split each subdirectory")
+            #connect corresponding pet and ct scans for coregistration
+            if spltr.modality == 'CT':
+                splitters_ct.append(spltr)
+            else:
+                splitters_pet.append(spltr)
+        coregister_cuts = False
+        if (len(splitters_pet) == len(splitters_ct)):
+            coregister_cuts = True
+            splitters_pet = sorted(splitters_pet, key=lambda x: x.scan_time)
+            splitters_ct = sorted(splitters_ct, key=lambda x: x.scan_time)
+            splitters = list(zip(splitters_pet, splitters_ct))
+        else:
+            splitters = splitters_pet + splitters_ct
 
         # Get hotel scan record
         hotel_scan_record = get_hotel_scan_record(session, server, project, experiment)
@@ -84,32 +104,34 @@ def run(username: str, password: str, server: str,
         technicians_perspective = hotel_scan_record.get('technicianPerspective', 'Front')
         technicians_perspective = technicians_perspective.lower()
 
-        for i, (splitter, output_dir) in enumerate(zip(splitters, output_dirs)):
-            # custom code to handle wustl scanners
-            pet_img_size = None
-            ct_img_size = None
-            if 'nscan' in experiment:
-                # if experiment contains the word 'nscan'
-                pet_img_size = (65, 65)
-                ct_img_size = (260, 260)
-            elif 'mpet' in experiment:
-                # if experiment contains the word 'mpet'
-                pet_img_size = (43, 43)
-                ct_img_size = (172, 172)
+        pet_cuts_for_coregister = None
+        pet_img_shape_for_coregister = None
 
-            if technicians_perspective == 'back':
-                splitter.pi.rotate_on_axis('y')
-
-            exit_code = splitter.split_mice(output_dir, num_anim=num_anim, remove_bed=True,
-                                          zip=True, dicom_metadata=metadata, output_qc=True,
-                                          pet_img_size=pet_img_size, ct_img_size=ct_img_size)
-
-            if exit_code != 0:
-                raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
+        for splitter in splitters:
+            if coregister_cuts:
+                splitter_pet = splitter[0]
+                splitter_ct = splitter[1]
+                if technicians_perspective == 'back':
+                    splitter_pet.pi.rotate_on_axis('y')
+                    splitter_ct.pi.rotate_on_axis('y')
+                run_splitter(splitter_pet, num_anim, metadata, coregister_cuts=True, margin=margin)
+                run_splitter(splitter_ct, num_anim, metadata, coregister_cuts=True, margin=margin)
+            else:
+                if technicians_perspective == 'back':
+                    splitter.pi.rotate_on_axis('y')
+                if splitter.modality == 'CT':
+                    run_splitter(splitter, num_anim, metadata, margin=margin)
+                else:
+                    run_splitter(splitter, num_anim, metadata, margin=margin)
+        if coregister_cuts:
+            for splitter in splitters:
+                harmonize_pet_and_ct_cuts(splitter[0], splitter[1], metadata, num_anim)
+            #flatten out lists now that we're done with coregistration
+            splitters_flattened = [item for sublist in splitters for item in sublist]
+            splitters = splitters_flattened
 
         # Upload each cut to XNAT
-        # Send all scans for a subject together so the prearchive doesn't accidentally
-        # archive one scan before the other.
+        # Send all scans for a subject together so the prearchive doesn't accidentally archive one scan before the other.
         subject_zip_files = defaultdict(list)
         for splitter in splitters:
             for zip_outputs in splitter.pi.zip_outputs:
@@ -143,10 +165,12 @@ def run(username: str, password: str, server: str,
                 if subject:  # skip empty subjects
                     send_split_images(session, server, project, subject, experiment, zip_file_path, isDicomSession)
 
+        delete_old_qc_images(session, server, project, experiment)
         for splitter in splitters:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            modality = splitter.modality if splitter.modality else ""
             send_qc_image(session, server, project, experiment,
-                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}")
+                          splitter.pi.qc_outputs, resource_name=f"QC_SNAPSHOTS_{timestamp}_{splitter.modality}")
 
         # update hotel scan record
         update_scan_record(session, server, experiment, hotel_scan_record)
@@ -160,6 +184,153 @@ def run(username: str, password: str, server: str,
         sys.exit("Fatal error while splitting hotel scan " + str(e))
 
     return
+
+
+def run_splitter(splitter, num_anim, metadata, coregister_cuts=False, margin=None):
+    #as CT scans are usually bigger, we're going to scale the margin for those cuts
+    if margin is not None and splitter.modality == "CT":
+        margin = margin*5
+    exit_code = splitter.split_mice(num_anim=num_anim, remove_bed=True,
+        zip=True, dicom_metadata=metadata, output_qc=True,
+        coregister_cuts=coregister_cuts, margin=margin)
+    if exit_code != 0:
+        raise Exception(f'Error splitting subdirectory {os.path.dirname(splitter.filename)}')
+
+
+def harmonize_pet_and_ct_cuts(splitter_pet, splitter_ct, metadata, num_anim):
+    pet_cuts, ct_cuts = splitter_pet.cuts, splitter_ct.cuts
+    pet_shape, ct_shape = splitter_pet.pi.img_data.shape, splitter_ct.pi.img_data.shape
+    x_scale, y_scale = (ct_shape[1]/pet_shape[1]), (ct_shape[2]/pet_shape[2])
+
+    if (len(pet_cuts) == 1 or splitter_pet.original_number_cuts > 2*num_anim) and len(ct_cuts) == 1 and num_anim > 1:
+        #Sometimes users will upload an already cut image and try to split it again. In this case, we should alert them.
+        logging.error(f"Both PET and CT splitters only found 1 mouse region when {num_anim} were expected.")
+        raise Exception(f'Both PET and CT splitters only found 1 mouse region when {num_anim} were expected. Please check to make sure you have not uploaded an already split image in error.')
+
+    #Due to how the split_coords function is encoded in the splitter, 2 pet cuts and more than 2 ct cuts 
+    #is a bit of an edge case and needs to be handled specifically by changing cut descriptions to be in concert with each other.
+    if len(pet_cuts) == 2 and len(ct_cuts) > 2 and num_anim == 2:
+        for ct_cut in ct_cuts:
+            if ct_cut['desc'] == 'lb' or ct_cut['desc'] == 'lt':
+                ct_cut['desc'] = 'l'
+            elif ct_cut['desc'] == 'rb' or ct_cut['desc'] == 'rt':
+                ct_cut['desc'] = 'r'
+
+    if splitter_pet.original_number_cuts > 2*num_anim or splitter_pet.original_number_cuts < num_anim:
+        #in this case, we can be reasonably confident that the splitter was not finding it easy to segment the PET image
+        #as such, we're going to default to the CT scan which does splitting in a less naive way
+        replacement_pet_cuts = []
+        for cut in ct_cuts:
+            cut_rect = cut['rect']
+            new_bb = [round(cut_rect.xlt/x_scale), round(cut_rect.ylt/y_scale), round(cut_rect.xrb/x_scale), round(cut_rect.yrb/y_scale)]
+            new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
+            replacement_pet_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
+        #because we don't trust the pet cuts, we will not be changing the ct data in any way.
+        #simply replace the pet cuts with the scaled versions of the ct cuts
+        splitter_pet.cuts = replacement_pet_cuts
+    elif len(splitter_ct.cuts) < num_anim:
+        #the ct splitter wasn't able to find enough cuts. defaulting to the pet cuts.
+        replacement_ct_cuts = []
+        for cut in pet_cuts:
+            cut_rect = cut['rect']
+            new_bb = [round(cut_rect.xlt*x_scale), round(cut_rect.ylt*y_scale), round(cut_rect.xrb*x_scale), round(cut_rect.yrb*y_scale)]
+            new_rect_one = Rect(bb=new_bb, label=cut_rect.label)
+            replacement_ct_cuts += [{'desc': cut['desc'], 'rect': new_rect_one}]
+        splitter_ct.cuts = replacement_ct_cuts
+    else:
+        #in this case, we have both PET and CT data that we are happy with. 
+        #thus, we're performing coregistration
+        coregistered_cuts_ct = []
+        coregistered_cuts_pet = []
+        for cut in pet_cuts:
+            cut_rect = cut['rect']
+            bb = [cut_rect.xlt*x_scale, cut_rect.ylt*y_scale, cut_rect.xrb*x_scale, cut_rect.yrb*y_scale]
+            scaled_pet_rect = Rect(bb=bb, label=cut_rect.label)
+
+            filtered_cuts = list(filter(lambda x: x['desc'] == cut['desc'], ct_cuts))
+            connected_ct_cut = filtered_cuts[0]
+
+            if len(filtered_cuts) == 1:
+                #one to one relationship between pet and ct cuts. we can simply combine them without other processing.
+                ct_cuts.remove(connected_ct_cut)
+            elif len(filtered_cuts) == 2:
+                #two cuts were both mapped to within the same portion of the image. 
+                #combine them into one to try to get all relavent data into the same cut
+                combined_ct_rect, __ = combine_two_rects(filtered_cuts[0]['rect'], filtered_cuts[1]['rect'], [1.0, 1.0], [1.0, 1.0], None, False)
+                connected_ct_cut = {'desc': filtered_cuts[0]['desc'], 'rect': combined_ct_rect}
+                ct_cuts.remove(filtered_cuts[0])
+                ct_cuts.remove(filtered_cuts[1])
+            else:
+                #if we have more than 2 cuts in a given region we have a real problem so the splitter should throw an error
+                logging.error(f"Too many sessions within the region {cut['desc']}. Could not combine them.")
+                raise Exception(f"Too many sessions within the region {cut['desc']}")
+            
+            connected_ct_cut_rect = connected_ct_cut['rect']
+
+            new_ct_rect, new_pet_rect = combine_two_rects(connected_ct_cut_rect, scaled_pet_rect, [1.0,1.0], [x_scale, y_scale], ct_shape, True)
+
+            coregistered_cuts_ct += [{'desc': connected_ct_cut['desc'], 'rect': new_ct_rect}]
+            coregistered_cuts_pet += [{'desc': cut['desc'], 'rect': new_pet_rect}]
+        splitter_ct.cuts = coregistered_cuts_ct
+        splitter_pet.cuts = coregistered_cuts_pet
+
+    splitter_ct.complete_cut_process(metadata, True)
+    splitter_pet.complete_cut_process(metadata, True)
+
+
+def combine_two_rects(rect_one, rect_two, scale_for_rect_one, scale_for_rect_two, image_shape, adjust_size):
+    #first, we want to make sure that the two rectangles are of the same size. 
+    #expand the smaller of the two (in each dimension) so that they are now of equal size.
+    x_dimesion_max_size = max(rect_one.wid(), rect_two.wid())
+    y_dimension_max_size = max(rect_one.ht(), rect_two.ht())
+    rect_one.adjust_to_size([x_dimesion_max_size, y_dimension_max_size])
+    rect_two.adjust_to_size([x_dimesion_max_size, y_dimension_max_size])
+
+    new_rect_params = [(rect_one.xlt+rect_two.xlt)/2, (rect_one.ylt+rect_two.ylt)/2, (rect_one.xrb+rect_two.xrb)/2, (rect_one.yrb+rect_two.yrb)/2]
+    if adjust_size:
+        #to avoid the risk of the coregistration losing parts of the mouse, we are going to do a slight adjustment to expand the size of the cuts
+        #any adjustment must add an equal amount to both durections (within a single dimension) so as to retain the coregistration of data
+        rect_before_adjustment = Rect(bb=new_rect_params, label="pre_adjustment_rect")
+        dist_rect_one_x = (rect_before_adjustment.ctr()[0] - rect_one.ctr()[0])
+        dist_rect_one_y = (rect_before_adjustment.ctr()[1] - rect_one.ctr()[1])
+        dist_rect_two_x = (rect_before_adjustment.ctr()[0] - rect_two.ctr()[0])
+        dist_rect_two_y = (rect_before_adjustment.ctr()[1] - rect_two.ctr()[1])
+        max_distance_x = max(abs(dist_rect_one_x), abs(dist_rect_two_x))
+        max_distance_y = max(abs(dist_rect_one_y), abs(dist_rect_two_y))
+
+        #sometimes the cut coordinates are flipped at this point. 
+        #if so, we want to make sure that we're expanding and not contracting
+        x_flip = 1
+        if new_rect_params[0] > new_rect_params[2]:
+            x_flip = -1
+        y_flip = 1
+        if new_rect_params[1] > new_rect_params[3]:
+            y_flip = -1
+
+        if (max_distance_x/image_shape[1]) < .02:
+            #the size of the adjustment is small enough that we don't need to cap truncate it
+            new_rect_params[0] -= (max_distance_x*x_flip)
+            new_rect_params[2] += (max_distance_x*x_flip)
+        else:
+            #the distance of the changes has resulted in us hitting the top amount of expansion we want 
+            #so, as to avoid expanding into other quadrants of the image, we'll cap the expansion
+            new_rect_params[0] -= ((image_shape[1]*.02)*x_flip)
+            new_rect_params[2] += ((image_shape[1]*.02)*x_flip)
+
+        #repeat for the y dimension
+        if (max_distance_y/image_shape[2]) < .02:
+            new_rect_params[1] -= (max_distance_y*y_flip)
+            new_rect_params[3] += (max_distance_y*y_flip)
+        else:
+            new_rect_params[1] -= ((image_shape[2]*.02)*y_flip)
+            new_rect_params[3] += ((image_shape[2]*.02)*y_flip)
+
+
+    new_rect_one_bb = [round((new_rect_params[0]/scale_for_rect_one[0])), round((new_rect_params[1]/scale_for_rect_one[1])), round((new_rect_params[2]/scale_for_rect_one[0])), round((new_rect_params[3]/scale_for_rect_one[1]))]
+    new_rect_one = Rect(bb=new_rect_one_bb, label=rect_one.label)
+    new_rect_two_bb = [round((new_rect_params[0]/scale_for_rect_two[0])), round((new_rect_params[1]/scale_for_rect_two[1])), round((new_rect_params[2]/scale_for_rect_two[0])), round((new_rect_params[3]/scale_for_rect_two[1]))]
+    new_rect_two = Rect(bb=new_rect_two_bb, label=rect_two.label)
+    return new_rect_one, new_rect_two
 
 
 def convert_hotel_scan_record(hotel_scan_record: dict, dicom: bool = False, mpet: bool = False):
@@ -331,7 +502,7 @@ def send_split_images(session: Session, server: str, project: str, subject: str,
 
 def send_qc_image(session: Session, server: str, project: str, experiment: str, qc_image_path: str, **kwargs):
     # create a resource on the scan record with the name QC_SNAPSHOTS_DATETIME or get from kwargs
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     resource_name = f"QC_SNAPSHOTS_{timestamp}" if 'resource_name' not in kwargs else kwargs['resource_name']
     url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_name}?format=IMG&content=RAW"
 
@@ -365,6 +536,30 @@ def send_qc_image(session: Session, server: str, project: str, experiment: str, 
                 logging.warning(
                     f'Failed to upload QC image {qc_image_name} to project: {project} , session: {experiment}, status code: {r.status_code}')
                 return False
+
+def delete_old_qc_images(session: Session, server: str, project: str, experiment: str):
+    url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/"
+
+    logging.info("Checking for old QC snapshots before uploading.")
+    
+    r = session.get(url)
+
+    if r.status_code == 200:
+        resources_for_experiment = r.json()['ResultSet']["Result"]
+        for resource in resources_for_experiment:
+            if "QC_SNAPSHOTS_" in resource["label"]:
+                resource_id = resource["xnat_abstractresource_id"]
+                delete_url = f"{server}/data/projects/{project}/experiments/{experiment}_scan_record/resources/{resource_id}"
+                r_delete = session.delete(delete_url)
+                if r_delete.status_code == 200:
+                    logging.info(f"Deleted old QC snapshots with label: {resource['label']}")
+                else:
+                    logging.error("Unable to remove out of date resources.")
+                    raise Exception("Unable to remove out of date resources.")
+
+    else:
+        logging.error("Unable to obtain resources for the current experiment.")
+        raise Exception("Unable to obtain resources for the current experiment.")
 
 
 def get_hotel_scan_record(session: Session, server: str, project: str, experiment: str):
@@ -409,21 +604,61 @@ def update_scan_record(session: Session, server: str, experiment: str, hotel_sca
 
 
 def update_scan_record_status(session: Session, server: str, project: str, experiment: str, status: str):
-
-    logging.debug(f'update_status(server={server}, project={project}, experiment={experiment}, status={status})')
-
     url = f"{server}/xapi/pixi/hotelscanrecords/{experiment}_scan_record/project/{project}/status"
-
-    logging.info(f'Updating hotel scan record status at {url} to {status}')
 
     r = session.put(url, headers={'Content-type': 'text/plain'}, data=status)
 
     if r.ok:
-        logging.debug(f'update_status to {status} successful')
+        logging.debug(f'Updating hotel scan record status to {status}')
     else:
         logging.error(f'update_status failed: {r.status_code} - {r.text}')
 
     return
+
+
+def get_start_times_for_scans(session: Session, server: str, project: str, experiment: str, files):
+    experiment_id = get_experiment_id_for_label(session, server, project, experiment)
+
+    file_to_start_time= {}
+
+    for file in files.keys():
+        split_path = file.split(os.sep)
+        position_of_scan_name = split_path.index("SCANS") + 1
+        file_to_start_time[file] = get_scan_time_of_scan(session, server, experiment_id, split_path[position_of_scan_name])
+    return file_to_start_time
+
+
+def get_experiment_id_for_label(session: Session, server: str, project: str, experiment_label: str):
+    url = f"{server}/data/projects/{project}/experiments"
+
+    r = session.get(url)
+
+    if r.status_code == 200:
+        project_experiments_information = r.json()['ResultSet']["Result"]
+
+        for experiment in project_experiments_information:
+            if experiment['label'] == experiment_label:
+                return experiment['ID']
+        raise Exception("Could not obtain necessary experiment ID")
+    else:
+        logging.error("Unable to obtain experiment data for project")
+        raise Exception("Unable to obtain experiment data for project")
+
+
+#extract the start date/time field for the scan 
+def get_scan_time_of_scan(session: Session, server: str, experiment: str, scan: str):
+    payload = {'format': 'json'}
+    url = f"{server}/data/experiments/{experiment}/scans/{scan}"
+
+    r = session.get(url, params=payload)
+
+    if r.status_code == 200:
+        start_datetime = r.json()['items'][0]['data_fields']['startTime']
+        start_datetime_in_python = datetime.strptime(start_datetime, '%H:%M:%S')
+        return start_datetime_in_python
+    else:
+        logging.error("Unable to obtain scan time to pair CT and PET sessions")
+        raise Exception("Unable to obtain scan time to pair CT and PET sessions")
 
 
 if __name__ == "__main__":
@@ -444,6 +679,7 @@ if __name__ == "__main__":
                                                                             scan record must exist in XNAT for this
                                                                             experiment.
                                                                         """)
+    p.add_argument('-m', '--margin', metavar='<int>', type=int, help="Optional input margin. Should be used if initial split is unsucessful because of too large/too small cuts.")
 
     kwargs = vars(p.parse_args())
 

@@ -9,7 +9,7 @@ This software may not be reproduced, copied, or distributed without written perm
 For more information contact Mikhail Milchenko, PhD<br>
 
 ENVIRONMENT REQUREMENTS<br>
-Python 3.6.5 with ipywidgets, numpy, pillow, nibabel, and skimage packages<br>
+Python 3.6.5 with numpy, pillow, nibabel, pydicom, and skimage packages<br>
 
 DESCRIPTION<br>
 Mouse image splitting technique. Implemented in Python, reusing the ‘ccdb’ Jack Mackopf's code to read/write images. <br>

@@ -935,7 +935,6 @@ class DicomImage(BaseImage):
                 os.makedirs(os.path.join(path, f'{index}'))
 
             # Save the file
-            logger.debug(f'Saving dicom file {split_ds.SOPInstanceUID} to {path}')
             filename = f'{split_ds.SOPInstanceUID}.dcm'
             split_ds.save_as(os.path.join(path, f'{index}', filename))
 
