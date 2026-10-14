@@ -367,6 +367,8 @@ class SoM:
         self.blobs_labels, num = SoM.detect_animals(imz, thresh)
         rects = SoM.get_valid_regs(self.blobs_labels)
 
+        self.original_number_cuts = len(rects)
+
         if num_anim is not None and len(rects) != num_anim:
             logger.info(f"split_mice_ct detected {len(rects)} regions, expected {num_anim}, attempting to compensate")
 
@@ -381,6 +383,18 @@ class SoM:
                 logger.info(f"New threshold: {thresh}")
                 self.blobs_labels, num = SoM.detect_animals(imz, thresh)
                 rects = SoM.get_valid_regs(self.blobs_labels)
+
+            if len(rects) != num_anim and len(rects) < self.original_number_cuts:
+                logger.info(f"Compensation reduced number of regions to {len(rects)}. Attempting threshold decrease compensation.")
+                thresh = filters.threshold_li(imz)
+                attempts = 0
+                while len(rects) < num_anim and attempts < 4:
+                    attempts += 1
+                    logger.info(f"Compensation attempt {attempts}")
+                    logger.info(f"Current threshold: {thresh}")
+                    thresh -= thresh * 0.1
+                    self.blobs_labels, num = SoM.detect_animals(imz, thresh)
+                    rects = SoM.get_valid_regs(self.blobs_labels)
 
             if len(rects) != num_anim:
                 if not coregister_cuts:
@@ -418,7 +432,7 @@ class SoM:
 
         if num_anim is not None:
             if num < num_anim:
-                logger.info('split_mice detected less regions ({}) than indicated animals({}), attempting to compensate'.
+                logger.info('split_mice detected fewer regions ({}) than indicated animals ({}), attempting to compensate'.
                       format(num, num_anim))
                 while num < num_anim and self.sep_thresh < 1:
                     self.sep_thresh += 0.01
